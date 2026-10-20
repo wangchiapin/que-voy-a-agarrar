@@ -623,7 +623,14 @@ en:{title:'What Will I Grab?',sub:'Listen to the sentence and find the item at h
 };
 
 // ============ 設定與存檔 ============
-const FIREBASE_CONFIG=null;   // 排行榜：把 Firebase 的 firebaseConfig 貼在這裡；沒填就用本機排行榜
+const FIREBASE_CONFIG={   // 排行榜：連到 memorma-24dab（和翻牌記憶、收納小達人共用專案）；連不上就用本機排行榜
+  apiKey:"AIzaSyC_YSDn2OH6_GKKwCq0d8QFNl3fYXzTC60",
+  authDomain:"memorma-24dab.firebaseapp.com",
+  projectId:"memorma-24dab",
+  storageBucket:"memorma-24dab.firebasestorage.app",
+  messagingSenderId:"806709458465",
+  appId:"1:806709458465:web:f0d12acb2f911f2f165560"
+};
 const LSK='homefetch_map_v1';
 // 共用設定（和其他遊戲同一把鑰匙 hanziGames.settings）
 const SETTINGS_KEY='hanziGames.settings';
@@ -1184,8 +1191,10 @@ let FB=null,FBTried=false;
 async function initFB(){
   if(FBTried||!FIREBASE_CONFIG)return FB; FBTried=true;
   try{
-    const [a,f]=await Promise.all([import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')]);
-    const app2=a.initializeApp(FIREBASE_CONFIG,'homefetch'); FB={db:f.getFirestore(app2),f};
+    const [a,f,au]=await Promise.all([import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'),import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js')]);
+    const app2=a.initializeApp(FIREBASE_CONFIG,'homefetch');
+    let uid=null; try{uid=(await au.signInAnonymously(au.getAuth(app2))).user.uid;}catch(e){console.warn('匿名登入失敗',e);}
+    FB={db:f.getFirestore(app2),f,uid};
   }catch(e){console.warn(e);FB=null;}
   return FB;
 }
@@ -1197,7 +1206,16 @@ const Board={
   },
   async submit(lv,name,score,listen){
     const row={name,score,listen:!!listen,ts:Date.now()}, fb=await initFB();
-    if(fb){try{await fb.f.addDoc(fb.f.collection(fb.db,'homefetchmap_L'+lv),row);return;}catch(e){console.warn(e);}}
+    /* 線上榜：每台裝置（匿名登入的 uid）每一關一筆，只留最高分 */
+    if(fb&&fb.uid){try{
+      const {doc,getDoc,setDoc,serverTimestamp}=fb.f, ref=doc(fb.db,'homefetchmap_L'+lv,fb.uid), snap=await getDoc(ref);
+      const sc=Math.max(0,Math.min(20000,Math.round(score)));
+      if(!snap.exists()||(snap.data().score||0)<sc||snap.data().name!==String(name).slice(0,14)){
+        const keep=snap.exists()&&(snap.data().score||0)>=sc;
+        await setDoc(ref,{name:String(name).slice(0,14),score:keep?snap.data().score:sc,listen:keep?!!snap.data().listen:!!listen,updatedAt:serverTimestamp()});
+      }
+      return;
+    }catch(e){console.warn(e);}}
     try{const k='hfm_board_L'+lv;const a=JSON.parse(localStorage.getItem(k)||'[]');a.push(row);a.sort((x,y)=>y.score-x.score);localStorage.setItem(k,JSON.stringify(a.slice(0,10)));}catch(e){}
   }
 };
