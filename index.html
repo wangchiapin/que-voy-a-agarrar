@@ -1,0 +1,1205 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f3ef">
+<title>¿Qué voy a agarrar? · 我要拿什麼？</title>
+<style>
+:root{--bg:#f5f3ef;--card:#fbfaf7;--ink:#3b3a38;--sub:#8a847b;--line:#d8d2c8;--ok:#7d8f7a;--okbg:#e6ece3;--ng:#a3726b;--ngbg:#f0e3e0;--hi:#8b7f70}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang TC","Noto Sans TC","Hiragino Sans","Microsoft JhengHei",system-ui,sans-serif}
+html[lang="zh-Hans"] body{font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif}
+#app{max-width:480px;margin:0 auto;min-height:100vh;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.5;cursor:default}
+ruby{ruby-position:over;ruby-align:center}
+rt{font-size:.44em;color:var(--sub);font-weight:400;letter-spacing:0}
+h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
+.sub{color:var(--sub);margin:0 0 10px}
+.center{text-align:center}
+.row{display:flex;gap:8px;align-items:center}
+.grow{flex:1}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+.big{width:100%;padding:14px;font-size:1.1rem;background:var(--ink);color:var(--card);border-color:var(--ink)}
+.ghost{background:transparent}
+.hero{margin:42px 0 24px}
+.howto{margin:18px 0;padding:0;list-style:none;color:var(--sub);line-height:1.9}
+.howto li::before{content:attr(data-n);display:inline-block;width:1.5em;height:1.5em;line-height:1.5em;text-align:center;border:1px solid var(--line);border-radius:50%;margin-right:8px;font-size:.8em}
+.lvcard{display:block;width:100%;text-align:left;margin-bottom:10px;padding:14px}
+.lvcard .n{font-weight:600}
+.lvcard .d{color:var(--sub);font-size:.9rem;margin-top:2px}
+.lvcard .meta{display:flex;justify-content:space-between;margin-top:8px;font-size:.85rem;color:var(--sub)}
+.stars{letter-spacing:.1em;color:var(--hi)}
+.switch{display:flex;justify-content:space-between;align-items:center;width:100%;margin:6px 0 16px;text-align:left}
+.switch .tg{width:42px;height:24px;border-radius:12px;background:var(--line);position:relative;flex:none}
+.switch .tg::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on .tg{background:var(--ok)}
+.switch.on .tg::after{left:21px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.95rem}
+.top button{padding:6px 12px}
+.top .prog{flex:1;color:var(--sub)}
+.hearts{color:var(--ng);letter-spacing:.1em}
+.score{font-weight:600;min-width:3.2em;text-align:right}
+.sent{padding:8px 14px;margin-bottom:6px}
+.sent .zh{font-size:1.25rem;line-height:2.3;letter-spacing:.02em}
+.sent .trl{color:var(--sub);font-size:.88rem;line-height:1.45}
+.sent .hid{color:var(--sub);text-align:center;padding:30px 0;font-size:1.05rem}
+.tools{display:flex;gap:8px;margin-bottom:4px}
+.tools button{flex:1;padding:7px;font-size:.9rem}
+.stepname{font-size:.85rem;color:var(--sub);margin:2px 2px 6px;min-height:1.3em}
+#wrap{position:relative;overflow:hidden;border:3px solid #7d7569;border-radius:8px;background:#2b2a27;line-height:0}
+#wrap canvas{width:100%;display:block;image-rendering:pixelated;touch-action:manipulation}
+#labels{position:absolute;inset:0;pointer-events:none;line-height:1}
+.mlab{position:absolute;left:0;top:0;background:rgba(255,253,246,.93);border:1px solid #cfc8b8;border-radius:6px;padding:0 6px;white-space:nowrap;color:var(--ink);line-height:1.9;will-change:transform}
+.mlab.room{font-size:12px;font-weight:600}
+.mlab.room rt{font-size:7px}
+.mlab .tr{font-size:9px;color:var(--sub);font-weight:400;margin-left:4px}
+.mlab.furn{font-size:10px;padding:0 4px;line-height:1.5;background:rgba(255,253,246,.8)}
+#tag{position:absolute;left:0;top:0;pointer-events:none;background:#fffdf6;border:2px solid var(--ink);border-radius:10px;padding:2px 10px;white-space:nowrap;line-height:2;font-size:14px;opacity:0;transition:opacity .15s;z-index:3}
+#tag.show{opacity:1}
+#tag .tr{display:block;font-size:10px;color:var(--sub);line-height:1.2;margin-bottom:2px}
+#sheet{position:absolute;left:0;right:0;bottom:0;background:rgba(251,250,247,.98);border-top:2px solid var(--ink);padding:8px 10px 10px;transform:translateY(105%);transition:transform .2s;z-index:4;line-height:1.3}
+#sheet.show{transform:translateY(0)}
+.sh-h{text-align:center;font-size:1rem;margin-bottom:6px;line-height:2}
+.posg,.itg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pb,.item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px}
+.pb .pic{font-size:1.2rem;color:var(--hi)}
+.item .iic{font-size:2.2rem;line-height:1.2}
+.lab2,.pb .lab,.item .lab{font-size:1rem;line-height:1.9;text-align:center}
+.pb .tr,.item .tr{font-size:.74rem;color:var(--sub)}
+.ok{background:var(--okbg)!important;border-color:var(--ok)!important}
+.ng{background:var(--ngbg)!important;border-color:var(--ng)!important;opacity:.7}
+.hint{outline:3px solid var(--hi);outline-offset:-3px;animation:pulse 1s infinite}
+@keyframes pulse{50%{outline-color:transparent}}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{padding:7px 12px;font-size:.9rem}
+.seg button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.setrow{margin-bottom:14px}
+.setrow .k{font-size:.85rem;color:var(--sub);margin-bottom:6px}
+#modal{display:none;position:fixed;inset:0;background:rgba(40,38,34,.35);z-index:10;overflow:auto;padding:20px 14px}
+#modal.show{display:block}
+#modal .card{max-width:440px;margin:0 auto}
+#toast{position:fixed;left:50%;top:40%;transform:translate(-50%,0);background:var(--ink);color:var(--card);padding:10px 18px;border-radius:20px;opacity:0;pointer-events:none;z-index:20;max-width:90vw;text-align:center}
+#toast.show{animation:tst 1.3s}
+#toast.bad{background:var(--ng)}
+@keyframes tst{0%{opacity:0;transform:translate(-50%,10px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-14px)}}
+.shake{animation:shk .3s}
+@keyframes shk{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.bigstars{font-size:2.2rem;text-align:center;letter-spacing:.2em;color:var(--hi);margin:6px 0}
+.stats{display:flex;justify-content:space-around;text-align:center;margin:10px 0}
+.stats .v{font-size:1.4rem;font-weight:600}
+.stats .l{font-size:.8rem;color:var(--sub)}
+.rev{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.rev span.w{border:1px solid var(--line);border-radius:8px;padding:2px 10px;line-height:2.1;background:var(--bg)}
+.rev small{color:var(--sub)}
+.board ol{margin:8px 0 0;padding-left:1.6em}
+.board li{padding:3px 0;display:flex;justify-content:space-between;gap:10px}
+input[type=text]{font:inherit;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);width:100%}
+.h2{font-size:1.05rem;font-weight:600;margin:16px 0 6px}
+.gear{float:right}
+.small{font-size:.8rem;color:var(--sub)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<div id="toast"></div>
+<script>
+//DATA-START
+const mk=a=>({id:a[0],tw:a[1],cn:a[2],py:a[3],zy:a[4],es:a[5],en:a[6],ic:a[7],x:a[8]});
+// [id, 繁, 簡, 拼音(台灣), 注音(台灣), 西文, 英文, 圖示, 額外]
+const ROOMS=[
+['living','客廳','客厅','kè tīng','ㄎㄜˋ ㄊㄧㄥ','la sala','living room','🛋️'],
+['kitchen','廚房','厨房','chú fáng','ㄔㄨˊ ㄈㄤˊ','la cocina','kitchen','🍳'],
+['bed','臥室','卧室','wò shì','ㄨㄛˋ ㄕˋ','el dormitorio','bedroom','🛏️'],
+['bath','浴室','浴室','yù shì','ㄩˋ ㄕˋ','el baño','bathroom','🛁'],
+['study','書房','书房','shū fáng','ㄕㄨ ㄈㄤˊ','el estudio','study','📚'],
+['balcony','陽台','阳台','yáng tái','ㄧㄤˊ ㄊㄞˊ','el balcón','balcony','🪴']
+].map(mk);
+const FURNS=[
+['tv','電視','电视','diàn shì','ㄉㄧㄢˋ ㄕˋ','el televisor','TV','📺','living'],
+['sofa','沙發','沙发','shā fā','ㄕㄚ ㄈㄚ','el sofá','sofa','🛋️','living'],
+['tea','茶几','茶几','chá jī','ㄔㄚˊ ㄐㄧ','la mesa de centro','coffee table','🍵','living'],
+['cab','櫃子','柜子','guì zi','ㄍㄨㄟˋ ˙ㄗ','el mueble','cabinet','🗄️','living'],
+['fridge','冰箱','冰箱','bīng xiāng','ㄅㄧㄥ ㄒㄧㄤ','el refrigerador','fridge','🧊','kitchen'],
+['counter','流理台','流理台','liú lǐ tái','ㄌㄧㄡˊ ㄌㄧˇ ㄊㄞˊ','la encimera','kitchen counter','🍳','kitchen'],
+['dishcab','碗櫃','碗柜','wǎn guì','ㄨㄢˇ ㄍㄨㄟˋ','la alacena','dish cabinet','🍽️','kitchen'],
+['micro','微波爐','微波炉','wēi bō lú','ㄨㄟ ㄅㄛ ㄌㄨˊ','el microondas','microwave','📟','kitchen'],
+['bedf','床','床','chuáng','ㄔㄨㄤˊ','la cama','bed','🛏️','bed'],
+['wardrobe','衣櫃','衣柜','yī guì','ㄧ ㄍㄨㄟˋ','el armario','wardrobe','🚪','bed'],
+['nstand','床頭櫃','床头柜','chuáng tóu guì','ㄔㄨㄤˊ ㄊㄡˊ ㄍㄨㄟˋ','la mesita de noche','nightstand','🕯️','bed'],
+['chairB','椅子','椅子','yǐ zi','ㄧˇ ˙ㄗ','la silla','chair','🪑','bed'],
+['sink','洗手台','洗手台','xǐ shǒu tái','ㄒㄧˇ ㄕㄡˇ ㄊㄞˊ','el lavabo','sink','🚰','bath'],
+['toilet','馬桶','马桶','mǎ tǒng','ㄇㄚˇ ㄊㄨㄥˇ','el inodoro','toilet','🚽','bath'],
+['tub','浴缸','浴缸','yù gāng','ㄩˋ ㄍㄤ','la bañera','bathtub','🛁','bath'],
+['shelf','置物架','置物架','zhì wù jià','ㄓˋ ㄨˋ ㄐㄧㄚˋ','el estante','shelf','🧺','bath'],
+['desk','書桌','书桌','shū zhuō','ㄕㄨ ㄓㄨㄛ','el escritorio','desk','🖥️','study'],
+['bshelf','書櫃','书柜','shū guì','ㄕㄨ ㄍㄨㄟˋ','el librero','bookshelf','📚','study'],
+['chairS','椅子','椅子','yǐ zi','ㄧˇ ˙ㄗ','la silla','chair','🪑','study'],
+['trash','垃圾桶','垃圾桶','lè sè tǒng','ㄌㄜˋ ㄙㄜˋ ㄊㄨㄥˇ','el basurero','trash can','🗑️','study'],
+['washer','洗衣機','洗衣机','xǐ yī jī','ㄒㄧˇ ㄧ ㄐㄧ','la lavadora','washing machine','🧺','balcony'],
+['rack','曬衣架','晒衣架','shài yī jià','ㄕㄞˋ ㄧ ㄐㄧㄚˋ','el tendedero','drying rack','👕','balcony'],
+['plant','盆栽','盆栽','pén zāi','ㄆㄣˊ ㄗㄞ','la maceta','potted plant','🪴','balcony'],
+['chairA','椅子','椅子','yǐ zi','ㄧˇ ˙ㄗ','la silla','chair','🪑','balcony']
+].map(mk);
+const POSS=[
+['up','上面','上面','shàng miàn','ㄕㄤˋ ㄇㄧㄢˋ','encima de','on top of','↑'],
+['down','下面','下面','xià miàn','ㄒㄧㄚˋ ㄇㄧㄢˋ','debajo de','under','↓'],
+['in','裡面','里面','lǐ miàn','ㄌㄧˇ ㄇㄧㄢˋ','dentro de','inside','▣'],
+['side','旁邊','旁边','páng biān','ㄆㄤˊ ㄅㄧㄢ','al lado de','next to','↔'],
+['front','前面','前面','qián miàn','ㄑㄧㄢˊ ㄇㄧㄢˋ','delante de','in front of','↙'],
+['back','後面','后面','hòu miàn','ㄏㄡˋ ㄇㄧㄢˋ','detrás de','behind','↗'],
+['left','左邊','左边','zuǒ biān','ㄗㄨㄛˇ ㄅㄧㄢ','a la izquierda de','to the left of','◀'],
+['right','右邊','右边','yòu biān','ㄧㄡˋ ㄅㄧㄢ','a la derecha de','to the right of','▶']
+].map(mk);
+const ITEMS=[
+['drink','飲料','饮料','yǐn liào','ㄧㄣˇ ㄌㄧㄠˋ','una bebida','drink','🥤','dr'],
+['milk','牛奶','牛奶','niú nǎi','ㄋㄧㄡˊ ㄋㄞˇ','leche','milk','🥛','dr'],
+['juice','果汁','果汁','guǒ zhī','ㄍㄨㄛˇ ㄓ','jugo','juice','🧃','dr'],
+['water','水','水','shuǐ','ㄕㄨㄟˇ','agua','water','💧','dr'],
+['remote','遙控器','遥控器','yáo kòng qì','ㄧㄠˊ ㄎㄨㄥˋ ㄑㄧˋ','el control remoto','remote control','🎛️','te'],
+['phone','手機','手机','shǒu jī','ㄕㄡˇ ㄐㄧ','el celular','phone','📱','te'],
+['laptop','電腦','电脑','diàn nǎo','ㄉㄧㄢˋ ㄋㄠˇ','la computadora','laptop','💻','te'],
+['earph','耳機','耳机','ěr jī','ㄦˇ ㄐㄧ','los audífonos','headphones','🎧','te'],
+['coat','外套','外套','wài tào','ㄨㄞˋ ㄊㄠˋ','una chaqueta','jacket','🧥','cl'],
+['socks','襪子','袜子','wà zi','ㄨㄚˋ ˙ㄗ','unos calcetines','socks','🧦','cl'],
+['hat','帽子','帽子','mào zi','ㄇㄠˋ ˙ㄗ','un gorro','hat','🧢','cl'],
+['scarf','圍巾','围巾','wéi jīn','ㄨㄟˊ ㄐㄧㄣ','una bufanda','scarf','🧣','cl'],
+['tbrush','牙刷','牙刷','yá shuā','ㄧㄚˊ ㄕㄨㄚ','un cepillo de dientes','toothbrush','🪥','ba'],
+['soap','肥皂','肥皂','féi zào','ㄈㄟˊ ㄗㄠˋ','jabón','soap','🧼','ba'],
+['tissue','衛生紙','卫生纸','wèi shēng zhǐ','ㄨㄟˋ ㄕㄥ ㄓˇ','papel higiénico','toilet paper','🧻','ba'],
+['shampoo','洗髮精','洗发精','xǐ fà jīng','ㄒㄧˇ ㄈㄚˋ ㄐㄧㄥ','champú','shampoo','🧴','ba'],
+['book','書','书','shū','ㄕㄨ','un libro','book','📖','st'],
+['pen','筆','笔','bǐ','ㄅㄧˇ','un bolígrafo','pen','🖊️','st'],
+['notebook','筆記本','笔记本','bǐ jì běn','ㄅㄧˇ ㄐㄧˋ ㄅㄣˇ','un cuaderno','notebook','📓','st'],
+['scissors','剪刀','剪刀','jiǎn dāo','ㄐㄧㄢˇ ㄉㄠ','unas tijeras','scissors','✂️','st'],
+['cup','杯子','杯子','bēi zi','ㄅㄟ ˙ㄗ','una taza','cup','☕','ki'],
+['plate','盤子','盘子','pán zi','ㄆㄢˊ ˙ㄗ','un plato','plate','🍽️','ki'],
+['chop','筷子','筷子','kuài zi','ㄎㄨㄞˋ ˙ㄗ','unos palillos','chopsticks','🥢','ki'],
+['spoon','湯匙','汤匙','tāng chí','ㄊㄤ ㄔˊ','una cuchara','spoon','🥄','ki'],
+['apple','蘋果','苹果','píng guǒ','ㄆㄧㄥˊ ㄍㄨㄛˇ','una manzana','apple','🍎','fo'],
+['banana','香蕉','香蕉','xiāng jiāo','ㄒㄧㄤ ㄐㄧㄠ','un plátano','banana','🍌','fo'],
+['bread','麵包','面包','miàn bāo','ㄇㄧㄢˋ ㄅㄠ','pan','bread','🍞','fo'],
+['egg','雞蛋','鸡蛋','jī dàn','ㄐㄧ ㄉㄢˋ','un huevo','egg','🥚','fo'],
+['key','鑰匙','钥匙','yào shi','ㄧㄠˋ ˙ㄕ','la llave','key','🔑','mi'],
+['umb','雨傘','雨伞','yǔ sǎn','ㄩˇ ㄙㄢˇ','un paraguas','umbrella','☂️','mi'],
+['bag','包包','包包','bāo bāo','ㄅㄠ ㄅㄠ','un bolso','bag','👜','mi'],
+['glasses','眼鏡','眼镜','yǎn jìng','ㄧㄢˇ ㄐㄧㄥˋ','unas gafas','glasses','👓','mi'],
+['pillow','枕頭','枕头','zhěn tou','ㄓㄣˇ ˙ㄊㄡ','una almohada','pillow','💤','mi'],
+['flower','花','花','huā','ㄏㄨㄚ','una flor','flower','🌷','mi']
+].map(mk);
+const PS={
+ goto:{tw:'我要到',cn:'我要到',py:'wǒ yào dào',zy:'ㄨㄛˇ ㄧㄠˋ ㄉㄠˋ'},
+ go:{tw:'我要去',cn:'我要去',py:'wǒ yào qù',zy:'ㄨㄛˇ ㄧㄠˋ ㄑㄩˋ'},
+ de:{tw:'的',cn:'的',py:'de',zy:'˙ㄉㄜ'},
+ get:{tw:'拿',cn:'拿',py:'ná',zy:'ㄋㄚˊ'},
+ comma:{tw:'，',cn:'，',py:'',zy:''},
+ again:{tw:'再到',cn:'再到',py:'zài dào',zy:'ㄗㄞˋ ㄉㄠˋ'}
+};
+// 沒有位置詞的地點（第 1、2 級）[房間, 家具, 物品]
+const STOPS_A=[
+['kitchen','fridge','drink'],['kitchen','counter','cup'],['kitchen','dishcab','chop'],['kitchen','micro','bread'],
+['bed','wardrobe','coat'],['bed','nstand','glasses'],['bed','bedf','phone'],
+['bath','sink','tbrush'],['bath','shelf','shampoo'],['bath','tub','soap'],
+['study','desk','notebook'],['study','bshelf','book'],['study','desk','scissors'],
+['living','tea','phone'],['living','cab','key'],['living','sofa','hat'],
+['balcony','washer','socks'],['balcony','rack','scarf'],['balcony','chairA','bag'],
+['living','tv','remote'],['living','tea','cup'],['living','tea','remote'],['living','cab','umb'],['living','sofa','bag'],['living','cab','glasses'],
+['kitchen','fridge','milk'],['kitchen','fridge','egg'],['kitchen','fridge','juice'],['kitchen','fridge','water'],['kitchen','counter','apple'],['kitchen','counter','banana'],['kitchen','dishcab','plate'],['kitchen','dishcab','spoon'],['kitchen','micro','cup'],
+['bed','wardrobe','scarf'],['bed','wardrobe','hat'],['bed','nstand','phone'],['bed','bedf','pillow'],['bed','chairB','coat'],['bed','nstand','book'],
+['bath','sink','soap'],['bath','toilet','tissue'],['bath','tub','shampoo'],['bath','shelf','tissue'],['bath','shelf','tbrush'],
+['study','desk','pen'],['study','desk','laptop'],['study','bshelf','notebook'],['study','chairS','bag'],['study','trash','tissue'],['study','desk','earph'],
+['balcony','rack','coat'],['balcony','rack','socks'],['balcony','plant','flower'],['balcony','washer','coat'],['balcony','chairA','book']
+].map(a=>({r:a[0],f:a[1],i:a[2]}));
+// 有位置詞的地點（第 3 級）[房間, 家具, 位置, 物品]
+const STOPS_B=[
+['living','tv','side','remote'],['living','sofa','up','coat'],['living','tea','up','phone'],['living','cab','in','umb'],['living','sofa','back','bag'],
+['kitchen','fridge','in','milk'],['kitchen','fridge','up','bread'],['kitchen','fridge','in','juice'],['kitchen','counter','up','apple'],['kitchen','dishcab','in','plate'],['kitchen','micro','side','cup'],['kitchen','fridge','in','egg'],
+['bed','bedf','down','socks'],['bed','nstand','up','glasses'],['bed','wardrobe','in','coat'],['bed','wardrobe','in','scarf'],['bed','chairB','up','bag'],['bed','bedf','up','phone'],
+['bath','sink','up','tbrush'],['bath','sink','down','tissue'],['bath','tub','side','soap'],['bath','shelf','up','shampoo'],
+['study','desk','up','notebook'],['study','desk','up','pen'],['study','bshelf','in','book'],['study','bshelf','side','umb'],['study','chairS','up','coat'],['study','desk','down','bag'],
+['living','tv','front','remote'],['living','sofa','side','phone'],['living','sofa','back','hat'],
+['kitchen','fridge','front','drink'],['kitchen','counter','side','cup'],
+['bed','wardrobe','front','bag'],['bed','bedf','side','phone'],
+['bath','sink','front','soap'],
+['study','desk','front','bag'],['study','bshelf','front','book'],
+['balcony','washer','front','coat'],
+['balcony','washer','in','socks'],['balcony','rack','up','coat'],['balcony','plant','side','umb'],['balcony','chairA','up','book'],['balcony','washer','side','bag'],
+['bed','bedf','right','pillow'],['bed','bedf','left','pillow'],['bed','bedf','left','book'],
+['living','sofa','left','remote'],['living','sofa','right','phone'],['living','tv','left','key'],['living','tv','right','remote'],
+['study','desk','left','laptop'],['study','desk','right','pen'],
+['living','cab','up','flower'],['kitchen','micro','up','cup'],['kitchen','dishcab','up','plate'],['bed','wardrobe','up','hat'],['bed','nstand','up','book'],['bath','toilet','up','tissue'],['study','bshelf','up','flower'],['balcony','washer','up','hat'],
+['living','tea','down','umb'],['living','sofa','down','key'],['bed','nstand','down','socks'],['bed','chairB','down','bag'],['study','chairS','down','bag'],['balcony','chairA','down','umb'],['bath','shelf','down','tissue'],['kitchen','counter','down','plate'],
+['kitchen','micro','in','bread'],['kitchen','dishcab','in','cup'],['kitchen','dishcab','in','spoon'],['living','cab','in','key'],['bed','nstand','in','glasses'],['study','desk','in','scissors'],
+['living','tea','side','cup'],['living','cab','side','umb'],['kitchen','micro','front','bread'],['kitchen','dishcab','front','plate'],['bath','toilet','side','tissue'],['bath','sink','side','soap'],['bath','tub','front','shampoo'],['bed','wardrobe','side','scarf'],['balcony','plant','front','flower'],['balcony','rack','front','socks'],['balcony','chairA','side','bag'],
+['kitchen','counter','right','apple'],['bath','sink','left','tbrush'],['bath','sink','right','soap'],['bed','wardrobe','right','hat']
+].map(a=>({r:a[0],f:a[1],p:a[2],i:a[3]}));
+
+//DATA-END
+// ============ 隨機房屋產生器 ============
+// 流程：切成 6 個房間 → 決定哪間是什麼 → 開門 → 開玄關 → 擺家具 → 檢查每件家具都走得到
+const COLS=18, ROWS=26, T=32;
+const DIRV={S:[0,1],N:[0,-1],E:[1,0],W:[-1,0]}, OPP={S:'N',N:'S',E:'W',W:'E'};
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const rint=(r,a,b)=>a+Math.floor(r()*(b-a+1));
+const rpick=(r,a)=>a[Math.floor(r()*a.length)];
+const rshuf=(r,a)=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const area=a=>(a.x1-a.x0+1)*(a.y1-a.y0+1);
+
+// 家具大小（朝南時的寬×深）。wall＝背靠牆；special＝跟別的家具有固定關係
+const FSPEC={
+ tv:{w:2,h:1,mode:'wall'}, cab:{w:2,h:1,mode:'wall'}, sofa:{w:3,h:1,mode:'special'}, tea:{w:2,h:1,mode:'special'},
+ fridge:{w:1,h:1,mode:'wall'}, counter:{w:3,h:1,mode:'wall'}, dishcab:{w:2,h:1,mode:'wall'}, micro:{w:1,h:1,mode:'wall'},
+ bedf:{w:2,h:3,mode:'wall'}, nstand:{w:1,h:1,mode:'special'}, wardrobe:{w:2,h:1,mode:'wall'}, chairB:{w:1,h:1,mode:'wall'},
+ sink:{w:2,h:1,mode:'wall'}, toilet:{w:1,h:1,mode:'wall'}, tub:{w:2,h:3,mode:'wall'}, shelf:{w:1,h:1,mode:'wall'},
+ desk:{w:2,h:1,mode:'wall'}, chairS:{w:1,h:1,mode:'special'}, bshelf:{w:2,h:1,mode:'wall'}, trash:{w:1,h:1,mode:'wall'},
+ washer:{w:1,h:1,mode:'wall'}, rack:{w:3,h:1,mode:'wall'}, plant:{w:1,h:1,mode:'wall'}, chairA:{w:1,h:1,mode:'wall'}
+};
+const ROOM_PIECES={
+ living:['tv','sofa','tea','cab'], kitchen:['counter','fridge','dishcab','micro'], bed:['bedf','nstand','wardrobe','chairB'],
+ bath:['tub','sink','toilet','shelf'], study:['desk','chairS','bshelf','trash'], balcony:['rack','washer','plant','chairA']
+};
+// 任務裡用到「旁邊／前面／後面」的家具，一定要有地方站
+const FNEEDS={};
+STOPS_B.forEach(s=>{ if(['side','front','back','left','right'].includes(s.p)) (FNEEDS[s.f]=FNEEDS[s.f]||new Set()).add(s.p); });
+
+/* ---------- 1. 切房間（一刀一刀切） ---------- */
+function partition(r){
+  const MIN=6; let rects=[{x0:1,y0:1,x1:COLS-2,y1:ROWS-2}], guard=0;
+  while(rects.length<6 && guard++<100){
+    const cand=rects.filter(a=>(a.x1-a.x0+1)>=2*MIN+1||(a.y1-a.y0+1)>=2*MIN+1);
+    if(!cand.length) return null;
+    let t=r()*cand.reduce((s,a)=>s+area(a),0), pick=cand[0];
+    for(const a of cand){ t-=area(a); if(t<=0){pick=a;break;} }
+    const w=pick.x1-pick.x0+1, h=pick.y1-pick.y0+1, canV=w>=2*MIN+1, canH=h>=2*MIN+1;
+    const vert=(canV&&canH)?r()<w/(w+h):canV;
+    let A,B;
+    if(vert){ const c=rint(r,pick.x0+MIN,pick.x1-MIN); A={...pick,x1:c-1}; B={...pick,x0:c+1}; }
+    else { const c=rint(r,pick.y0+MIN,pick.y1-MIN); A={...pick,y1:c-1}; B={...pick,y0:c+1}; }
+    rects=rects.filter(x=>x!==pick).concat([A,B]);
+  }
+  if(rects.length!==6) return null;
+  if(rects.some(a=>area(a)>115)) return null;
+  if(rects.some(a=>Math.max(a.x1-a.x0+1,a.y1-a.y0+1)/Math.min(a.x1-a.x0+1,a.y1-a.y0+1)>2.4)) return null;
+  return rects;
+}
+// 兩間房隔著一道牆時，可以開門的位置
+function adjInfo(A,B){
+  const c=[];
+  if(A.x1+2===B.x0){ for(let y=Math.max(A.y0,B.y0);y<=Math.min(A.y1,B.y1);y++) c.push({x:A.x1+1,y,a:{x:A.x1,y},b:{x:B.x0,y}}); }
+  else if(B.x1+2===A.x0){ for(let y=Math.max(A.y0,B.y0);y<=Math.min(A.y1,B.y1);y++) c.push({x:B.x1+1,y,a:{x:A.x0,y},b:{x:B.x1,y}}); }
+  else if(A.y1+2===B.y0){ for(let x=Math.max(A.x0,B.x0);x<=Math.min(A.x1,B.x1);x++) c.push({x,y:A.y1+1,a:{x,y:A.y1},b:{x,y:B.y0}}); }
+  else if(B.y1+2===A.y0){ for(let x=Math.max(A.x0,B.x0);x<=Math.min(A.x1,B.x1);x++) c.push({x,y:B.y1+1,a:{x,y:A.y0},b:{x,y:B.y1}}); }
+  return c;
+}
+
+/* ---------- 2. 決定哪間是什麼房間（要有生活邏輯） ---------- */
+function assign(r,rects){
+  const touch=a=>a.x0===1||a.y0===1||a.x1===COLS-2||a.y1===ROWS-2;
+  const adj=rects.map((a,i)=>rects.map((b,j)=>i===j?0:adjInfo(a,b).length));
+  const types=['living','kitchen','bed','bath','study','balcony'];
+  let best=null,bs=-1e9; const perm=[],used=Array(6).fill(false);
+  function score(){
+    const idx={}; perm.forEach((t,i)=>idx[t]=i);
+    const R=t=>rects[idx[t]], A=t=>area(R(t)), nb=(s,t)=>adj[idx[s]][idx[t]]>0;
+    let s=0;
+    if(!touch(R('living'))) s-=1000;            // 客廳要靠外牆（玄關在這）
+    if(!touch(R('balcony'))) s-=1000;           // 陽台一定在外牆
+    s+=A('living')*0.25; if(A('living')<48) s-=40;
+    s+=nb('kitchen','living')?25:-12;           // 廚房靠客廳
+    s+=A('bed')*0.12; if(nb('bed','bath')) s+=8; if(nb('bed','living')) s+=4;
+    s-=A('bath')*0.2; if(nb('bath','bed')||nb('bath','living')) s+=5;
+    if(nb('kitchen','bath')) s-=6;
+    s+=(nb('balcony','living')||nb('balcony','bed'))?15:-10;   // 陽台接客廳或臥室
+    const b=R('balcony'), bw=b.x1-b.x0+1, bh=b.y1-b.y0+1;
+    if(Math.max(bw,bh)/Math.min(bw,bh)>=1.4) s+=5; s-=A('balcony')*0.1;
+    s+=A('kitchen')*0.05;
+    return s+r()*10;
+  }
+  (function rec(i){
+    if(i===6){ const s=score(); if(s>bs){bs=s;best=perm.slice();} return; }
+    for(let t=0;t<6;t++) if(!used[t]){used[t]=true;perm[i]=types[t];rec(i+1);used[t]=false;}
+  })(0);
+  if(bs<-500) return null;
+  const out={}; best.forEach((t,i)=>out[t]=rects[i]); return out;
+}
+
+/* ---------- 3. 開門、開玄關、窗戶 ---------- */
+function buildHouse(r,asg){
+  const H={grid:[],occ:[],res:[],rects:asg,doors:[],furn:{},spots:{},spotIndex:{},entrance:null,start:null};
+  for(let y=0;y<ROWS;y++){ H.grid[y]=[];H.occ[y]=[];H.res[y]=[]; for(let x=0;x<COLS;x++){H.grid[y][x]={k:'wall',room:null};H.occ[y][x]=null;H.res[y][x]=false;} }
+  const ids=Object.keys(asg);
+  ids.forEach(id=>{const a=asg[id];for(let y=a.y0;y<=a.y1;y++)for(let x=a.x0;x<=a.x1;x++)H.grid[y][x]={k:'floor',room:id};});
+  const edges=[];
+  for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){const c=adjInfo(asg[ids[i]],asg[ids[j]]); if(c.length) edges.push({a:ids[i],b:ids[j],cells:c});}
+  const reserve=(s,dx,dy)=>{ for(let k=0;k<2;k++){const x=s.x+dx*k,y=s.y+dy*k; if(H.grid[y]&&H.grid[y][x]&&H.grid[y][x].k==='floor')H.res[y][x]=true;} };
+  const addDoor=e=>{
+    const L=e.cells.length, pool=L>=3?e.cells.slice(1,L-1):e.cells, c=rpick(r,pool);
+    H.grid[c.y][c.x]={k:'door',room:null};
+    H.doors.push({x:c.x,y:c.y,a:e.a,b:e.b});
+    reserve(c.a,Math.sign(c.a.x-c.x),Math.sign(c.a.y-c.y));
+    reserve(c.b,Math.sign(c.b.x-c.x),Math.sign(c.b.y-c.y));
+  };
+  // 從客廳出發，一間一間接起來
+  const conn=new Set(['living']), usedE=new Set();
+  while(conn.size<ids.length){
+    const opts=edges.filter(e=>conn.has(e.a)!==conn.has(e.b));
+    if(!opts.length) return null;
+    const w=opts.map(e=>((e.a==='living'||e.b==='living')?3:1)*(e.cells.length>=2?1:0.4));
+    let t=r()*w.reduce((s,x)=>s+x,0), k=0; for(;k<opts.length-1;k++){t-=w[k];if(t<=0)break;}
+    const e=opts[k]; addDoor(e); usedE.add(e); conn.add(e.a);conn.add(e.b);
+  }
+  // 多開一扇門，讓動線可以繞圈
+  const extra=edges.filter(e=>!usedE.has(e)&&e.cells.length>=3);
+  if(extra.length&&r()<0.5) addDoor(rpick(r,extra));
+  // 玄關：開在客廳靠外牆的那一面
+  const Lr=asg.living, ent=[];
+  if(Lr.x0===1) for(let y=Lr.y0+1;y<Lr.y1;y++) ent.push({wx:0,wy:y,ix:1,iy:y,dx:1,dy:0});
+  if(Lr.x1===COLS-2) for(let y=Lr.y0+1;y<Lr.y1;y++) ent.push({wx:COLS-1,wy:y,ix:COLS-2,iy:y,dx:-1,dy:0});
+  if(Lr.y0===1) for(let x=Lr.x0+1;x<Lr.x1;x++) ent.push({wx:x,wy:0,ix:x,iy:1,dx:0,dy:1});
+  if(Lr.y1===ROWS-2) for(let x=Lr.x0+1;x<Lr.x1;x++) ent.push({wx:x,wy:ROWS-1,ix:x,iy:ROWS-2,dx:0,dy:-1});
+  if(!ent.length) return null;
+  const e=rpick(r,ent);
+  H.grid[e.wy][e.wx]={k:'door',room:null,ent:true};
+  reserve({x:e.ix,y:e.iy},e.dx,e.dy);
+  H.entrance={x:e.wx,y:e.wy,ix:e.ix,iy:e.iy}; H.start={x:e.ix,y:e.iy};
+  // 外牆：陽台是欄杆，其他房間隨機開窗
+  let lastWin=-9;
+  const edge=(wx,wy,ix,iy,k)=>{
+    const c=H.grid[wy][wx], f=H.grid[iy][ix]; if(c.k!=='wall'||f.k!=='floor') return;
+    if(f.room==='balcony'){c.rail=true;return;}
+    if(k-lastWin>=3&&r()<0.5){c.win=true;lastWin=k;}
+  };
+  for(let x=1;x<COLS-1;x++){edge(x,0,x,1,x);} lastWin=-9;
+  for(let x=1;x<COLS-1;x++){edge(x,ROWS-1,x,ROWS-2,x);} lastWin=-9;
+  for(let y=1;y<ROWS-1;y++){edge(0,y,1,y,y);} lastWin=-9;
+  for(let y=1;y<ROWS-1;y++){edge(COLS-1,y,COLS-2,y,y);}
+  return H;
+}
+
+/* ---------- 4. 擺家具 ---------- */
+const inB=(x,y)=>x>=0&&y>=0&&x<COLS&&y<ROWS;
+function dims(sp,d){return (d==='S'||d==='N')?[sp.w,sp.h]:[sp.h,sp.w];}
+function footFree(H,room,x,y,fw,fh){
+  for(let j=y;j<y+fh;j++)for(let i=x;i<x+fw;i++){
+    if(!inB(i,j))return false; const c=H.grid[j][i];
+    if(c.k!=='floor'||c.room!==room||H.occ[j][i]||H.res[j][i])return false;
+  } return true;
+}
+function backTiles(x,y,fw,fh,d){
+  const o=[];
+  if(d==='S')for(let i=x;i<x+fw;i++)o.push([i,y-1]);
+  if(d==='N')for(let i=x;i<x+fw;i++)o.push([i,y+fh]);
+  if(d==='E')for(let j=y;j<y+fh;j++)o.push([x-1,j]);
+  if(d==='W')for(let j=y;j<y+fh;j++)o.push([x+fw,j]);
+  return o;
+}
+function frontOf(x,y,fw,fh,d){
+  const o=[];
+  if(d==='S')for(let i=x;i<x+fw;i++)o.push([i,y+fh]);
+  if(d==='N')for(let i=x;i<x+fw;i++)o.push([i,y-1]);
+  if(d==='E')for(let j=y;j<y+fh;j++)o.push([x+fw,j]);
+  if(d==='W')for(let j=y;j<y+fh;j++)o.push([x-1,j]);
+  return o;
+}
+const isFree=(H,room,i,j)=>inB(i,j)&&H.grid[j][i].k==='floor'&&H.grid[j][i].room===room&&!H.occ[j][i];
+function gapOk(H,x,y,fw,fh){
+  for(let j=y-1;j<=y+fh;j++)for(let i=x-1;i<=x+fw;i++){ if(i>=x&&i<x+fw&&j>=y&&j<y+fh)continue; if(inB(i,j)&&H.occ[j][i])return false; }
+  return true;
+}
+function commit(H,room,id,x,y,d){
+  const [fw,fh]=dims(FSPEC[id],d);
+  for(let j=y;j<y+fh;j++)for(let i=x;i<x+fw;i++)H.occ[j][i]=id;
+  H.furn[id]={id,room,x,y,w:fw,h:fh,dir:d};
+}
+function wallCands(H,room,id,gap){
+  const R=H.rects[room], sp=FSPEC[id], out=[];
+  for(const d of ['S','N','E','W']){
+    const [fw,fh]=dims(sp,d);
+    for(let y=R.y0;y<=R.y1-fh+1;y++)for(let x=R.x0;x<=R.x1-fw+1;x++){
+      if(!footFree(H,room,x,y,fw,fh))continue;
+      if(!backTiles(x,y,fw,fh,d).every(([i,j])=>inB(i,j)&&H.grid[j][i].k==='wall'))continue;
+      if(!frontOf(x,y,fw,fh,d).some(([i,j])=>isFree(H,room,i,j)))continue;
+      if(gap&&!gapOk(H,x,y,fw,fh))continue;
+      out.push({x,y,d});
+    }
+  } return out;
+}
+function putWall(r,H,room,id,gap){
+  const c=wallCands(H,room,id,gap); if(!c.length)return false;
+  const p=rpick(r,c); commit(H,room,id,p.x,p.y,p.d); return true;
+}
+// 沙發面對電視，中間放茶几，沙發後面留走道
+function putSofaTea(r,H,room,gap){
+  const tv=H.furn.tv, sd=OPP[tv.dir], sp=FSPEC.sofa, [sw,sh]=dims(sp,sd);
+  for(const dist of rshuf(r,[4,5])){
+    const lat=rshuf(r,[-1,0,-2,1]);
+    for(const off of lat){
+      let sx,sy;
+      if(tv.dir==='S'||tv.dir==='N'){ sx=tv.x+off; sy=tv.dir==='S'?tv.y+dist:tv.y-dist; }
+      else { sy=tv.y+off; sx=tv.dir==='E'?tv.x+dist:tv.x-dist; }
+      if(!footFree(H,room,sx,sy,sw,sh))continue;
+      if(!backTiles(sx,sy,sw,sh,sd).every(([i,j])=>isFree(H,room,i,j)))continue;   // 沙發後面要有路
+      if(gap&&!gapOk(H,sx,sy,sw,sh))continue;
+      // 茶几放在中間
+      const mids=[]; for(let m=2;m<=dist-2;m++)mids.push(m);
+      for(const m of rshuf(r,mids)){
+        for(const toff of rshuf(r,[0,1])){
+          let tx,ty;
+          if(tv.dir==='S'||tv.dir==='N'){ tx=sx+toff; ty=tv.dir==='S'?tv.y+m:tv.y-m; }
+          else { ty=sy+toff; tx=tv.dir==='E'?tv.x+m:tv.x-m; }
+          const [tw,th]=dims(FSPEC.tea,sd);
+          commit(H,room,'sofa',sx,sy,sd);
+          if(footFree(H,room,tx,ty,tw,th)){ commit(H,room,'tea',tx,ty,sd); return true; }
+          clearPiece(H,'sofa');
+        }
+      }
+    }
+  } return false;
+}
+function clearPiece(H,id){const F=H.furn[id]; if(!F)return; for(let j=F.y;j<F.y+F.h;j++)for(let i=F.x;i<F.x+F.w;i++)H.occ[j][i]=null; delete H.furn[id];}
+function putNstand(r,H,room){
+  const B=H.furn.bedf, d=B.dir; let c;
+  if(d==='S') c=[[B.x-1,B.y],[B.x+B.w,B.y]];
+  if(d==='N') c=[[B.x-1,B.y+B.h-1],[B.x+B.w,B.y+B.h-1]];
+  if(d==='E') c=[[B.x,B.y-1],[B.x,B.y+B.h]];
+  if(d==='W') c=[[B.x+B.w-1,B.y-1],[B.x+B.w-1,B.y+B.h]];
+  c=rshuf(r,c).filter(([x,y])=>footFree(H,room,x,y,1,1)&&backTiles(x,y,1,1,d).every(([i,j])=>inB(i,j)&&H.grid[j][i].k==='wall'));
+  if(!c.length)return false; commit(H,room,'nstand',c[0][0],c[0][1],d); return true;
+}
+function putChairS(r,H,room){
+  const D=H.furn.desk, f=rshuf(r,frontOf(D.x,D.y,D.w,D.h,D.dir)).filter(([x,y])=>footFree(H,room,x,y,1,1));
+  if(!f.length)return false; commit(H,room,'chairS',f[0][0],f[0][1],OPP[D.dir]); return true;
+}
+const PLACERS={
+  living:(r,H,gap)=>putWall(r,H,'living','tv',gap)&&putSofaTea(r,H,'living',gap)&&putWall(r,H,'living','cab',gap),
+  kitchen:(r,H,gap)=>['counter','fridge','dishcab','micro'].every(id=>putWall(r,H,'kitchen',id,gap)),
+  bed:(r,H,gap)=>putWall(r,H,'bed','bedf',gap)&&putNstand(r,H,'bed')&&putWall(r,H,'bed','wardrobe',gap)&&putWall(r,H,'bed','chairB',gap),
+  bath:(r,H,gap)=>['tub','sink','toilet','shelf'].every(id=>putWall(r,H,'bath',id,gap)),
+  study:(r,H,gap)=>putWall(r,H,'study','desk',gap)&&putChairS(r,H,'study')&&putWall(r,H,'study','bshelf',gap)&&putWall(r,H,'study','trash',gap),
+  balcony:(r,H,gap)=>['rack','washer','plant','chairA'].every(id=>putWall(r,H,'balcony',id,gap))
+};
+// 家具旁邊可以站的格子：前面／旁邊／後面
+function spotsOf(F,ok){
+  const x0=F.x,y0=F.y,x1=F.x+F.w-1,y1=F.y+F.h-1,s={front:[],side:[],back:[],left:[],right:[]};
+  const add=(a,x,y)=>{if(ok(x,y))a.push({x,y});};
+  if(F.dir==='S'||F.dir==='N'){
+    for(let x=x0;x<=x1;x++){ add(s.front,x,F.dir==='S'?y1+1:y0-1); add(s.back,x,F.dir==='S'?y0-1:y1+1); }
+    for(let y=y0;y<=y1;y++){ add(s.side,x0-1,y); add(s.side,x1+1,y); }
+  } else {
+    for(let y=y0;y<=y1;y++){ add(s.front,F.dir==='E'?x1+1:x0-1,y); add(s.back,F.dir==='E'?x0-1:x1+1,y); }
+    for(let x=x0;x<=x1;x++){ add(s.side,x,y0-1); add(s.side,x,y1+1); }
+  }
+  // 左／右以地圖畫面為準（西＝左、東＝右），和家具朝哪裡無關
+  for(let y=y0;y<=y1;y++){ add(s.left,x0-1,y); add(s.right,x1+1,y); }
+  return s;
+}
+function reachFrom(H,sx,sy,roomOnly){
+  const seen=new Set([sx+','+sy]), q=[[sx,sy]];
+  while(q.length){
+    const [x,y]=q.shift();
+    for(const d of Object.values(DIRV)){
+      const nx=x+d[0],ny=y+d[1],k=nx+','+ny; if(seen.has(k)||!inB(nx,ny))continue;
+      const c=H.grid[ny][nx]; if(c.k==='wall'||H.occ[ny][nx])continue;
+      if(roomOnly&&(c.k!=='floor'||c.room!==roomOnly))continue;
+      seen.add(k);q.push([nx,ny]);
+    }
+  } return seen;
+}
+function needsOk(F,s){
+  if(s.front.length+s.side.length+s.back.length<1)return false;
+  const n=FNEEDS[F.id]; if(n){for(const p of n) if(!s[p].length)return false;}
+  if(F.id==='sofa'&&!s.back.length)return false;
+  return true;
+}
+function localOk(H,room){
+  const ds=H.doors.filter(d=>d.a===room||d.b===room); let seed=null; const ins=[];
+  const R=H.rects[room];
+  H.doors.forEach(d=>{ if(d.a!==room&&d.b!==room)return;
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{const x=d.x+dx,y=d.y+dy; if(inB(x,y)&&H.grid[y][x].k==='floor'&&H.grid[y][x].room===room)ins.push([x,y]);}); });
+  if(H.entrance&&H.grid[H.entrance.iy][H.entrance.ix].room===room)ins.push([H.entrance.ix,H.entrance.iy]);
+  if(!ins.length)return false;
+  const reach=reachFrom(H,ins[0][0],ins[0][1],room);
+  if(!ins.every(([x,y])=>reach.has(x+','+y)))return false;
+  const ok=(x,y)=>reach.has(x+','+y);
+  return ROOM_PIECES[room].every(id=>H.furn[id]&&needsOk(H.furn[id],spotsOf(H.furn[id],ok)));
+}
+function clearRoom(H,room){const R=H.rects[room]; for(let y=R.y0;y<=R.y1;y++)for(let x=R.x0;x<=R.x1;x++)H.occ[y][x]=null; ROOM_PIECES[room].forEach(id=>delete H.furn[id]);}
+function placeRoom(r,H,room){
+  for(let a=0;a<60;a++){
+    clearRoom(H,room);
+    if(PLACERS[room](r,H,a<40)&&localOk(H,room))return true;
+  } clearRoom(H,room); return false;
+}
+function finish(H){
+  const reach=reachFrom(H,H.start.x,H.start.y,null);
+  const ok=(x,y)=>H.grid[y][x].k==='floor'&&reach.has(x+','+y);
+  for(const id in H.furn){
+    const F=H.furn[id], s=spotsOf(F,ok);
+    if(!needsOk(F,s))return false;
+    H.spots[id]=s;
+    ['front','side','back','left','right'].forEach(p=>s[p].forEach(t=>{(H.spotIndex[t.x+','+t.y]=H.spotIndex[t.x+','+t.y]||[]).push({f:id,pos:p});}));
+  }
+  return Object.keys(H.furn).length===24;
+}
+function genHouse(seed){
+  const r=mulberry32(seed>>>0);
+  for(let tries=1;tries<=300;tries++){
+    const rects=partition(r); if(!rects)continue;
+    const asg=assign(r,rects); if(!asg)continue;
+    const H=buildHouse(r,asg); if(!H)continue;
+    let ok=true; for(const room of rshuf(r,Object.keys(ROOM_PIECES))){ if(!placeRoom(r,H,room)){ok=false;break;} }
+    if(!ok||!finish(H))continue;
+    H.seed=seed; H.tries=tries; return H;
+  }
+  return null;
+}
+
+// ============ 介面文字 ============
+const UI={
+tw:{title:'我要拿什麼？',sub:'聽句子，走進家裡找東西',newhouse:'每次的家都不一樣',play:'開始遊戲',settings:'設定',levels:'選擇關卡',back:'返回',
+ lvn:['認識房間','走到家具','加上方位詞'],
+ lvd:['走到對的房間，拿對的東西','走到對的家具旁邊','走到家具的旁邊、前面、後面、左邊、右邊，或選上面、下面、裡面'],
+ locked:'上一級拿到 2 顆星才能解鎖',listen:'聽力模式',listenD:'不顯示句子，分數 ×1.5',
+ uiLang:'介面語言',textLang:'句子文字',reading:'讀音',py:'拼音',zy:'注音',none:'不顯示',trans:'翻譯',rate:'語速',slow:'慢',normal:'正常',close:'完成',
+ sound:'音效',on:'開',off:'關',
+ labels:'地圖文字',labRoom:'只標房間',labAll:'全部標示',
+ q:'第 {a}／{b} 題',hint:'提示',replay:'再聽一次',peek:'看文字',hiddenS:'請聽句子',
+ lrnote:'左右以地圖畫面為準',
+ ph_go:'點地圖，走到目的地',ph_pos:'選出位置',ph_item:'選出要拿的東西',
+ here:'這裡是',nothing:'走到家具旁邊再停下來',
+ win:'過關了！',lose:'愛心用完了',score:'分數',acc:'正確率',review:'需要複習的詞',again:'再玩一次',menu:'關卡選單',next:'下一級',
+ board:'排行榜',loading:'載入中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'還沒有紀錄',localnote:'（本機排行榜）',
+ howto:['聽（或看）句子','點地圖，走到目的地','選出正確的東西'],quit:'離開',combo:'連擊',best:'最高'},
+cn:{title:'我要拿什么？',sub:'听句子，走进家里找东西',newhouse:'每次的家都不一样',play:'开始游戏',settings:'设置',levels:'选择关卡',back:'返回',
+ lvn:['认识房间','走到家具','加上方位词'],
+ lvd:['走到对的房间，拿对的东西','走到对的家具旁边','走到家具的旁边、前面、后面、左边、右边，或选上面、下面、里面'],
+ locked:'上一级拿到 2 颗星才能解锁',listen:'听力模式',listenD:'不显示句子，分数 ×1.5',
+ uiLang:'界面语言',textLang:'句子文字',reading:'读音',py:'拼音',zy:'注音',none:'不显示',trans:'翻译',rate:'语速',slow:'慢',normal:'正常',close:'完成',
+ sound:'音效',on:'开',off:'关',
+ labels:'地图文字',labRoom:'只标房间',labAll:'全部标示',
+ q:'第 {a}／{b} 题',hint:'提示',replay:'再听一次',peek:'看文字',hiddenS:'请听句子',
+ lrnote:'左右以地图画面为准',
+ ph_go:'点地图，走到目的地',ph_pos:'选出位置',ph_item:'选出要拿的东西',
+ here:'这里是',nothing:'走到家具旁边再停下来',
+ win:'过关了！',lose:'爱心用完了',score:'分数',acc:'正确率',review:'需要复习的词',again:'再玩一次',menu:'关卡菜单',next:'下一级',
+ board:'排行榜',loading:'加载中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'还没有记录',localnote:'（本机排行榜）',
+ howto:['听（或看）句子','点地图，走到目的地','选出正确的东西'],quit:'离开',combo:'连击',best:'最高'},
+es:{title:'¿Qué voy a agarrar?',sub:'Escucha la frase y busca el objeto en casa',newhouse:'Cada vez la casa es diferente',play:'Jugar',settings:'Ajustes',levels:'Elige un nivel',back:'Volver',
+ lvn:['Las habitaciones','Ir al mueble','Palabras de lugar'],
+ lvd:['Ve a la habitación y toma el objeto','Ve junto al mueble correcto','Camina al lado, delante, detrás, a la izquierda o a la derecha; o elige encima, debajo, dentro'],
+ locked:'Consigue 2 estrellas en el nivel anterior',listen:'Modo escucha',listenD:'Sin texto de la frase, puntos ×1.5',
+ uiLang:'Idioma de la interfaz',textLang:'Texto de la frase',reading:'Pronunciación',py:'Pinyin',zy:'Zhuyin',none:'Ninguna',trans:'Traducción',rate:'Velocidad de voz',slow:'Lenta',normal:'Normal',close:'Listo',
+ sound:'Sonido',on:'Sí',off:'No',
+ labels:'Textos del mapa',labRoom:'Solo habitaciones',labAll:'Todo',
+ q:'Pregunta {a}/{b}',hint:'Pista',replay:'Escuchar otra vez',peek:'Ver texto',hiddenS:'Escucha la frase',
+ lrnote:'Izquierda/derecha según la pantalla del mapa',
+ ph_go:'Toca el mapa y camina al destino',ph_pos:'Elige la posición',ph_item:'Elige el objeto',
+ here:'Aquí está',nothing:'Párate junto a un mueble',
+ win:'¡Nivel superado!',lose:'Te quedaste sin corazones',score:'Puntos',acc:'Aciertos',review:'Para repasar',again:'Jugar otra vez',menu:'Menú de niveles',next:'Siguiente nivel',
+ board:'Clasificación',loading:'Cargando…',yourname:'Tu nombre',save:'Guardar',saved:'Guardado',nobody:'Aún no hay registros',localnote:'(clasificación local)',
+ howto:['Escucha (o lee) la frase','Toca el mapa y camina al destino','Elige el objeto correcto'],quit:'Salir',combo:'Racha',best:'Récord'},
+en:{title:'What Will I Grab?',sub:'Listen to the sentence and find the item at home',newhouse:'A different home every time',play:'Play',settings:'Settings',levels:'Choose a level',back:'Back',
+ lvn:['Rooms','Go to furniture','Position words'],
+ lvd:['Walk to the right room, get the right item','Walk to the right piece of furniture','Stand beside, in front, behind, left or right; or pick on top, under, inside'],
+ locked:'Get 2 stars on the previous level',listen:'Listening mode',listenD:'No sentence text, score ×1.5',
+ uiLang:'Interface language',textLang:'Sentence text',reading:'Reading aid',py:'Pinyin',zy:'Zhuyin',none:'None',trans:'Translation',rate:'Voice speed',slow:'Slow',normal:'Normal',close:'Done',
+ sound:'Sound',on:'On',off:'Off',
+ labels:'Map labels',labRoom:'Rooms only',labAll:'All',
+ q:'Question {a}/{b}',hint:'Hint',replay:'Play again',peek:'Show text',hiddenS:'Listen to the sentence',
+ lrnote:'Left/right as seen on the map screen',
+ ph_go:'Tap the map and walk to the spot',ph_pos:'Pick the position',ph_item:'Pick the item',
+ here:"That's",nothing:'Stop next to a piece of furniture',
+ win:'Level cleared!',lose:'Out of hearts',score:'Score',acc:'Accuracy',review:'Words to review',again:'Play again',menu:'Level menu',next:'Next level',
+ board:'Leaderboard',loading:'Loading…',yourname:'Your name',save:'Save score',saved:'Saved',nobody:'No scores yet',localnote:'(local board)',
+ howto:['Listen to (or read) the sentence','Tap the map and walk to the spot','Pick the right item'],quit:'Quit',combo:'Streak',best:'Best'}
+};
+
+// ============ 設定與存檔 ============
+const FIREBASE_CONFIG=null;   // 排行榜：把 Firebase 的 firebaseConfig 貼在這裡；沒填就用本機排行榜
+const LSK='homefetch_map_v1';
+const DEF={ui:'es',text:'tw',read:'py',trans:'es',rate:'normal',listen:false,labels:'room',sound:'on'};
+let S={...DEF}, P0={unlocked:1,best:{}}, NAME='';
+try{const d=JSON.parse(localStorage.getItem(LSK)||'{}'); if(d.S)S={...DEF,...d.S}; if(d.P)P0={unlocked:1,best:{},...d.P}; NAME=d.name||'';}catch(e){}
+function save(){try{localStorage.setItem(LSK,JSON.stringify({S,P:P0,name:NAME}))}catch(e){}}
+const QS=new URLSearchParams(location.search);
+let STEP_MS=QS.get('fast')?6:130;
+let screen='home', G=null, cv=null, g=null;
+
+const ROOM=Object.fromEntries(ROOMS.map(x=>[x.id,x]));
+const FURN=Object.fromEntries(FURNS.map(x=>[x.id,x]));
+const POS=Object.fromEntries(POSS.map(x=>[x.id,x]));
+const ITEM=Object.fromEntries(ITEMS.map(x=>[x.id,x]));
+const MAPS={room:ROOM,furn:FURN,pos:POS,item:ITEM};
+const LEVEL_Q={1:10,2:10,3:10};
+const WALK_POS=['side','front','back','left','right'];
+const CHOOSE_POS=['up','down','in','side','front','back'];
+
+const t=(k,r)=>{let s=(UI[S.ui]&&UI[S.ui][k]!==undefined)?UI[S.ui][k]:UI.tw[k]; if(r&&typeof s==='string')for(const x in r)s=s.replace('{'+x+'}',r[x]); return s;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+// 漢字 + 逐字讀音
+function R(seg){
+  const txt=S.text==='cn'?seg.cn:seg.tw, lang=S.text==='cn'?'zh-Hans':'zh-Hant';
+  const rd=S.read==='py'?seg.py:S.read==='zy'?seg.zy:'';
+  const chars=[...txt], syl=rd?rd.split(' '):[];
+  if(!rd||syl.length!==chars.length) return `<span lang="${lang}">${esc(txt)}</span>`;
+  return `<span lang="${lang}">`+chars.map((c,i)=>`<ruby>${esc(c)}<rt>${esc(syl[i])}</rt></ruby>`).join('')+`</span>`;
+}
+const trl=e=>S.trans==='none'?'':e[S.trans];
+const tr=e=>S.trans==='none'?'':`<span class="tr">${esc(e[S.trans])}</span>`;
+const stars=n=>'★'.repeat(n)+'☆'.repeat(3-n);
+
+// ============ 語音 ============
+let VOICE=null;
+function pickVoice(){try{const vs=speechSynthesis.getVoices();VOICE=vs.find(v=>/^zh[-_]TW$/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang))||null;}catch(e){}}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function speak(text){
+  if(!('speechSynthesis' in window))return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';if(VOICE)u.voice=VOICE;u.rate=S.rate==='slow'?0.7:0.9;speechSynthesis.speak(u);}catch(e){}
+}
+
+// ============ 音效 ============
+let AC=null;
+const SFX={ok:[[660,0,.09],[880,.09,.16]],bad:[[220,0,.12,'sawtooth'],[165,.12,.2,'sawtooth']],done:[[523,0,.08],[659,.08,.08],[784,.16,.18]],win:[[523,0,.12],[659,.12,.12],[784,.24,.12],[1047,.36,.3]],lose:[[392,0,.18],[330,.18,.18],[262,.36,.36]]};
+function sfx(k){
+  if(S.sound==='off')return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended')AC.resume();
+    const now=AC.currentTime;
+    SFX[k].forEach(([f,t0,d,ty])=>{ const o=AC.createOscillator(),v=AC.createGain(); o.type=ty||'sine'; o.frequency.value=f;
+      v.gain.setValueAtTime(0,now+t0); v.gain.linearRampToValueAtTime(ty?.12:.2,now+t0+.015); v.gain.exponentialRampToValueAtTime(.001,now+t0+d);
+      o.connect(v);v.connect(AC.destination);o.start(now+t0);o.stop(now+t0+d+.02); });
+  }catch(e){}
+}
+
+// ============ 出題 ============
+function distract(itemId,lv){
+  const it=ITEM[itemId];
+  let pool=shuffle(ITEMS.filter(x=>x.x!==it.x));
+  const out=[],cats=new Set();
+  for(const x of pool){ if(cats.has(x.x))continue;cats.add(x.x); out.push(x.id); if(out.length===2)break; }
+  return shuffle([itemId,...out]);
+}
+function genQuestions(lv){
+  let groups;
+  if(lv<=2) groups=shuffle(STOPS_A).slice(0,LEVEL_Q[lv]).map(s=>[s]);
+  else groups=shuffle(STOPS_B).slice(0,LEVEL_Q[lv]).map(s=>[s]);
+  return groups.map(gp=>({stops:gp.map(s=>({...s,ch:distract(s.i,lv)})),...freshQ()}));
+}
+const freshQ=()=>({si:0,hadMiss:false,usedHint:false,peeked:false,pts:0,t0:Date.now()});
+function stopSegs(st,lv,first){
+  const s=[];
+  if(!first)s.push(PS.comma,PS.again); else s.push(lv===1?PS.go:PS.goto);
+  s.push(ROOM[st.r]);
+  if(lv>=2)s.push(PS.de,FURN[st.f]);
+  if(lv>=3)s.push(POS[st.p]);
+  s.push(PS.get,ITEM[st.i]);
+  return s;
+}
+function sentenceSegs(q){let o=[];q.stops.forEach((st,i)=>{o=o.concat(stopSegs(st,G.level,i===0));});return o;}
+const sentenceText=q=>sentenceSegs(q).map(s=>s.tw).join('');
+function esClause(st,lv){
+  let s=`a ${ROOM[st.r].es} a buscar ${ITEM[st.i].es}`;
+  if(lv===2)s+=` en ${FURN[st.f].es}`; if(lv>=3)s+=` ${POS[st.p].es} ${FURN[st.f].es}`; return s;
+}
+function enClause(st,lv){
+  let s=`to the ${ROOM[st.r].en} to get the ${ITEM[st.i].en}`;
+  if(lv===2)s+=` from the ${FURN[st.f].en}`; if(lv>=3)s+=` ${POS[st.p].en} the ${FURN[st.f].en}`; return s;
+}
+function transText(q){
+  if(S.trans==='none')return '';
+  const lv=G.level, c=q.stops;
+  if(S.trans==='es') return ('Voy '+esClause(c[0],lv)+(c[1]?', y luego '+esClause(c[1],lv):'')+'.').replace(/\ba el\b/g,'al').replace(/\bde el\b/g,'del');
+  return "I'm going "+enClause(c[0],lv)+(c[1]?', then '+enClause(c[1],lv):'')+'.';
+}
+
+// ============ 遊戲狀態 ============
+const curQ=()=>G.qs[G.qi];
+const curStop=()=>curQ().stops[curQ().si];
+let PL={x:0,y:0,dir:'down',moving:null,path:[],judge:false,goal:null,step:0};
+const isWalkable=(H,x,y)=>inB(x,y)&&H.grid[y][x].k!=='wall'&&!H.occ[y][x];
+
+function startLevel(n){
+  let H=null; const forced=QS.get('seed');
+  for(let i=0;i<8&&!H;i++) H=genHouse(forced&&i===0?+forced:(Math.random()*4294967296)>>>0);
+  G={level:n,listen:!!S.listen,house:H,qs:genQuestions(n),qi:0,hearts:3,score:0,combo:0,hints:3,
+     stat:{first:0,done:0},review:new Map(),phase:'go',stepWrong:false,stepHint:false,dead:new Set(),flash:null,saved:false,res:null,neutral:0};
+  PL={x:H.start.x,y:H.start.y,dir:'right',moving:null,path:[],judge:false,goal:null,step:0};
+  screen='game'; mountGame(); bakeHouse(); beginQuestion(true);
+}
+function beginQuestion(first){
+  const q=curQ(); Object.assign(q,freshQ());
+  G.phase='go'; G.stepWrong=false; G.stepHint=false; G.dead=new Set(); G.flash=null;
+  updateAll();
+  setTimeout(()=>{ if(G&&curQ()===q)speak(sentenceText(q)); },first?400:200);
+}
+function setPhase(p){G.phase=p;G.stepWrong=false;G.stepHint=false;G.dead=new Set();G.flash=null;updateAll();}
+const stepPts=(done)=>{ // 這一步能拿幾分
+  const base=done; return G.stepWrong?0:(G.stepHint?Math.floor(base/2):base);
+};
+function countStep(ok){G.stat.done++; if(ok)G.stat.first++;}
+
+// 判定：走到定點
+function arrive(){
+  if(!G||G.phase!=='go'||PL.moving)return;
+  const q=curQ(), st=curStop(), lv=G.level, H=G.house, cell=H.grid[PL.y][PL.x];
+  const adj=H.spotIndex[PL.x+','+PL.y]||[];
+  if(lv===1){
+    if(!cell.room)return neutral();
+    if(cell.room===st.r) return okArrive(10,'item');
+    return badArrive(ROOM[cell.room].tw,ROOM[cell.room].es,ROOM[cell.room].en,{type:'room',id:st.r});
+  }
+  if(!adj.length)return neutral();
+  const walk=WALK_POS.includes(st.p);
+  const strict=lv>=3&&walk;
+  const match=adj.some(a=>a.f===st.f&&(!strict||a.pos===st.p));
+  if(match){
+    if(lv===2) return okArrive(20,'item');
+    return strict?okArrive(30,'item'):okArrive(20,'pos');
+  }
+  const a=adj.find(x=>x.f===st.f)||adj[0], F=FURN[a.f], p=POS[a.pos];
+  if(lv===2) return badArrive(F.tw,F.es,F.en,{type:'furn',id:st.f});
+  return badArrive(F.tw+p.tw, p.es+' '+F.es, p.en+' the '+F.en, {type:'furn',id:st.f});
+}
+function neutral(){ if(G.neutral++<3&&G.level>=2) toast(t('nothing')); }
+function okArrive(pts,next){
+  const q=curQ(); q.pts+=stepPts(pts); countStep(!G.stepWrong);
+  toast('✓'); sfx('ok');
+  G.busy=true; setTimeout(()=>{ if(!G)return; G.busy=false; setPhase(next); },350);
+}
+function badArrive(zh,es,en,rev){
+  const q=curQ(); loseHeart(rev);
+  const lang=(S.trans==='en'||(S.trans==='none'&&S.ui==='en'))?en:es;
+  toast('✗ '+t('here')+' '+zh+' · '+lang.replace(/\bde el\b/g,'del'),true);
+}
+function loseHeart(rev){
+  const q=curQ(); G.stepWrong=true; q.hadMiss=true; G.hearts--; G.combo=0; sfx('bad');
+  if(rev){const key=rev.type+':'+rev.id; if(!G.review.has(key))G.review.set(key,rev);}
+  updateTop(); shakeMap();
+  if(G.hearts<=0){G.busy=true;setTimeout(()=>endGame(false),900);}
+}
+function choosePos(id){
+  if(!G||G.phase!=='pos'||G.busy||G.dead.has(id))return;
+  const st=curStop(), q=curQ();
+  if(id===st.p){ sfx('ok'); q.pts+=stepPts(10); countStep(!G.stepWrong); G.flash=id; updateSheet(); G.busy=true; setTimeout(()=>{if(!G)return;G.busy=false;setPhase('item');},350); }
+  else{ G.dead.add(id); loseHeart({type:'pos',id:st.p}); updateSheet(); }
+}
+function chooseItem(id){
+  if(!G||G.phase!=='item'||G.busy||G.dead.has(id))return;
+  const st=curStop(), q=curQ();
+  if(id===st.i){
+    sfx('ok'); q.pts+=stepPts(10); countStep(!G.stepWrong); G.flash=id; updateSheet(); G.busy=true;
+    setTimeout(()=>{ if(!G)return; G.busy=false; q.si++; if(q.si>=q.stops.length)finishQuestion(); else {setPhase('go');speak(sentenceText(q));} },420);
+  }else{ G.dead.add(id); loseHeart({type:'item',id:st.i}); updateSheet(); }
+}
+function finishQuestion(){
+  const q=curQ(), n=q.stops.length, lv=G.level;
+  const limit=n*(lv===1?16:lv===2?20:26), secs=(Date.now()-q.t0)/1000;
+  let sub=q.pts, bonus=0;
+  if(!q.hadMiss&&!q.usedHint&&secs<=limit){bonus=5;sub+=bonus;}
+  if(!q.hadMiss)G.combo++; else G.combo=0;
+  const mult=G.combo>=5?2:G.combo>=3?1.5:1, lm=(G.listen&&!q.peeked)?1.5:1;
+  const gain=Math.round(sub*mult*lm);
+  G.score+=gain; G.busy=true; G.phase='busy';
+  let msg='+'+gain; if(mult>1)msg+='  ×'+mult+' '+t('combo'); if(bonus)msg+='  ⚡';
+  toast(msg); sfx('done'); G.qi++; updateAll();
+  if(G.qi>=G.qs.length)setTimeout(()=>endGame(true),900); else setTimeout(()=>{G.busy=false;beginQuestion(false);},900);
+}
+function endGame(done){
+  if(!G)return;
+  const acc=G.stat.done?G.stat.first/G.stat.done:0;
+  let st=0; if(done)st=acc>=.9?3:acc>=.7?2:1;
+  G.res={done,acc,stars:st,score:G.score};
+  const b=P0.best[G.level]||{stars:0,score:0};
+  if(st>b.stars)b.stars=st; if(G.score>b.score)b.score=G.score; P0.best[G.level]=b;
+  if(st>=2&&G.level<3&&P0.unlocked<G.level+1)P0.unlocked=G.level+1;
+  setTimeout(()=>sfx(done?'win':'lose'),250); save(); screen='end'; G.busy=false; try{speechSynthesis.cancel()}catch(e){}
+  render(); loadBoard();
+}
+function useHint(){
+  if(!G||G.hints<=0||G.stepHint||G.busy||(G.phase!=='go'&&G.phase!=='pos'&&G.phase!=='item'))return;
+  G.hints--; G.stepHint=true; curQ().usedHint=true; updateAll();
+}
+
+// ============ 走路 ============
+function bfs(H,sx,sy,tx,ty){
+  if(!isWalkable(H,tx,ty))return null;
+  const q=[[sx,sy]], prev={[sx+','+sy]:null};
+  while(q.length){
+    const [x,y]=q.shift();
+    if(x===tx&&y===ty){ const out=[]; let k=x+','+y; while(prev[k]){ const [a,b]=k.split(',').map(Number); out.unshift({x:a,y:b}); k=prev[k]; } return out; }
+    for(const d of Object.values(DIRV)){
+      const nx=x+d[0],ny=y+d[1],nk=nx+','+ny;
+      if(isWalkable(H,nx,ny)&&!(nk in prev)){prev[nk]=x+','+y;q.push([nx,ny]);}
+    }
+  } return null;
+}
+function standTile(H,fid,from){
+  const sp=H.spots[fid]; let lists;
+  if(G.level>=3) lists=[sp.front,sp.side.concat(sp.back)]; else lists=[sp.front.concat(sp.side,sp.back)];
+  for(const L of lists){
+    let best=null,bl=1e9;
+    for(const t0 of L){ const p=bfs(H,from.x,from.y,t0.x,t0.y); if(p&&p.length<bl){bl=p.length;best=t0;} }
+    if(best)return best;
+  } return null;
+}
+function tapTile(tx,ty){
+  if(!G||G.phase!=='go'||G.busy||screen!=='game')return;
+  const H=G.house; if(!inB(tx,ty))return;
+  const from=PL.moving?PL.moving.to:{x:PL.x,y:PL.y};
+  let goal=null; const f=H.occ[ty][tx];
+  if(f){ showTag(f); goal=standTile(H,f,from); }
+  else if(H.grid[ty][tx].k!=='wall'){ goal={x:tx,y:ty}; }
+  if(!goal)return;
+  const p=bfs(H,from.x,from.y,goal.x,goal.y); if(!p)return;
+  PL.path=p; PL.judge=true; PL.goal={x:goal.x,y:goal.y};
+}
+function stepPlayer(now){
+  if(G.phase==='busy'&&false)return;
+  if(!PL.moving&&PL.path.length&&!G.busy){
+    const n=PL.path[0]; PL.dir=n.x>PL.x?'right':n.x<PL.x?'left':n.y>PL.y?'down':'up';
+    PL.moving={from:{x:PL.x,y:PL.y},to:{x:n.x,y:n.y},t0:now}; PL.path.shift();
+  }
+  if(PL.moving&&now-PL.moving.t0>=STEP_MS){ PL.x=PL.moving.to.x; PL.y=PL.moving.to.y; PL.moving=null; PL.step++; }
+  if(!PL.moving&&!PL.path.length&&PL.judge){ PL.judge=false; PL.goal=null; arrive(); }
+}
+
+// ============ 畫面（遊戲殼） ============
+const app=document.getElementById('app');
+function mountGame(){
+  app.innerHTML=`<div class="top" id="top"></div><div class="card sent" id="sent"></div><div class="tools" id="tools"></div><div class="stepname" id="stepname"></div>
+  <div id="wrap"><canvas id="cv" width="${COLS*T}" height="${ROWS*T}"></canvas><div id="labels"></div><div id="tag"></div><div id="sheet"></div></div>`;
+  cv=document.getElementById('cv'); g=cv.getContext('2d'); g.imageSmoothingEnabled=false;
+  cv.addEventListener('pointerdown',e=>{
+    const r=cv.getBoundingClientRect();
+    const px=(e.clientX-r.left)/r.width*COLS*T, py=((e.clientY-r.top)/r.height*cv.height)+camY;
+    const tx=Math.floor(px/T), ty=Math.floor(py/T);
+    if(G&&!PL.moving&&tx===PL.x&&ty===PL.y&&G.phase==='go'){ arrive(); return; }   // 點自己 = 在這裡確認
+    tapTile(tx,ty);
+  });
+  camY=0; camSnap=true;
+}
+function updateAll(){ if(screen!=='game'||!G)return; updateTop(); updateSent(); updateTools(); updateSheet(); buildLabels(); fitView(); }
+function updateTop(){
+  const el=document.getElementById('top'); if(!el)return;
+  el.innerHTML=`<button data-a="quit">✕</button><div class="prog">${esc(t('q',{a:Math.min(G.qi+1,G.qs.length),b:G.qs.length}))}</div>
+   <div class="hearts">${'♥'.repeat(Math.max(G.hearts,0))+'♡'.repeat(Math.max(3-G.hearts,0))}</div><div class="score">${G.score}</div>`;
+}
+function updateSent(){
+  const el=document.getElementById('sent'); if(!el||G.qi>=G.qs.length)return;
+  const q=curQ(), hidden=G.listen&&!q.peeked, segs=sentenceSegs(q), tt=hidden?'':transText(q);
+  el.style.minHeight=112+'px';
+  el.innerHTML=hidden?`<div class="hid">🎧 ${esc(t('hiddenS'))}</div>`:`<div class="zh">${segs.map(R).join('')}</div>${tt?`<div class="trl">${esc(tt)}</div>`:''}`;
+}
+function updateTools(){
+  const el=document.getElementById('tools'); if(!el||G.qi>=G.qs.length)return; const q=curQ();
+  el.innerHTML=`<button data-a="replay">🔊 ${esc(t('replay'))}</button>
+   <button data-a="hint" ${(G.hints<=0||G.stepHint||G.busy)?'disabled':''}>💡 ${esc(t('hint'))} ${G.hints}</button>
+   ${G.listen&&!q.peeked?`<button data-a="peek">👁 ${esc(t('peek'))}</button>`:''}`;
+  const sn=document.getElementById('stepname'); if(sn)sn.textContent=G.phase==='go'?t('ph_go')+((G.level>=3&&['left','right'].includes(curStop().p))?'　('+t('lrnote')+')':''):G.phase==='pos'?t('ph_pos'):G.phase==='item'?t('ph_item'):'';
+  const comboTxt=G.combo>=2?'🔥 '+t('combo')+' '+G.combo:''; if(sn&&comboTxt)sn.textContent+='　'+comboTxt;
+}
+function updateSheet(){
+  const el=document.getElementById('sheet'); if(!el)return;
+  if(G.qi>=G.qs.length||(G.phase!=='pos'&&G.phase!=='item')){el.innerHTML='';el.className='';return;}
+  const st=curStop(), F=FURN[st.f], cls=(id,tg)=>(G.dead.has(id)?' ng':'')+(G.flash===id?' ok':'')+((G.stepHint&&id===tg&&!G.flash)?' hint':'');
+  const head=`<div class="sh-h">${F.ic} ${R(F)}</div>`;
+  if(G.phase==='pos'){
+    el.innerHTML=head+`<div class="posg">${POSS.filter(p=>CHOOSE_POS.includes(p.id)).map(p=>`<button class="pb${cls(p.id,st.p)}" data-a="pos" data-v="${p.id}" ${G.dead.has(p.id)?'disabled':''}><span class="pic">${p.ic}</span><span class="lab">${R(p)}</span>${tr(p)}</button>`).join('')}</div>`;
+  }else{
+    el.innerHTML=head+`<div class="itg">${st.ch.map(id=>{const it=ITEM[id];return `<button class="item${cls(id,st.i)}" data-a="item" data-v="${id}" ${G.dead.has(id)?'disabled':''}><span class="iic">${it.ic}</span><span class="lab">${R(it)}</span>${tr(it)}</button>`;}).join('')}</div>`;
+  }
+  el.className='show';
+}
+function toast(m,bad){const el=document.getElementById('toast');el.textContent=m;el.className='';void el.offsetWidth;el.className='show'+(bad?' bad':'');}
+function shakeMap(){const el=document.getElementById('wrap');if(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');}}
+function render(){
+  document.documentElement.lang=S.ui==='cn'?'zh-Hans':S.ui==='tw'?'zh-Hant':S.ui;
+  if(screen==='game'){updateAll();return;}
+  app.innerHTML=screen==='home'?renderHome():screen==='levels'?renderLevels():renderEnd();
+}
+function renderHome(){
+  return `<button class="gear" data-a="settings" aria-label="settings">⚙︎</button>
+  <div class="hero center"><div style="font-size:3rem">🏠</div><h1>${esc(t('title'))}</h1><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
+  <button class="big" data-a="levels">${esc(t('play'))}</button>
+  <ul class="howto">${t('howto').map((x,i)=>`<li data-n="${i+1}">${esc(x)}</li>`).join('')}</ul>`;
+}
+function renderLevels(){
+  const cards=[1,2,3].map(n=>{
+    const locked=P0.unlocked<n, b=P0.best[n];
+    return `<button class="lvcard" data-a="lv" data-v="${n}" ${locked?'disabled':''}>
+      <div class="n">${n}. ${esc(t('lvn')[n-1])}</div><div class="d">${esc(t('lvd')[n-1])}</div>
+      <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?'🔒 '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
+  }).join('');
+  return `<div class="top"><button data-a="home">‹ ${esc(t('back'))}</button><div class="grow"></div><button data-a="settings">⚙︎</button></div>
+  <h1 style="font-size:1.4rem">${esc(t('levels'))}</h1>
+  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>🎧 ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>${cards}`;
+}
+function renderEnd(){
+  const r=G.res, ok=r.done;
+  const rev=[...G.review.values()].map(v=>{const e=MAPS[v.type][v.id];return `<span class="w">${e.ic?e.ic+' ':''}${R(e)} <small>${esc(S.trans==='none'?e.es:e[S.trans])}</small></span>`;}).join('');
+  const canNext=ok&&r.stars>=2&&G.level<3;
+  return `<div class="center" style="margin-top:14px"><h1 style="font-size:1.5rem">${esc(ok?t('win'):t('lose'))}</h1><div class="bigstars">${stars(r.stars)}</div></div>
+   <div class="card"><div class="stats"><div><div class="v">${r.score}</div><div class="l">${esc(t('score'))}</div></div><div><div class="v">${Math.round(r.acc*100)}%</div><div class="l">${esc(t('acc'))}</div></div></div></div>
+   ${rev?`<div class="h2">${esc(t('review'))}</div><div class="rev">${rev}</div>`:''}
+   <div class="h2">${esc(t('board'))} · ${G.level}</div>
+   <div class="card board"><div id="board"></div>
+   ${G.saved?`<div class="small" style="margin-top:8px">✓ ${esc(t('saved'))}</div>`:`<div class="row" style="margin-top:10px"><input type="text" id="nm" maxlength="12" placeholder="${esc(t('yourname'))}" value="${esc(NAME)}"><button data-a="saveScore">${esc(t('save'))}</button></div>`}</div>
+   <div style="display:grid;gap:8px;margin-top:16px">${canNext?`<button class="big" data-a="lv" data-v="${G.level+1}">${esc(t('next'))} ›</button>`:''}
+   <button class="${canNext?'':'big'}" data-a="lv" data-v="${G.level}">${esc(t('again'))}</button><button class="ghost" data-a="levels">${esc(t('menu'))}</button></div>`;
+}
+function settingsHTML(){
+  const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${String(S[k])===String(v)?'on':''}" data-a="set" data-k="${k}" data-v="${v}">${esc(l)}</button>`).join('')}</div>`;
+  return `<div class="card"><h1 style="font-size:1.3rem">⚙︎ ${esc(t('settings'))}</h1>
+  <div class="setrow"><div class="k">${esc(t('uiLang'))}</div>${seg('ui',[['tw','繁體中文'],['cn','简体中文'],['es','Español'],['en','English']])}</div>
+  <div class="setrow"><div class="k">${esc(t('textLang'))}</div>${seg('text',[['tw','繁體'],['cn','简体']])}</div>
+  <div class="setrow"><div class="k">${esc(t('reading'))}</div>${seg('read',[['py',t('py')],['zy',t('zy')],['none',t('none')]])}</div>
+  <div class="setrow"><div class="k">${esc(t('trans'))}</div>${seg('trans',[['none',t('none')],['es','Español'],['en','English']])}</div>
+  <div class="setrow"><div class="k">${esc(t('labels'))}</div>${seg('labels',[['room',t('labRoom')],['all',t('labAll')]])}</div>
+  <div class="setrow"><div class="k">${esc(t('sound'))}</div>${seg('sound',[['on',t('on')],['off',t('off')]])}</div>
+  <div class="setrow"><div class="k">${esc(t('rate'))}</div>${seg('rate',[['slow',t('slow')],['normal',t('normal')]])}</div>
+  <button class="big" data-a="closeSet">${esc(t('close'))}</button></div>`;
+}
+function openSettings(){const m=document.getElementById('modal');m.innerHTML=settingsHTML();m.className='show';}
+function closeSettings(){const m=document.getElementById('modal');m.className='';m.innerHTML='';render();}
+
+// ============ 地圖文字（HTML 疊在畫布上） ============
+let scale=1, camY=0, camSnap=true, lastCam=null;
+function buildLabels(){
+  const el=document.getElementById('labels'); if(!el||!G)return; const H=G.house;
+  let html='';
+  for(const id in H.rects){ const a=H.rects[id], r=ROOM[id];
+    html+=`<div class="mlab room" data-x="${(a.x0+a.x1+1)/2*T}" data-y="${(a.y0-1)*T+2}">${R(r)}${S.trans!=='none'?`<span class="tr">${esc(r[S.trans])}</span>`:''}</div>`; }
+  if(S.labels==='all') for(const id in H.furn){ const F=H.furn[id], d=FURN[id];
+    html+=`<div class="mlab furn" data-x="${(F.x+F.w/2)*T}" data-y="${(F.y+F.h)*T-12}">${esc(S.text==='cn'?d.cn:d.tw)}</div>`; }
+  el.innerHTML=html; lastCam=null;
+}
+function positionLabels(){
+  const key=camY+'|'+scale; if(key===lastCam)return; lastCam=key;
+  document.querySelectorAll('#labels .mlab').forEach(e=>{ e.style.transform=`translate(${(+e.dataset.x*scale).toFixed(1)}px,${((+e.dataset.y-camY)*scale).toFixed(1)}px) translateX(-50%) translateY(-5px)`; });
+}
+let tagT=null;
+function showTag(fid){
+  const el=document.getElementById('tag'),F=G.house.furn[fid],d=FURN[fid]; if(!el)return;
+  el.innerHTML=`${d.ic} ${R(d)}${S.trans!=='none'?`<span class="tr">${esc(d[S.trans])}</span>`:''}`;
+  el.dataset.x=(F.x+F.w/2)*T; el.dataset.y=F.y*T-4; el.className='show';
+  positionTag(); clearTimeout(tagT); tagT=setTimeout(()=>{el.className='';},1800);
+}
+function positionTag(){const el=document.getElementById('tag'); if(!el||el.className!=='show')return; el.style.transform=`translate(${(+el.dataset.x*scale).toFixed(1)}px,${((+el.dataset.y-camY)*scale).toFixed(1)}px) translate(-50%,-100%)`;}
+
+// ============ 畫圖（像素風，全部用程式畫） ============
+const bg=document.createElement('canvas'); bg.width=COLS*T; bg.height=ROWS*T;
+const FLOOR_C={living:['#dcc39a','#d3b88c'],kitchen:['#f3f0e8','#e0dbd0'],bed:['#ead9cf','#e2cfc4'],bath:['#d4e7ee','#c3dbe4'],study:['#dcdfca','#d1d5bd'],balcony:['#d3cec4','#c8c2b7']};
+const rnd=(x,y,k=0)=>{const v=Math.sin(x*127.1+y*311.7+k*74.7)*43758.5453;return v-Math.floor(v);};
+function floorTile(k,room,x,y){
+  const px=x*T,py=y*T,c=FLOOR_C[room];
+  if(room==='kitchen'||room==='bath'){ k.fillStyle=c[(x+y)%2]; k.fillRect(px,py,T,T); k.fillStyle='rgba(0,0,0,.05)'; k.fillRect(px,py+T-1,T,1); k.fillRect(px+T-1,py,1,T); }
+  else if(room==='living'){ k.fillStyle=c[y%2]; k.fillRect(px,py,T,T); k.fillStyle='rgba(0,0,0,.07)'; k.fillRect(px,py+T-1,T,1); const o=((x*7+y*3)%4)*8; k.fillRect(px+o+4,py,1,T); }
+  else if(room==='bed'){ k.fillStyle=c[0]; k.fillRect(px,py,T,T); if(rnd(x,y)>.6){k.fillStyle='rgba(120,80,60,.06)';k.fillRect(px+rnd(x,y,1)*20,py+rnd(x,y,2)*20,6,6);} }
+  else if(room==='study'){ k.fillStyle=c[y%2]; k.fillRect(px,py,T,T); }
+  else { k.fillStyle=c[0]; k.fillRect(px,py,T,T); for(let i=0;i<3;i++){k.fillStyle='rgba(0,0,0,.07)';k.fillRect(px+rnd(x,y,i)*28,py+rnd(x,y,i+5)*28,3,3);} }
+}
+function wallTile(k,H,x,y){
+  const px=x*T,py=y*T,c=H.grid[y][x];
+  k.fillStyle='#7d7569'; k.fillRect(px,py,T,T);
+  const below=inB(x,y+1)&&H.grid[y+1][x].k!=='wall';
+  k.fillStyle='#968d7f'; k.fillRect(px,py,T,T-(below?12:6));
+  k.fillStyle='rgba(255,255,255,.12)'; k.fillRect(px,py,T,3);
+  if(below){k.fillStyle='#b3a999';k.fillRect(px,py+T-12,T,12);k.fillStyle='rgba(0,0,0,.18)';k.fillRect(px,py+T-12,T,2);}
+  if(c.win){ k.fillStyle='#5c564d'; k.fillRect(px+3,py+6,T-6,T-14); k.fillStyle='#a9d6ee'; k.fillRect(px+5,py+8,T-10,T-18); k.fillStyle='rgba(255,255,255,.7)'; k.fillRect(px+7,py+10,6,4); k.fillStyle='#5c564d'; k.fillRect(px+T/2-1,py+8,2,T-18); }
+  if(c.rail){ k.fillStyle='#d3cec4'; k.fillRect(px,py,T,T); k.fillStyle='#7d7569'; const hz=(y===0||y===ROWS-1); if(hz){k.fillRect(px,py+(y===0?T-5:2),T,4);for(let i=3;i<T;i+=8)k.fillRect(px+i,py,2,T);} else {k.fillRect(px+(x===0?T-5:2),py,4,T);for(let i=3;i<T;i+=8)k.fillRect(px,py+i,T,2);} }
+}
+function doorTile(k,H,x,y){
+  const px=x*T,py=y*T,c=H.grid[y][x];
+  const vert=(inB(x-1,y)&&H.grid[y][x-1].k==='floor')||(inB(x+1,y)&&H.grid[y][x+1].k==='floor');   // 左右是房間 → 牆是直的
+  k.fillStyle='#e0c796'; k.fillRect(px,py,T,T);
+  k.fillStyle='#caa874'; if(vert){for(let i=4;i<T;i+=8)k.fillRect(px+i,py,2,T);}else{for(let i=4;i<T;i+=8)k.fillRect(px,py+i,T,2);}
+  k.fillStyle='#6b4a2a'; if(vert){k.fillRect(px,py,T,4);k.fillRect(px,py+T-4,T,4);}else{k.fillRect(px,py,4,T);k.fillRect(px+T-4,py,4,T);}
+  if(c.ent){ k.fillStyle='#8a5a34'; k.fillRect(px+(x===0?T-8:x===COLS-1?0:2),py+(y===0?T-8:y===ROWS-1?0:2),(x===0||x===COLS-1)?8:T-4,(y===0||y===ROWS-1)?8:T-4); }
+}
+function bakeHouse(){
+  const k=bg.getContext('2d'), H=G.house; k.imageSmoothingEnabled=false;
+  k.fillStyle='#2b2a27'; k.fillRect(0,0,bg.width,bg.height);
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ const c=H.grid[y][x];
+    if(c.k==='floor')floorTile(k,c.room,x,y); }
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ const c=H.grid[y][x];
+    if(c.k==='wall')wallTile(k,H,x,y); else if(c.k==='door')doorTile(k,H,x,y); }
+  // 玄關地墊
+  const e=H.entrance; k.fillStyle='#b8534a'; k.fillRect(e.ix*T+4,e.iy*T+4,T-8,T-8); k.fillStyle='#d98f80'; k.fillRect(e.ix*T+8,e.iy*T+8,T-16,T-16);
+  // 家具（由上而下畫，下面的蓋在上面）
+  Object.values(H.furn).sort((a,b)=>a.y+a.h-(b.y+b.h)).forEach(F=>drawFurn(k,F));
+}
+const ANG={S:0,E:-Math.PI/2,W:Math.PI/2,N:Math.PI};
+function drawFurn(k,F){
+  const sp=FSPEC[F.id], W=sp.w*T, Hh=sp.h*T, cx=(F.x+F.w/2)*T, cy=(F.y+F.h/2)*T;
+  k.save(); k.translate(cx,cy); k.rotate(ANG[F.dir]); sprite(k,F.id,W,Hh); k.restore();
+  const sz=Math.max(16,Math.min(26,Math.min(F.w,F.h)*T*0.72));
+  k.font=`${sz}px "Segoe UI Emoji","Noto Color Emoji","Apple Color Emoji",sans-serif`; k.textAlign='center'; k.textBaseline='middle'; k.fillStyle='#000';
+  k.fillText(FURN[F.id].ic,cx,cy+1);
+}
+function sprite(k,id,W,H){
+  const x0=-W/2,y0=-H/2, o=(c,x,y,w,h)=>{k.fillStyle=c;k.fillRect(x0+x,y0+y,w,h);};
+  const WOOD='#b48a5c',WOODD='#8f6a42',WOODL='#cfa877',WHITE='#f4f1ea',GRAY='#c4bfb5',DARK='#33363d';
+  o('rgba(0,0,0,.18)',3,4,W-2,H-2);
+  switch(id){
+    case 'tv': o(DARK,2,2,W-4,H-6); o('#6f8fb0',5,H-18,W-10,11); o('rgba(255,255,255,.35)',7,H-16,10,3); break;
+    case 'sofa': o('#c9907a',1,2,W-2,H-4); o('#a9705c',1,2,W-2,9); o('#a9705c',1,2,7,H-4); o('#a9705c',W-8,2,7,H-4); o('#dba68f',9,13,W-18,H-19); break;
+    case 'tea': o(WOOD,2,3,W-4,H-6); o(WOODL,4,5,W-8,H-12); break;
+    case 'cab': o(WOODD,2,2,W-4,H-4); o(WOOD,4,4,W/2-5,H-8); o(WOOD,W/2+1,4,W/2-5,H-8); break;
+    case 'fridge': o('#dfe3e6',3,2,W-6,H-4); o('#aeb4ba',3,H/2-1,W-6,2); o('#8e949a',W-9,6,2,6); o('#8e949a',W-9,H/2+4,2,6); break;
+    case 'counter': o(GRAY,1,2,W-2,H-4); o('#e9e6df',3,4,W-6,H-9); o('#8fa3ad',W/2-11,7,22,H-15); o('#6e8591',W/2-4,H/2-3,8,6); o(DARK,W-24,8,5,5); o(DARK,W-14,8,5,5); break;
+    case 'dishcab': o(WOODD,2,2,W-4,H-4); o('#e8d9b8',4,5,W/2-5,H-12); o('#e8d9b8',W/2+1,5,W/2-5,H-12); break;
+    case 'micro': o('#3a3d44',3,5,W-6,H-9); o('#8fa6b8',6,8,W-18,H-15); o('#c4bfb5',W-10,9,4,H-17); break;
+    case 'bedf': o(WOOD,1,1,W-2,H-2); o('#f4f1ea',3,10,W-6,H-13); o('#9fb7cf',3,24,W-6,H-27); o('#fff',5,3,W/2-7,12); o('#fff',W/2+2,3,W/2-7,12); break;
+    case 'nstand': o(WOOD,3,3,W-6,H-6); o(WOODL,5,5,W-10,H-12); o('#f2d27a',W/2-4,H/2-4,8,8); break;
+    case 'wardrobe': o(WOODD,2,2,W-4,H-4); o(WOOD,4,5,W/2-5,H-9); o(WOOD,W/2+1,5,W/2-5,H-9); o('#d8c28e',W/2-3,H/2-2,2,5); o('#d8c28e',W/2+2,H/2-2,2,5); break;
+    case 'chairB': case 'chairS': case 'chairA': o(WOODD,5,3,W-10,H-8); o(WOOD,7,4,W-14,H-12); o(WOODD,5,3,W-10,5); break;
+    case 'sink': o(WHITE,2,2,W-4,H-4); o('#9ec3d6',W/2-9,6,18,H-14); o('#8c9399',W/2-1,3,2,6); break;
+    case 'toilet': o(WHITE,6,2,W-12,9); o(WHITE,8,10,W-16,H-14); o('#d7dadc',11,14,W-22,H-23); break;
+    case 'tub': o(WHITE,2,2,W-4,H-4); o('#a9d3e6',6,6,W-12,H-12); o('#8c9399',W/2-1,3,2,6); break;
+    case 'shelf': o('#8f959c',3,3,W-6,H-6); o('#c3c8cc',5,5,W-10,H-10); o('#e6b9a8',7,7,8,6); break;
+    case 'desk': o(WOOD,1,2,W-2,H-4); o(WOODL,3,4,W-6,H-9); o('#dcdfe3',W/2-12,6,24,11); o(DARK,W/2-10,8,20,7); break;
+    case 'bshelf': o(WOODD,2,2,W-4,H-4); for(let i=0;i<W-10;i+=6){o(['#c0564b','#4f7ea6','#d4a437','#5e9b6e'][(i/6)%4|0],5+i,5,4,H-10);} break;
+    case 'trash': o('#6c7077',6,6,W-12,H-12); o('#4d5157',9,9,W-18,H-18); break;
+    case 'washer': o(WHITE,3,2,W-6,H-4); o('#9bb3c4',8,8,W-16,W-16); o(WHITE,11,11,W-22,W-22); break;
+    case 'rack': o('#a9a49a',3,H/2-1,W-6,2); o('#a9a49a',3,6,2,H-12); o('#a9a49a',W-5,6,2,H-12); o('#d96a5a',10,H/2,10,10); o('#6aa1d9',W/2-5,H/2,10,10); o('#e6c35a',W-21,H/2,10,10); break;
+    case 'plant': o('#a5683f',8,12,W-16,H-18); o('#4f8f4f',4,2,W-8,14); o('#6ab56a',8,5,W-16,8); break;
+    default: o(WOOD,2,2,W-4,H-4);
+  }
+}
+function fitView(){
+  const wrap=document.getElementById('wrap'); if(!cv||!wrap)return;
+  const sc=cv.clientWidth/(COLS*T); if(!(sc>0))return;
+  const top=wrap.getBoundingClientRect().top+scrollY;
+  const avail=innerHeight-top-14;
+  const rows=Math.max(12,Math.min(ROWS,Math.floor(avail/(T*sc))));
+  scale=sc; if(cv.height!==rows*T){cv.height=rows*T;g.imageSmoothingEnabled=false;camSnap=true;lastCam=null;}
+}
+addEventListener('resize',()=>{ if(screen==='game')fitView(); });
+
+let _last=0;
+function tick(now){
+  requestAnimationFrame(tick);
+  if(screen!=='game'||!G||!cv)return;
+  if(now-_last<30)return; const dt=Math.min(.05,(now-(_last||now))/1000); _last=now;
+  stepPlayer(now);
+  // 鏡頭
+  const VH=cv.height, py=(PL.moving?PL.moving.from.y+(PL.moving.to.y-PL.moving.from.y)*Math.min(1,(now-PL.moving.t0)/STEP_MS):PL.y)*T;
+  const shEl=document.getElementById('sheet'), shPx=(shEl&&shEl.className==='show')?shEl.offsetHeight/scale:0;   // 選單蓋住下方時，鏡頭往上讓小人看得到
+  let c=py+T/2, view=VH-shPx;
+  if(G&&screen==='game'&&G.phase==='go'&&G.stepHint&&G.qi<G.qs.length){
+    const ht=hintTiles(); if(ht.length){ const ys=ht.map(p=>p.y*T+T/2), hc=(Math.min(...ys)+Math.max(...ys))/2; c=(Math.abs(hc-c)+T*3<view)?(hc+c)/2:hc; }
+  }
+  const want=Math.max(0,Math.min(ROWS*T-VH,c-view/2));
+  if(camSnap){camY=Math.round(want);camSnap=false;} else camY+=(want-camY)*Math.min(1,dt*6);
+  camY=Math.round(camY);
+  draw(now); positionLabels(); positionTag();
+}
+requestAnimationFrame(tick);
+
+function hintTiles(){
+  const st=curStop(), H=G.house, lv=G.level;
+  if(lv===1){const a=H.rects[st.r],o=[];for(let y=a.y0;y<=a.y1;y++)for(let x=a.x0;x<=a.x1;x++)o.push({x,y});return o;}
+  const sp=H.spots[st.f];
+  if(lv>=3&&WALK_POS.includes(st.p))return sp[st.p];
+  return sp.front.concat(sp.side,sp.back);
+}
+function draw(now){
+  const VH=cv.height;
+  g.fillStyle='#2b2a27'; g.fillRect(0,0,cv.width,VH);
+  g.drawImage(bg,0,camY,cv.width,VH,0,0,cv.width,VH);
+  g.save(); g.translate(0,-camY);
+  if(G.phase==='go'&&G.stepHint&&G.qi<G.qs.length){
+    const a=.3+.2*Math.sin(now/180); g.fillStyle=`rgba(242,200,60,${a})`;
+    hintTiles().forEach(p=>g.fillRect(p.x*T,p.y*T,T,T));
+    if(G.level>=2){const F=G.house.furn[curStop().f]; g.strokeStyle=`rgba(242,160,30,${a+.4})`; g.lineWidth=3; g.strokeRect(F.x*T+1,F.y*T+1,F.w*T-2,F.h*T-2);}
+  }
+  if(PL.goal&&PL.judge){ const a=.5+.3*Math.sin(now/120); g.strokeStyle=`rgba(207,58,36,${a})`; g.lineWidth=3; g.strokeRect(PL.goal.x*T+4,PL.goal.y*T+4,T-8,T-8); }
+  drawPlayer(now); g.restore();
+}
+function drawPlayer(now){
+  let px=PL.x*T, py=PL.y*T, k=0;
+  if(PL.moving){ k=Math.min(1,(now-PL.moving.t0)/STEP_MS); px=(PL.moving.from.x+(PL.moving.to.x-PL.moving.from.x)*k)*T; py=(PL.moving.from.y+(PL.moving.to.y-PL.moving.from.y)*k)*T; }
+  const leg=PL.moving?(Math.floor(k*2)%2):0, bob=PL.moving?Math.abs(Math.sin(k*Math.PI))*2:0; py-=bob;
+  g.fillStyle='rgba(0,0,0,.25)'; g.fillRect(px+8,py+28+bob,16,4);
+  g.fillStyle='#2d3a63'; g.fillRect(px+10,py+22,5,7-(leg?2:0)); g.fillRect(px+17,py+22,5,7-(leg?0:2));
+  g.fillStyle='#d8402c'; g.fillRect(px+8,py+13,16,10); g.fillStyle='#f2b632'; g.fillRect(px+15,py+13,2,10);
+  g.fillStyle='#f1c9a0'; g.fillRect(px+6,py+15,3,6); g.fillRect(px+23,py+15,3,6);
+  g.fillRect(px+9,py+3,14,11);
+  g.fillStyle='#2b2118'; g.fillRect(px+8,py+1,16,5); g.fillRect(px+8,py+4,2,6); g.fillRect(px+22,py+4,2,6);
+  if(PL.dir==='up'){g.fillRect(px+9,py+4,14,8);} else { g.fillStyle='#1b1a22'; const ox=PL.dir==='left'?-2:PL.dir==='right'?2:0; g.fillRect(px+12+ox,py+8,2,3); g.fillRect(px+18+ox,py+8,2,3); }
+}
+
+// ============ 排行榜（Firebase 或本機） ============
+let FB=null,FBTried=false;
+async function initFB(){
+  if(FBTried||!FIREBASE_CONFIG)return FB; FBTried=true;
+  try{
+    const [a,f]=await Promise.all([import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')]);
+    const app2=a.initializeApp(FIREBASE_CONFIG,'homefetch'); FB={db:f.getFirestore(app2),f};
+  }catch(e){console.warn(e);FB=null;}
+  return FB;
+}
+const Board={
+  async top(lv){
+    const fb=await initFB();
+    if(fb){try{const {collection,query,orderBy,limit,getDocs}=fb.f;const snap=await getDocs(query(collection(fb.db,'homefetchmap_L'+lv),orderBy('score','desc'),limit(10)));return {remote:true,rows:snap.docs.map(d=>d.data())};}catch(e){console.warn(e);}}
+    try{return {remote:false,rows:JSON.parse(localStorage.getItem('hfm_board_L'+lv)||'[]')};}catch(e){return {remote:false,rows:[]};}
+  },
+  async submit(lv,name,score,listen){
+    const row={name,score,listen:!!listen,ts:Date.now()}, fb=await initFB();
+    if(fb){try{await fb.f.addDoc(fb.f.collection(fb.db,'homefetchmap_L'+lv),row);return;}catch(e){console.warn(e);}}
+    try{const k='hfm_board_L'+lv;const a=JSON.parse(localStorage.getItem(k)||'[]');a.push(row);a.sort((x,y)=>y.score-x.score);localStorage.setItem(k,JSON.stringify(a.slice(0,10)));}catch(e){}
+  }
+};
+async function loadBoard(){
+  const el=document.getElementById('board'); if(!el||!G)return;
+  el.innerHTML=`<div class="small">${t('loading')}</div>`;
+  const {remote,rows}=await Board.top(G.level), el2=document.getElementById('board'); if(!el2)return;
+  el2.innerHTML=rows.length?`<ol>${rows.map(r=>`<li><span>${esc(r.name||'?')}${r.listen?' 🎧':''}</span><span>${r.score}</span></li>`).join('')}</ol>`:`<div class="small">${t('nobody')}</div>`;
+  if(!remote&&!FIREBASE_CONFIG)el2.insertAdjacentHTML('beforeend',`<div class="small" style="margin-top:6px">${t('localnote')}</div>`);
+}
+
+// ============ 事件 ============
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]'); if(!b||b.disabled)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  switch(a){
+    case 'levels':screen='levels';G=null;render();break;
+    case 'home':screen='home';render();break;
+    case 'settings':openSettings();break;
+    case 'closeSet':closeSettings();break;
+    case 'set':{S[b.dataset.k]=v;save();document.getElementById('modal').innerHTML=settingsHTML();if(screen!=='game')render();else{updateSent();updateTools();updateSheet();buildLabels();}break;}
+    case 'toggleListen':S.listen=!S.listen;save();render();break;
+    case 'lv':if(P0.unlocked>=+v)startLevel(+v);break;
+    case 'quit':screen='levels';G=null;try{speechSynthesis.cancel()}catch(x){}render();break;
+    case 'pos':choosePos(v);break;
+    case 'item':chooseItem(v);break;
+    case 'replay':if(G&&screen==='game')speak(sentenceText(curQ()));break;
+    case 'hint':useHint();break;
+    case 'peek':{curQ().peeked=true;updateSent();updateTools();break;}
+    case 'saveScore':{
+      const inp=document.getElementById('nm');const nm=((inp&&inp.value)||'').trim()||'Player';
+      NAME=nm;save();G.saved=true;
+      Board.submit(G.level,nm,G.res.score,G.listen).then(()=>{if(screen==='end'){render();loadBoard();}});
+      break;
+    }
+  }
+});
+addEventListener('keydown',e=>{
+  if(screen!=='game'||!G||G.phase!=='go'||G.busy||e.target.tagName==='INPUT')return;
+  const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]}[e.key];
+  if(m){ e.preventDefault(); if(PL.moving)return; const nx=PL.x+m[0],ny=PL.y+m[1]; if(isWalkable(G.house,nx,ny)){PL.path=[{x:nx,y:ny}];PL.judge=false;} return; }
+  if(e.key===' '||e.key==='Enter'){ e.preventDefault(); arrive(); }
+});
+
+window.__hf={get G(){return G},get S(){return S},get P0(){return P0},get PL(){return PL},tapTile,arrive,choosePos,chooseItem,startLevel,curStop,curQ,get STEP(){return STEP_MS},setStep:v=>{STEP_MS=v;},WALK_POS,standTile,bfs};
+render();
+
+</script>
+</body>
+</html>
