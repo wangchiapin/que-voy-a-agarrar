@@ -83,6 +83,10 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 #modal .card{max-width:440px;margin:0 auto}
 #toast{position:fixed;left:50%;top:40%;transform:translate(-50%,0);background:var(--ink);color:var(--card);padding:10px 18px;border-radius:20px;opacity:0;pointer-events:none;z-index:20;max-width:90vw;text-align:center}
 #toast.show{animation:tst 1.3s}
+#voice-hint{display:none;position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(92vw,460px);background:var(--card);border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:12px;font-size:.85rem;line-height:1.4;z-index:30;gap:8px;align-items:flex-start}
+#voice-hint.show{display:flex}
+#voice-hint button{border:0;background:none;color:var(--sub);font-size:1rem;padding:0 4px}
+rt .rp{display:block}
 #toast.bad{background:var(--ng)}
 @keyframes tst{0%{opacity:0;transform:translate(-50%,10px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-14px)}}
 .shake{animation:shk .3s}
@@ -106,6 +110,7 @@ input[type=text]{font:inherit;padding:9px 10px;border:1.5px solid var(--line);bo
 <div id="app"></div>
 <div id="modal"></div>
 <div id="toast"></div>
+<div id="voice-hint"><span id="voice-hint-txt"></span><button id="voice-hint-close" aria-label="close">✕</button></div>
 <script>
 //DATA-START
 const mk=a=>({id:a[0],tw:a[1],cn:a[2],py:a[3],zy:a[4],es:a[5],en:a[6],ic:a[7],x:a[8]});
@@ -563,7 +568,7 @@ tw:{title:'我要拿什麼？',sub:'聽句子，走進家裡找東西',newhouse:
  lvn:['認識房間','走到家具','加上方位詞'],
  lvd:['走到對的房間，拿對的東西','走到對的家具旁邊','走到家具的旁邊、前面、後面、左邊、右邊，或選上面、下面、裡面'],
  locked:'上一級拿到 2 顆星才能解鎖',listen:'聽力模式',listenD:'不顯示句子，分數 ×1.5',
- uiLang:'介面語言',textLang:'句子文字',reading:'讀音',py:'拼音',zy:'注音',none:'不顯示',trans:'翻譯',rate:'語速',slow:'慢',normal:'正常',close:'完成',
+ uiLang:'語言',scriptL:'字體',reading:'讀音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不顯示',rate:'語速',slow:'慢',normal:'正常',fast:'快',voiceHint:'這個裝置沒有中文語音，聽不到句子。請改用有中文語音的瀏覽器或裝置。',close:'完成',
  sound:'音效',on:'開',off:'關',
  labels:'地圖文字',labRoom:'只標房間',labAll:'全部標示',
  q:'第 {a}／{b} 題',hint:'提示',replay:'再聽一次',peek:'看文字',hiddenS:'請聽句子',
@@ -577,7 +582,7 @@ cn:{title:'我要拿什么？',sub:'听句子，走进家里找东西',newhouse:
  lvn:['认识房间','走到家具','加上方位词'],
  lvd:['走到对的房间，拿对的东西','走到对的家具旁边','走到家具的旁边、前面、后面、左边、右边，或选上面、下面、里面'],
  locked:'上一级拿到 2 颗星才能解锁',listen:'听力模式',listenD:'不显示句子，分数 ×1.5',
- uiLang:'界面语言',textLang:'句子文字',reading:'读音',py:'拼音',zy:'注音',none:'不显示',trans:'翻译',rate:'语速',slow:'慢',normal:'正常',close:'完成',
+ uiLang:'语言',scriptL:'字体',reading:'读音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不显示',rate:'语速',slow:'慢',normal:'正常',fast:'快',voiceHint:'这个设备没有中文语音，听不到句子。请改用有中文语音的浏览器或设备。',close:'完成',
  sound:'音效',on:'开',off:'关',
  labels:'地图文字',labRoom:'只标房间',labAll:'全部标示',
  q:'第 {a}／{b} 题',hint:'提示',replay:'再听一次',peek:'看文字',hiddenS:'请听句子',
@@ -591,7 +596,7 @@ es:{title:'¿Qué voy a agarrar?',sub:'Escucha la frase y busca el objeto en cas
  lvn:['Las habitaciones','Ir al mueble','Palabras de lugar'],
  lvd:['Ve a la habitación y toma el objeto','Ve junto al mueble correcto','Camina al lado, delante, detrás, a la izquierda o a la derecha; o elige encima, debajo, dentro'],
  locked:'Consigue 2 estrellas en el nivel anterior',listen:'Modo escucha',listenD:'Sin texto de la frase, puntos ×1.5',
- uiLang:'Idioma de la interfaz',textLang:'Texto de la frase',reading:'Pronunciación',py:'Pinyin',zy:'Zhuyin',none:'Ninguna',trans:'Traducción',rate:'Velocidad de voz',slow:'Lenta',normal:'Normal',close:'Listo',
+ uiLang:'Idioma',scriptL:'Escritura',reading:'Pronunciación',py:'Pinyin',zy:'Zhuyin',both:'Pinyin + Zhuyin',none:'Ninguna',rate:'Velocidad de voz',slow:'Lenta',normal:'Normal',fast:'Rápida',voiceHint:'Este dispositivo no tiene voz en chino, así que no oirás las frases. Prueba con otro navegador o dispositivo.',close:'Listo',
  sound:'Sonido',on:'Sí',off:'No',
  labels:'Textos del mapa',labRoom:'Solo habitaciones',labAll:'Todo',
  q:'Pregunta {a}/{b}',hint:'Pista',replay:'Escuchar otra vez',peek:'Ver texto',hiddenS:'Escucha la frase',
@@ -605,7 +610,7 @@ en:{title:'What Will I Grab?',sub:'Listen to the sentence and find the item at h
  lvn:['Rooms','Go to furniture','Position words'],
  lvd:['Walk to the right room, get the right item','Walk to the right piece of furniture','Stand beside, in front, behind, left or right; or pick on top, under, inside'],
  locked:'Get 2 stars on the previous level',listen:'Listening mode',listenD:'No sentence text, score ×1.5',
- uiLang:'Interface language',textLang:'Sentence text',reading:'Reading aid',py:'Pinyin',zy:'Zhuyin',none:'None',trans:'Translation',rate:'Voice speed',slow:'Slow',normal:'Normal',close:'Done',
+ uiLang:'Language',scriptL:'Script',reading:'Reading aid',py:'Pinyin',zy:'Zhuyin',both:'Pinyin + Zhuyin',none:'None',rate:'Voice speed',slow:'Slow',normal:'Normal',fast:'Fast',voiceHint:'This device has no Chinese voice, so you will not hear the sentences. Try another browser or device.',close:'Done',
  sound:'Sound',on:'On',off:'Off',
  labels:'Map labels',labRoom:'Rooms only',labAll:'All',
  q:'Question {a}/{b}',hint:'Hint',replay:'Play again',peek:'Show text',hiddenS:'Listen to the sentence',
@@ -620,10 +625,49 @@ en:{title:'What Will I Grab?',sub:'Listen to the sentence and find the item at h
 // ============ 設定與存檔 ============
 const FIREBASE_CONFIG=null;   // 排行榜：把 Firebase 的 firebaseConfig 貼在這裡；沒填就用本機排行榜
 const LSK='homefetch_map_v1';
-const DEF={ui:'es',text:'tw',read:'py',trans:'es',rate:'normal',listen:false,labels:'room',sound:'on'};
-let S={...DEF}, P0={unlocked:1,best:{}}, NAME='';
-try{const d=JSON.parse(localStorage.getItem(LSK)||'{}'); if(d.S)S={...DEF,...d.S}; if(d.P)P0={unlocked:1,best:{},...d.P}; NAME=d.name||'';}catch(e){}
-function save(){try{localStorage.setItem(LSK,JSON.stringify({S,P:P0,name:NAME}))}catch(e){}}
+// 共用設定（和其他遊戲同一把鑰匙 hanziGames.settings）
+const SETTINGS_KEY='hanziGames.settings';
+const SET_OPTS={script:['trad','simp'],lang:['es','en','zh'],phon:['pinyin','zhuyin','both','off'],rate:['slow','normal','fast']};
+const RATE_VALUE={slow:0.45,normal:0.65,fast:0.85};
+const SHARED_DEF={script:'trad',lang:'es',phon:'pinyin',rate:'normal'};
+function readShared(){
+  const out={...SHARED_DEF}; let saved=null;
+  try{saved=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'null');}catch(e){}
+  if(saved&&typeof saved==='object') Object.keys(SET_OPTS).forEach(k=>{if(SET_OPTS[k].includes(saved[k]))out[k]=saved[k];});
+  return out;
+}
+function writeShared(o){   // 合併寫入：保留其他遊戲寫的未知欄位
+  try{
+    let cur={}; try{cur=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')||{};}catch(e){}
+    if(typeof cur!=='object'||Array.isArray(cur))cur={};
+    localStorage.setItem(SETTINGS_KEY,JSON.stringify(Object.assign(cur,{v:1,script:o.script,lang:o.lang,phon:o.phon,rate:o.rate})));
+  }catch(e){}
+}
+// 本遊戲專屬設定
+const DEF={listen:false,labels:'room',sound:'on'};
+let S={...SHARED_DEF,...DEF}, P0={unlocked:1,best:{}}, NAME='';
+try{
+  const d=JSON.parse(localStorage.getItem(LSK)||'{}')||{};
+  if(d.S)for(const k in DEF)if(d.S[k]!==undefined)S[k]=d.S[k];
+  if(d.P)P0={unlocked:1,best:{},...d.P}; NAME=d.name||'';
+  // 第一次：共用鑰匙不存在 → 把舊的 S 轉過去
+  let hasShared=false; try{hasShared=localStorage.getItem(SETTINGS_KEY)!==null;}catch(e){}
+  if(!hasShared&&d.S){
+    const o=d.S, m={...SHARED_DEF};
+    if(o.text==='cn')m.script='simp'; else if(o.text==='tw')m.script='trad';
+    if(o.ui==='es'||o.ui==='en')m.lang=o.ui;
+    else if(o.ui==='tw'||o.ui==='cn'){m.lang='zh'; m.script=o.ui==='cn'?'simp':'trad';}
+    if(o.read==='py')m.phon='pinyin'; else if(o.read==='zy')m.phon='zhuyin'; else if(o.read==='none')m.phon='off';
+    if(o.rate==='slow'||o.rate==='normal')m.rate=o.rate;
+    writeShared(m);
+  }
+}catch(e){}
+Object.assign(S,readShared());
+function save(){try{localStorage.setItem(LSK,JSON.stringify({S:{listen:S.listen,labels:S.labels,sound:S.sound},P:P0,name:NAME}))}catch(e){}}
+// 由共用設定推出：中文字型欄（tw/cn）、介面欄、翻譯語言
+const isSimp=()=>S.script==='simp';
+const uiCol=()=>S.lang==='zh'?(isSimp()?'cn':'tw'):S.lang;
+const trKey=()=>S.lang==='zh'?'':S.lang;   // '' = 不顯示翻譯
 const QS=new URLSearchParams(location.search);
 let STEP_MS=QS.get('fast')?6:130;
 let screen='home', G=null, cv=null, g=null;
@@ -637,20 +681,22 @@ const LEVEL_Q={1:10,2:10,3:10};
 const WALK_POS=['side','front','back','left','right'];
 const CHOOSE_POS=['up','down','in','side','front','back'];
 
-const t=(k,r)=>{let s=(UI[S.ui]&&UI[S.ui][k]!==undefined)?UI[S.ui][k]:UI.tw[k]; if(r&&typeof s==='string')for(const x in r)s=s.replace('{'+x+'}',r[x]); return s;};
+const t=(k,r)=>{const c=uiCol();let s=(UI[c]&&UI[c][k]!==undefined)?UI[c][k]:UI.tw[k]; if(r&&typeof s==='string')for(const x in r)s=s.replace('{'+x+'}',r[x]); return s;};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 
 // 漢字 + 逐字讀音
 function R(seg){
-  const txt=S.text==='cn'?seg.cn:seg.tw, lang=S.text==='cn'?'zh-Hans':'zh-Hant';
-  const rd=S.read==='py'?seg.py:S.read==='zy'?seg.zy:'';
-  const chars=[...txt], syl=rd?rd.split(' '):[];
-  if(!rd||syl.length!==chars.length) return `<span lang="${lang}">${esc(txt)}</span>`;
-  return `<span lang="${lang}">`+chars.map((c,i)=>`<ruby>${esc(c)}<rt>${esc(syl[i])}</rt></ruby>`).join('')+`</span>`;
+  const txt=isSimp()?seg.cn:seg.tw, lang=isSimp()?'zh-Hans':'zh-Hant';
+  const chars=[...txt], n=chars.length;
+  const ok=x=>x&&x.split(' ').length===n;
+  const py=S.phon==='pinyin'||S.phon==='both'?(ok(seg.py)?seg.py.split(' '):null):null;
+  const zy=S.phon==='zhuyin'||S.phon==='both'?(ok(seg.zy)?seg.zy.split(' '):null):null;
+  if(!py&&!zy) return `<span lang="${lang}">${esc(txt)}</span>`;
+  return `<span lang="${lang}">`+chars.map((c,i)=>`<ruby>${esc(c)}<rt>${py?`<span class="rp">${esc(py[i])}</span>`:''}${zy?`<span class="rp">${esc(zy[i])}</span>`:''}</rt></ruby>`).join('')+`</span>`;
 }
-const trl=e=>S.trans==='none'?'':e[S.trans];
-const tr=e=>S.trans==='none'?'':`<span class="tr">${esc(e[S.trans])}</span>`;
+const trl=e=>trKey()?e[trKey()]:'';
+const tr=e=>trKey()?`<span class="tr">${esc(e[trKey()])}</span>`:'';
 const stars=n=>'★'.repeat(n)+'☆'.repeat(3-n);
 
 // ============ 語音 ============
@@ -659,7 +705,7 @@ function pickVoice(){try{const vs=speechSynthesis.getVoices();VOICE=vs.find(v=>/
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 function speak(text){
   if(!('speechSynthesis' in window))return;
-  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';if(VOICE)u.voice=VOICE;u.rate=S.rate==='slow'?0.7:0.9;speechSynthesis.speak(u);}catch(e){}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';if(VOICE)u.voice=VOICE;u.rate=RATE_VALUE[S.rate]||0.65;speechSynthesis.speak(u);}catch(e){}
 }
 
 // ============ 音效 ============
@@ -711,9 +757,9 @@ function enClause(st,lv){
   if(lv===2)s+=` from the ${FURN[st.f].en}`; if(lv>=3)s+=` ${POS[st.p].en} the ${FURN[st.f].en}`; return s;
 }
 function transText(q){
-  if(S.trans==='none')return '';
+  if(!trKey())return '';
   const lv=G.level, c=q.stops;
-  if(S.trans==='es') return ('Voy '+esClause(c[0],lv)+(c[1]?', y luego '+esClause(c[1],lv):'')+'.').replace(/\ba el\b/g,'al').replace(/\bde el\b/g,'del');
+  if(S.lang==='es') return ('Voy '+esClause(c[0],lv)+(c[1]?', y luego '+esClause(c[1],lv):'')+'.').replace(/\ba el\b/g,'al').replace(/\bde el\b/g,'del');
   return "I'm going "+enClause(c[0],lv)+(c[1]?', then '+enClause(c[1],lv):'')+'.';
 }
 
@@ -773,8 +819,8 @@ function okArrive(pts,next){
 }
 function badArrive(zh,es,en,rev){
   const q=curQ(); loseHeart(rev);
-  const lang=(S.trans==='en'||(S.trans==='none'&&S.ui==='en'))?en:es;
-  toast('✗ '+t('here')+' '+zh+' · '+lang.replace(/\bde el\b/g,'del'),true);
+  const lang=S.lang==='en'?en:es;
+  toast('✗ '+t('here')+' '+zh+(S.lang==='zh'?'':' · '+lang.replace(/\bde el\b/g,'del')),true);
 }
 function loseHeart(rev){
   const q=curQ(); G.stepWrong=true; q.hadMiss=true; G.hearts--; G.combo=0; sfx('bad');
@@ -918,7 +964,7 @@ function updateSheet(){
 function toast(m,bad){const el=document.getElementById('toast');el.textContent=m;el.className='';void el.offsetWidth;el.className='show'+(bad?' bad':'');}
 function shakeMap(){const el=document.getElementById('wrap');if(el){el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');}}
 function render(){
-  document.documentElement.lang=S.ui==='cn'?'zh-Hans':S.ui==='tw'?'zh-Hant':S.ui;
+  document.documentElement.lang=S.lang==='zh'?(isSimp()?'zh-Hans':'zh-Hant'):S.lang; updateVoiceHint();
   if(screen==='game'){updateAll();return;}
   app.innerHTML=screen==='home'?renderHome():screen==='levels'?renderLevels():renderEnd();
 }
@@ -941,7 +987,7 @@ function renderLevels(){
 }
 function renderEnd(){
   const r=G.res, ok=r.done;
-  const rev=[...G.review.values()].map(v=>{const e=MAPS[v.type][v.id];return `<span class="w">${e.ic?e.ic+' ':''}${R(e)} <small>${esc(S.trans==='none'?e.es:e[S.trans])}</small></span>`;}).join('');
+  const rev=[...G.review.values()].map(v=>{const e=MAPS[v.type][v.id];return `<span class="w">${e.ic?e.ic+' ':''}${R(e)} ${trKey()?`<small>${esc(e[trKey()])}</small>`:''}</span>`;}).join('');
   const canNext=ok&&r.stars>=2&&G.level<3;
   return `<div class="center" style="margin-top:14px"><h1 style="font-size:1.5rem">${esc(ok?t('win'):t('lose'))}</h1><div class="bigstars">${stars(r.stars)}</div></div>
    <div class="card"><div class="stats"><div><div class="v">${r.score}</div><div class="l">${esc(t('score'))}</div></div><div><div class="v">${Math.round(r.acc*100)}%</div><div class="l">${esc(t('acc'))}</div></div></div></div>
@@ -955,13 +1001,12 @@ function renderEnd(){
 function settingsHTML(){
   const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${String(S[k])===String(v)?'on':''}" data-a="set" data-k="${k}" data-v="${v}">${esc(l)}</button>`).join('')}</div>`;
   return `<div class="card"><h1 style="font-size:1.3rem">⚙︎ ${esc(t('settings'))}</h1>
-  <div class="setrow"><div class="k">${esc(t('uiLang'))}</div>${seg('ui',[['tw','繁體中文'],['cn','简体中文'],['es','Español'],['en','English']])}</div>
-  <div class="setrow"><div class="k">${esc(t('textLang'))}</div>${seg('text',[['tw','繁體'],['cn','简体']])}</div>
-  <div class="setrow"><div class="k">${esc(t('reading'))}</div>${seg('read',[['py',t('py')],['zy',t('zy')],['none',t('none')]])}</div>
-  <div class="setrow"><div class="k">${esc(t('trans'))}</div>${seg('trans',[['none',t('none')],['es','Español'],['en','English']])}</div>
+  <div class="setrow"><div class="k">${esc(t('uiLang'))}</div>${seg('lang',[['zh','中文'],['es','Español'],['en','English']])}</div>
+  <div class="setrow"><div class="k">${esc(t('scriptL'))}</div>${seg('script',[['trad','繁體'],['simp','简体']])}</div>
+  <div class="setrow"><div class="k">${esc(t('reading'))}</div>${seg('phon',[['pinyin',t('py')],['zhuyin',t('zy')],['both',t('both')],['off',t('none')]])}</div>
+  <div class="setrow"><div class="k">${esc(t('rate'))}</div>${seg('rate',[['slow',t('slow')],['normal',t('normal')],['fast',t('fast')]])}</div>
   <div class="setrow"><div class="k">${esc(t('labels'))}</div>${seg('labels',[['room',t('labRoom')],['all',t('labAll')]])}</div>
   <div class="setrow"><div class="k">${esc(t('sound'))}</div>${seg('sound',[['on',t('on')],['off',t('off')]])}</div>
-  <div class="setrow"><div class="k">${esc(t('rate'))}</div>${seg('rate',[['slow',t('slow')],['normal',t('normal')]])}</div>
   <button class="big" data-a="closeSet">${esc(t('close'))}</button></div>`;
 }
 function openSettings(){const m=document.getElementById('modal');m.innerHTML=settingsHTML();m.className='show';}
@@ -973,9 +1018,9 @@ function buildLabels(){
   const el=document.getElementById('labels'); if(!el||!G)return; const H=G.house;
   let html='';
   for(const id in H.rects){ const a=H.rects[id], r=ROOM[id];
-    html+=`<div class="mlab room" data-x="${(a.x0+a.x1+1)/2*T}" data-y="${(a.y0-1)*T+2}">${R(r)}${S.trans!=='none'?`<span class="tr">${esc(r[S.trans])}</span>`:''}</div>`; }
+    html+=`<div class="mlab room" data-x="${(a.x0+a.x1+1)/2*T}" data-y="${(a.y0-1)*T+2}">${R(r)}${tr(r)}</div>`; }
   if(S.labels==='all') for(const id in H.furn){ const F=H.furn[id], d=FURN[id];
-    html+=`<div class="mlab furn" data-x="${(F.x+F.w/2)*T}" data-y="${(F.y+F.h)*T-12}">${esc(S.text==='cn'?d.cn:d.tw)}</div>`; }
+    html+=`<div class="mlab furn" data-x="${(F.x+F.w/2)*T}" data-y="${(F.y+F.h)*T-12}">${esc(isSimp()?d.cn:d.tw)}</div>`; }
   el.innerHTML=html; lastCam=null;
 }
 function positionLabels(){
@@ -985,7 +1030,7 @@ function positionLabels(){
 let tagT=null;
 function showTag(fid){
   const el=document.getElementById('tag'),F=G.house.furn[fid],d=FURN[fid]; if(!el)return;
-  el.innerHTML=`${d.ic} ${R(d)}${S.trans!=='none'?`<span class="tr">${esc(d[S.trans])}</span>`:''}`;
+  el.innerHTML=`${d.ic} ${R(d)}${tr(d)}`;
   el.dataset.x=(F.x+F.w/2)*T; el.dataset.y=F.y*T-4; el.className='show';
   positionTag(); clearTimeout(tagT); tagT=setTimeout(()=>{el.className='';},1800);
 }
@@ -1173,7 +1218,7 @@ document.addEventListener('click',e=>{
     case 'home':screen='home';render();break;
     case 'settings':openSettings();break;
     case 'closeSet':closeSettings();break;
-    case 'set':{S[b.dataset.k]=v;save();document.getElementById('modal').innerHTML=settingsHTML();if(screen!=='game')render();else{updateSent();updateTools();updateSheet();buildLabels();}break;}
+    case 'set':{S[b.dataset.k]=v;if(SET_OPTS[b.dataset.k])writeShared(S);else save();document.getElementById('modal').innerHTML=settingsHTML();if(screen!=='game')render();else{updateSent();updateTools();updateSheet();buildLabels();}break;}
     case 'toggleListen':S.listen=!S.listen;save();render();break;
     case 'lv':if(P0.unlocked>=+v)startLevel(+v);break;
     case 'quit':screen='levels';G=null;try{speechSynthesis.cancel()}catch(x){}render();break;
@@ -1196,6 +1241,29 @@ addEventListener('keydown',e=>{
   if(m){ e.preventDefault(); if(PL.moving)return; const nx=PL.x+m[0],ny=PL.y+m[1]; if(isWalkable(G.house,nx,ny)){PL.path=[{x:nx,y:ny}];PL.judge=false;} return; }
   if(e.key===' '||e.key==='Enter'){ e.preventDefault(); arrive(); }
 });
+
+// ============ 跨分頁同步 ============
+addEventListener('storage',e=>{
+  if(e.key!==null&&e.key!==SETTINGS_KEY)return;
+  Object.assign(S,readShared());
+  const m=document.getElementById('modal'); if(m&&m.className==='show')m.innerHTML=settingsHTML();
+  if(screen==='game'&&G){updateSent();updateTools();updateSheet();buildLabels();}else render();
+  updateVoiceHint();
+});
+
+// ============ 沒有中文語音的提醒 ============
+let voiceMissing=false, voiceDismissed=false;
+function updateVoiceHint(){
+  const el=document.getElementById('voice-hint'); if(!el)return;
+  document.getElementById('voice-hint-txt').textContent=t('voiceHint');
+  el.className=(voiceMissing&&!voiceDismissed)?'show':'';
+}
+document.getElementById('voice-hint-close').addEventListener('click',()=>{voiceDismissed=true;updateVoiceHint();});
+(function(){
+  if(!('speechSynthesis' in window)){voiceMissing=true;updateVoiceHint();return;}
+  setTimeout(()=>{pickVoice();voiceMissing=!VOICE;updateVoiceHint();},2000);
+  speechSynthesis.onvoiceschanged=()=>{pickVoice();if(VOICE){voiceMissing=false;updateVoiceHint();}};
+})();
 
 window.__hf={get G(){return G},get S(){return S},get P0(){return P0},get PL(){return PL},tapTile,arrive,choosePos,chooseItem,startLevel,curStop,curQ,get STEP(){return STEP_MS},setStep:v=>{STEP_MS=v;},WALK_POS,standTile,bfs};
 render();
