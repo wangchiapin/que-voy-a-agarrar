@@ -708,7 +708,7 @@ const stars=n=>'★'.repeat(n)+'☆'.repeat(3-n);
 
 // ============ 語音 ============
 let VOICE=null;
-function pickVoice(){try{const vs=speechSynthesis.getVoices();VOICE=vs.find(v=>/^zh[-_]TW$/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang))||null;}catch(e){}}
+function pickVoice(){try{const vs=speechSynthesis.getVoices();VOICE=vs.find(v=>/^zh[-_]TW$/i.test(v.lang))||vs.find(v=>/^zh/i.test(v.lang)&&!/^(yue|zh[-_]hk)/i.test(v.lang))||null;}catch(e){}}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 function speak(text){
   if(!('speechSynthesis' in window))return;
