@@ -784,7 +784,15 @@ function distract(itemId,lv){
 function genQuestions(lv){
   let groups;
   if(lv<=2) groups=shuffle(STOPS_A).slice(0,LEVEL_Q[lv]).map(s=>[s]);
-  else groups=shuffle(STOPS_B).slice(0,LEVEL_Q[lv]).map(s=>[s]);
+  else{   // 第 3 級由易到難：旁邊／前面／後面 → 上面／下面／裡面 → 左邊／右邊
+    const tiers=[[['side','front','back'],3],[['up','down','in'],4],[['left','right'],LEVEL_Q[lv]-7]];
+    const used=new Set(); groups=[];
+    tiers.forEach(([ps,n])=>{
+      const pick=shuffle(STOPS_B.filter(s=>ps.includes(s.p)&&!used.has(s))).slice(0,n);
+      pick.forEach(s=>{used.add(s);groups.push([s]);});
+    });
+    shuffle(STOPS_B.filter(s=>!used.has(s))).slice(0,Math.max(0,LEVEL_Q[lv]-groups.length)).forEach(s=>groups.push([s]));
+  }
   return groups.map(gp=>({stops:gp.map(s=>({...s,ch:distract(s.i,lv)})),...freshQ()}));
 }
 const freshQ=()=>({si:0,hadMiss:false,usedHint:false,peeked:false,pts:0,t0:Date.now()});
