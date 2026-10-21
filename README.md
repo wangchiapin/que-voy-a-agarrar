@@ -40,7 +40,9 @@ Si la clave compartida no existe, la primera vez se migran los ajustes antiguos 
 
 ## Clasificación
 
-Solo local (un ranking por nivel en este navegador, clave `hfm_board_L{nivel}`). Firebase no está configurado: `FIREBASE_CONFIG` es `null` en `index.html`; al pegar la configuración se activa el ranking en línea.
+Ranking en línea conectado al proyecto de Firebase `memorma-24dab` (compartido con Memorama y Ordena el Armario), con inicio de sesión anónimo: colecciones `homefetchmap_L1` … `homefetchmap_L9` (por ahora se usan L1 a L3), un documento por dispositivo y nivel con la mejor puntuación, y se muestran los 10 mejores. Si no se puede conectar, el juego usa un ranking local por nivel en este navegador (clave `hfm_board_L{nivel}`). La configuración está en la constante `FIREBASE_CONFIG` de `index.html`.
+
+Desde 2026-10-21 también se registran visitas, inicios y partidas terminadas (colecciones `visits` y `plays` del mismo proyecto; GA no cambia).
 
 ## Prueba rápida
 
