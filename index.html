@@ -1037,7 +1037,7 @@ function renderHome(){
 }
 function renderLevels(){
   const cards=[1,2,3].map(n=>{
-    const locked=P0.unlocked<n, b=P0.best[n];
+    const locked=!QS.get("unlock")&&P0.unlocked<n, b=P0.best[n];
     return `<button class="lvcard" data-a="lv" data-v="${n}" ${locked?'disabled':''}>
       <div class="n">${n}. ${esc(t('lvn')[n-1])}</div><div class="d">${esc(t('lvd')[n-1])}</div>
       <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?'🔒 '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
@@ -1049,7 +1049,7 @@ function renderLevels(){
 function renderEnd(){
   const r=G.res, ok=r.done;
   const rev=[...G.review.values()].map(v=>{const e=MAPS[v.type][v.id];return `<span class="w">${e.ic?e.ic+' ':''}${R(e)} ${trKey()?`<small>${esc(e[trKey()])}</small>`:''}</span>`;}).join('');
-  const canNext=ok&&r.stars>=2&&G.level<3;
+  const canNext=ok&&(r.stars>=2||QS.get("unlock"))&&G.level<3;
   return `<div class="center" style="margin-top:14px"><h1 style="font-size:1.5rem">${esc(ok?t('win'):t('lose'))}</h1><div class="bigstars">${stars(r.stars)}</div></div>
    <div class="card"><div class="stats"><div><div class="v">${r.score}</div><div class="l">${esc(t('score'))}</div></div><div><div class="v">${Math.round(r.acc*100)}%</div><div class="l">${esc(t('acc'))}</div></div></div></div>
    ${rev?`<div class="h2">${esc(t('review'))}</div><div class="rev">${rev}</div>`:''}
@@ -1292,7 +1292,7 @@ document.addEventListener('click',e=>{
     case 'closeSet':closeSettings();break;
     case 'set':{S[b.dataset.k]=v;if(SET_OPTS[b.dataset.k])writeShared(S);else save();document.getElementById('modal').innerHTML=settingsHTML();if(screen!=='game')render();else{updateSent();updateTools();updateSheet();buildLabels();}break;}
     case 'toggleListen':S.listen=!S.listen;save();render();break;
-    case 'lv':if(P0.unlocked>=+v)startLevel(+v);break;
+    case 'lv':if(QS.get('unlock')||P0.unlocked>=+v)startLevel(+v);break;
     case 'quit':screen='levels';G=null;try{speechSynthesis.cancel()}catch(x){}render();break;
     case 'pos':choosePos(v);break;
     case 'item':chooseItem(v);break;
