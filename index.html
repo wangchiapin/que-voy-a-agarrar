@@ -872,8 +872,13 @@ function arrive(){
   return badArrive(F.tw+p.tw, p.es+' '+F.es, p.en+' the '+F.en, {type:'furn',id:st.f});
 }
 function neutral(){ if(G.neutral++<3&&G.level>=2) toast(t('nothing')); }
+function revealPlace(){
+  const st=curStop();
+  if(G.level===1){ G.revealRoom=st.r; buildLabels(); setTimeout(()=>{ if(G){G.revealRoom=null;buildLabels();} },2400); }
+  else showTag(st.f,2400);
+}
 function okArrive(pts,next){
-  const q=curQ(); q.pts+=stepPts(pts); countStep(!G.stepWrong);
+  const q=curQ(); q.pts+=stepPts(pts); countStep(!G.stepWrong); revealPlace();
   toast('✓'); sfx('ok');
   G.busy=true; setTimeout(()=>{ if(!G)return; G.busy=false; setPhase(next); },350);
 }
@@ -930,6 +935,7 @@ function endGame(done){
 function useHint(){
   if(!G||G.hints<=0||G.stepHint||G.busy||(G.phase!=='go'&&G.phase!=='pos'&&G.phase!=='item'))return;
   G.hints--; G.stepHint=true; curQ().usedHint=true; updateAll();
+  if(G.level>=2&&G.phase==='go')showTag(curStop().f,5000);
 }
 
 // ============ 走路 ============
@@ -959,7 +965,7 @@ function tapTile(tx,ty){
   const H=G.house; if(!inB(tx,ty))return;
   const from=PL.moving?PL.moving.to:{x:PL.x,y:PL.y};
   let goal=null; const f=H.occ[ty][tx];
-  if(f){ showTag(f); goal=standTile(H,f,from); }
+  if(f){ goal=standTile(H,f,from); }
   else if(H.grid[ty][tx].k!=='wall'){ goal={x:tx,y:ty}; }
   if(!goal)return;
   const p=bfs(H,from.x,from.y,goal.x,goal.y); if(!p)return;
@@ -1066,7 +1072,6 @@ function settingsHTML(){
   <div class="setrow"><div class="k">${esc(t('scriptL'))}</div>${seg('script',[['trad','繁體'],['simp','简体']])}</div>
   <div class="setrow"><div class="k">${esc(t('reading'))}</div>${seg('phon',[['pinyin',t('py')],['zhuyin',t('zy')],['both',t('both')],['off',t('none')]])}</div>
   <div class="setrow"><div class="k">${esc(t('rate'))}</div>${seg('rate',[['slow',t('slow')],['normal',t('normal')],['fast',t('fast')]])}</div>
-  <div class="setrow"><div class="k">${esc(t('labels'))}</div>${seg('labels',[['room',t('labRoom')],['all',t('labAll')]])}</div>
   <div class="setrow"><div class="k">${esc(t('sound'))}</div>${seg('sound',[['on',t('on')],['off',t('off')]])}</div>
   <button class="big" data-a="closeSet">${esc(t('close'))}</button></div>`;
 }
@@ -1078,10 +1083,11 @@ let scale=1, camY=0, camSnap=true, lastCam=null;
 function buildLabels(){
   const el=document.getElementById('labels'); if(!el||!G)return; const H=G.house;
   let html='';
-  for(const id in H.rects){ const a=H.rects[id], r=ROOM[id];
+  // 地圖上平常不放文字；按「提示」才標出目標房間，走對之後才顯示名字
+  const show=new Set(); if(G.revealRoom)show.add(G.revealRoom);
+  if(G.stepHint&&G.phase==='go'&&G.qi<G.qs.length)show.add(curStop().r);
+  for(const id of show){ const a=H.rects[id], r=ROOM[id];
     html+=`<div class="mlab room" data-x="${(a.x0+a.x1+1)/2*T}" data-y="${(a.y0-1)*T+2}">${R(r)}${tr(r)}</div>`; }
-  if(S.labels==='all') for(const id in H.furn){ const F=H.furn[id], d=FURN[id];
-    html+=`<div class="mlab furn" data-x="${(F.x+F.w/2)*T}" data-y="${(F.y+F.h)*T-12}">${esc(isSimp()?d.cn:d.tw)}</div>`; }
   el.innerHTML=html; lastCam=null;
 }
 function positionLabels(){
@@ -1089,13 +1095,13 @@ function positionLabels(){
   document.querySelectorAll('#labels .mlab').forEach(e=>{ e.style.transform=`translate(${(+e.dataset.x*scale).toFixed(1)}px,${((+e.dataset.y-camY)*scale).toFixed(1)}px) translateX(-50%) translateY(-5px)`; });
 }
 let tagT=null;
-function showTag(fid){
+function showTag(fid,ms){
   const el=document.getElementById('tag'),F=G.house.furn[fid],d=FURN[fid]; if(!el)return;
   el.innerHTML=`${d.ic} ${R(d)}${tr(d)}`;
   el.dataset.x=(F.x+F.w/2)*T; el.dataset.y=F.y*T-4; el.className='show';
-  positionTag(); clearTimeout(tagT); tagT=setTimeout(()=>{el.className='';},1800);
+  positionTag(); clearTimeout(tagT); tagT=setTimeout(()=>{el.className='';},ms||1800);
 }
-function positionTag(){const el=document.getElementById('tag'); if(!el||el.className!=='show')return; el.style.transform=`translate(${(+el.dataset.x*scale).toFixed(1)}px,${((+el.dataset.y-camY)*scale).toFixed(1)}px) translate(-50%,-100%)`;}
+function positionTag(){const el=document.getElementById('tag'); if(!el||el.className!=='show')return; const w=el.offsetWidth,W=el.parentElement.clientWidth,x=Math.max(4,Math.min(W-w-4,+el.dataset.x*scale-w/2)); el.style.transform=`translate(${x.toFixed(1)}px,${((+el.dataset.y-camY)*scale).toFixed(1)}px) translateY(-100%)`;}
 
 // ============ 畫圖（像素風，全部用程式畫） ============
 const bg=document.createElement('canvas'); bg.width=COLS*T; bg.height=ROWS*T;
