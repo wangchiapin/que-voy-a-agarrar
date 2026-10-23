@@ -243,7 +243,8 @@ const PS={
  goto:{tw:'我要到',cn:'我要到',py:'wǒ yào dào',zy:'ㄨㄛˇ ㄧㄠˋ ㄉㄠˋ'},
  go:{tw:'我要去',cn:'我要去',py:'wǒ yào qù',zy:'ㄨㄛˇ ㄧㄠˋ ㄑㄩˋ'},
  de:{tw:'的',cn:'的',py:'de',zy:'˙ㄉㄜ'},
- get:{tw:'拿',cn:'拿',py:'ná',zy:'ㄋㄚˊ'},
+ ba:{tw:'我要把',cn:'我要把',py:'wǒ yào bǎ',zy:'ㄨㄛˇ ㄧㄠˋ ㄅㄚˇ'},
+ fang:{tw:'放到',cn:'放到',py:'fàng dào',zy:'ㄈㄤˋ ㄉㄠˋ'},
  comma:{tw:'，',cn:'，',py:'',zy:''},
  again:{tw:'再到',cn:'再到',py:'zài dào',zy:'ㄗㄞˋ ㄉㄠˋ'}
 };
@@ -255,12 +256,12 @@ const STOPS_A=[
 ['study','desk','notebook'],['study','bshelf','book'],['study','desk','scissors'],
 ['living','tea','phone'],['living','cab','key'],['living','sofa','hat'],
 ['balcony','washer','socks'],['balcony','rack','scarf'],['balcony','chairA','bag'],
-['living','tv','remote'],['living','tea','cup'],['living','tea','remote'],['living','cab','umb'],['living','sofa','bag'],['living','cab','glasses'],
-['kitchen','fridge','milk'],['kitchen','fridge','egg'],['kitchen','fridge','juice'],['kitchen','fridge','water'],['kitchen','counter','apple'],['kitchen','counter','banana'],['kitchen','dishcab','plate'],['kitchen','dishcab','spoon'],['kitchen','micro','cup'],
+['living','tea','cup'],['living','tea','remote'],['living','cab','umb'],['living','sofa','bag'],['living','cab','glasses'],
+['kitchen','fridge','milk'],['kitchen','fridge','egg'],['kitchen','fridge','juice'],['kitchen','fridge','water'],['kitchen','counter','apple'],['kitchen','counter','banana'],['kitchen','dishcab','plate'],['kitchen','dishcab','spoon'],['kitchen','micro','milk'],
 ['bed','wardrobe','scarf'],['bed','wardrobe','hat'],['bed','nstand','phone'],['bed','bedf','pillow'],['bed','chairB','coat'],['bed','nstand','book'],
-['bath','sink','soap'],['bath','toilet','tissue'],['bath','tub','shampoo'],['bath','shelf','tissue'],['bath','shelf','tbrush'],
+['bath','sink','soap'],['bath','tub','shampoo'],['bath','shelf','tissue'],['bath','shelf','tbrush'],
 ['study','desk','pen'],['study','desk','laptop'],['study','bshelf','notebook'],['study','chairS','bag'],['study','trash','tissue'],['study','desk','earph'],
-['balcony','rack','coat'],['balcony','rack','socks'],['balcony','plant','flower'],['balcony','washer','coat'],['balcony','chairA','book']
+['balcony','rack','coat'],['balcony','rack','socks'],['balcony','washer','coat'],['balcony','chairA','book']
 ].map(a=>({r:a[0],f:a[1],i:a[2]}));
 // 有位置詞的地點（第 3 級）[房間, 家具, 位置, 物品]
 const STOPS_B=[
@@ -270,19 +271,19 @@ const STOPS_B=[
 ['bath','sink','up','tbrush'],['bath','sink','down','tissue'],['bath','tub','side','soap'],['bath','shelf','up','shampoo'],
 ['study','desk','up','notebook'],['study','desk','up','pen'],['study','bshelf','in','book'],['study','bshelf','side','umb'],['study','chairS','up','coat'],['study','desk','down','bag'],
 ['living','tv','front','remote'],['living','sofa','side','phone'],['living','sofa','back','hat'],
-['kitchen','fridge','front','drink'],['kitchen','counter','side','cup'],
+['kitchen','counter','side','cup'],
 ['bed','wardrobe','front','bag'],['bed','bedf','side','phone'],
-['bath','sink','front','soap'],
+
 ['study','desk','front','bag'],['study','bshelf','front','book'],
 ['balcony','washer','front','coat'],
-['balcony','washer','in','socks'],['balcony','rack','up','coat'],['balcony','plant','side','umb'],['balcony','chairA','up','book'],['balcony','washer','side','bag'],
+['balcony','washer','in','socks'],['balcony','plant','side','umb'],['balcony','chairA','up','book'],['balcony','washer','side','bag'],
 ['bed','bedf','right','pillow'],['bed','bedf','left','pillow'],['bed','bedf','left','book'],
 ['living','sofa','left','remote'],['living','sofa','right','phone'],['living','tv','left','key'],['living','tv','right','remote'],
 ['study','desk','left','laptop'],['study','desk','right','pen'],
 ['living','cab','up','flower'],['kitchen','micro','up','cup'],['kitchen','dishcab','up','plate'],['bed','wardrobe','up','hat'],['bed','nstand','up','book'],['bath','toilet','up','tissue'],['study','bshelf','up','flower'],['balcony','washer','up','hat'],
-['living','tea','down','umb'],['living','sofa','down','key'],['bed','nstand','down','socks'],['bed','chairB','down','bag'],['study','chairS','down','bag'],['balcony','chairA','down','umb'],['bath','shelf','down','tissue'],['kitchen','counter','down','plate'],
+['living','tea','down','umb'],['living','sofa','down','key'],['bed','chairB','down','bag'],['study','chairS','down','bag'],['balcony','chairA','down','umb'],['bath','shelf','down','tissue'],
 ['kitchen','micro','in','bread'],['kitchen','dishcab','in','cup'],['kitchen','dishcab','in','spoon'],['living','cab','in','key'],['bed','nstand','in','glasses'],['study','desk','in','scissors'],
-['living','tea','side','cup'],['living','cab','side','umb'],['kitchen','micro','front','bread'],['kitchen','dishcab','front','plate'],['bath','toilet','side','tissue'],['bath','sink','side','soap'],['bath','tub','front','shampoo'],['bed','wardrobe','side','scarf'],['balcony','plant','front','flower'],['balcony','rack','front','socks'],['balcony','chairA','side','bag'],
+['living','tea','side','cup'],['living','cab','side','umb'],['bath','toilet','side','tissue'],['bath','sink','side','soap'],['bed','wardrobe','side','scarf'],['balcony','chairA','side','bag'],
 ['kitchen','counter','right','apple'],['bath','sink','left','tbrush'],['bath','sink','right','soap'],['bed','wardrobe','right','hat']
 ].map(a=>({r:a[0],f:a[1],p:a[2],i:a[3]}));
 
@@ -608,62 +609,62 @@ function genHouse(seed){
 
 // ============ 介面文字 ============
 const UI={
-tw:{title:'我要拿什麼？',sub:'聽句子，走進家裡找東西',newhouse:'每次的家都不一樣',play:'開始遊戲',settings:'設定',levels:'選擇關卡',back:'返回',
+tw:{title:'我要拿什麼？',sub:'聽句子，把東西放到家裡對的地方',newhouse:'每次的家都不一樣',play:'開始遊戲',settings:'設定',levels:'選擇關卡',back:'返回',
  lvn:['認識房間','走到家具','加上方位詞'],
- lvd:['走到對的房間，拿對的東西','走到對的家具旁邊','走到家具的旁邊、前面、後面、左邊、右邊，或選上面、下面、裡面'],
+ lvd:['選對東西，放到對的房間','選對東西，放到對的家具','走到家具的旁邊、前面、後面、左邊、右邊，或選上面、下面、裡面'],
  locked:'上一級拿到 2 顆星才能解鎖',listen:'聽力模式',listenD:'不顯示句子，分數 ×1.5',
  uiLang:'語言',scriptL:'字體',reading:'讀音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不顯示',rate:'語速',slow:'慢',normal:'正常',fast:'快',voiceHint:'這個裝置沒有中文語音，聽不到句子。請改用有中文語音的瀏覽器或裝置。',close:'完成',
  sound:'音效',on:'開',off:'關',
  labels:'地圖文字',labRoom:'只標房間',labAll:'全部標示',
  q:'第 {a}／{b} 題',hint:'提示',replay:'再聽一次',peek:'看文字',hiddenS:'請聽句子',
  lrnote:'左右以地圖畫面為準',
- ph_go:'點地圖，走到目的地',ph_pos:'選出位置',ph_item:'選出要拿的東西',
+ ph_go:'帶著它，點地圖走到目的地',ph_pos:'選出位置',ph_item:'選出要放的東西',
  here:'這裡是',nothing:'走到家具旁邊再停下來',
  win:'過關了！',lose:'愛心用完了',score:'分數',acc:'正確率',review:'需要複習的詞',again:'再玩一次',menu:'關卡選單',next:'下一級',
  board:'排行榜',loading:'載入中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'還沒有紀錄',localnote:'（本機排行榜）',
- howto:['聽（或看）句子','點地圖，走到目的地','選出正確的東西'],quit:'離開',combo:'連擊',best:'最高'},
-cn:{title:'我要拿什么？',sub:'听句子，走进家里找东西',newhouse:'每次的家都不一样',play:'开始游戏',settings:'设置',levels:'选择关卡',back:'返回',
+ howto:['聽（或看）句子','先選出要放的東西','帶著它，點地圖走到目的地'],quit:'離開',combo:'連擊',best:'最高'},
+cn:{title:'我要拿什么？',sub:'听句子，把东西放到家里对的地方',newhouse:'每次的家都不一样',play:'开始游戏',settings:'设置',levels:'选择关卡',back:'返回',
  lvn:['认识房间','走到家具','加上方位词'],
- lvd:['走到对的房间，拿对的东西','走到对的家具旁边','走到家具的旁边、前面、后面、左边、右边，或选上面、下面、里面'],
+ lvd:['选对东西，放到对的房间','选对东西，放到对的家具','走到家具的旁边、前面、后面、左边、右边，或选上面、下面、里面'],
  locked:'上一级拿到 2 颗星才能解锁',listen:'听力模式',listenD:'不显示句子，分数 ×1.5',
  uiLang:'语言',scriptL:'字体',reading:'读音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不显示',rate:'语速',slow:'慢',normal:'正常',fast:'快',voiceHint:'这个设备没有中文语音，听不到句子。请改用有中文语音的浏览器或设备。',close:'完成',
  sound:'音效',on:'开',off:'关',
  labels:'地图文字',labRoom:'只标房间',labAll:'全部标示',
  q:'第 {a}／{b} 题',hint:'提示',replay:'再听一次',peek:'看文字',hiddenS:'请听句子',
  lrnote:'左右以地图画面为准',
- ph_go:'点地图，走到目的地',ph_pos:'选出位置',ph_item:'选出要拿的东西',
+ ph_go:'带着它，点地图走到目的地',ph_pos:'选出位置',ph_item:'选出要放的东西',
  here:'这里是',nothing:'走到家具旁边再停下来',
  win:'过关了！',lose:'爱心用完了',score:'分数',acc:'正确率',review:'需要复习的词',again:'再玩一次',menu:'关卡菜单',next:'下一级',
  board:'排行榜',loading:'加载中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'还没有记录',localnote:'（本机排行榜）',
- howto:['听（或看）句子','点地图，走到目的地','选出正确的东西'],quit:'离开',combo:'连击',best:'最高'},
-es:{title:'¿Qué voy a agarrar?',sub:'Escucha la frase y busca el objeto en casa',newhouse:'Cada vez la casa es diferente',play:'Jugar',settings:'Ajustes',levels:'Elige un nivel',back:'Volver',
+ howto:['听（或看）句子','先选出要放的东西','带着它，点地图走到目的地'],quit:'离开',combo:'连击',best:'最高'},
+es:{title:'¿Qué voy a agarrar?',sub:'Escucha la frase y pon el objeto en su lugar',newhouse:'Cada vez la casa es diferente',play:'Jugar',settings:'Ajustes',levels:'Elige un nivel',back:'Volver',
  lvn:['Las habitaciones','Ir al mueble','Palabras de lugar'],
- lvd:['Ve a la habitación y toma el objeto','Ve junto al mueble correcto','Camina al lado, delante, detrás, a la izquierda o a la derecha; o elige encima, debajo, dentro'],
+ lvd:['Elige el objeto y ponlo en la habitación correcta','Elige el objeto y ponlo en el mueble correcto','Camina al lado, delante, detrás, a la izquierda o a la derecha; o elige encima, debajo, dentro'],
  locked:'Consigue 2 estrellas en el nivel anterior',listen:'Modo escucha',listenD:'Sin texto de la frase, puntos ×1.5',
  uiLang:'Idioma',scriptL:'Escritura',reading:'Pronunciación',py:'Pinyin',zy:'Zhuyin',both:'Pinyin + Zhuyin',none:'Ninguna',rate:'Velocidad de voz',slow:'Lenta',normal:'Normal',fast:'Rápida',voiceHint:'Este dispositivo no tiene voz en chino, así que no oirás las frases. Prueba con otro navegador o dispositivo.',close:'Listo',
  sound:'Sonido',on:'Sí',off:'No',
  labels:'Textos del mapa',labRoom:'Solo habitaciones',labAll:'Todo',
  q:'Pregunta {a}/{b}',hint:'Pista',replay:'Escuchar otra vez',peek:'Ver texto',hiddenS:'Escucha la frase',
  lrnote:'Izquierda/derecha según la pantalla del mapa',
- ph_go:'Toca el mapa y camina al destino',ph_pos:'Elige la posición',ph_item:'Elige el objeto',
+ ph_go:'Llévalo: toca el mapa y camina al destino',ph_pos:'Elige la posición',ph_item:'Elige el objeto que vas a poner',
  here:'Aquí está',nothing:'Párate junto a un mueble',
  win:'¡Nivel superado!',lose:'Te quedaste sin corazones',score:'Puntos',acc:'Aciertos',review:'Para repasar',again:'Jugar otra vez',menu:'Menú de niveles',next:'Siguiente nivel',
  board:'Clasificación',loading:'Cargando…',yourname:'Tu nombre',save:'Guardar',saved:'Guardado',nobody:'Aún no hay registros',localnote:'(clasificación local)',
- howto:['Escucha (o lee) la frase','Toca el mapa y camina al destino','Elige el objeto correcto'],quit:'Salir',combo:'Racha',best:'Récord'},
-en:{title:'What Will I Grab?',sub:'Listen to the sentence and find the item at home',newhouse:'A different home every time',play:'Play',settings:'Settings',levels:'Choose a level',back:'Back',
+ howto:['Escucha (o lee) la frase','Elige el objeto que vas a poner','Llévalo: toca el mapa y camina al destino'],quit:'Salir',combo:'Racha',best:'Récord'},
+en:{title:'What Will I Grab?',sub:'Listen to the sentence and put the item in the right place',newhouse:'A different home every time',play:'Play',settings:'Settings',levels:'Choose a level',back:'Back',
  lvn:['Rooms','Go to furniture','Position words'],
- lvd:['Walk to the right room, get the right item','Walk to the right piece of furniture','Stand beside, in front, behind, left or right; or pick on top, under, inside'],
+ lvd:['Pick the item and put it in the right room','Pick the item and put it at the right furniture','Stand beside, in front, behind, left or right; or pick on top, under, inside'],
  locked:'Get 2 stars on the previous level',listen:'Listening mode',listenD:'No sentence text, score ×1.5',
  uiLang:'Language',scriptL:'Script',reading:'Reading aid',py:'Pinyin',zy:'Zhuyin',both:'Pinyin + Zhuyin',none:'None',rate:'Voice speed',slow:'Slow',normal:'Normal',fast:'Fast',voiceHint:'This device has no Chinese voice, so you will not hear the sentences. Try another browser or device.',close:'Done',
  sound:'Sound',on:'On',off:'Off',
  labels:'Map labels',labRoom:'Rooms only',labAll:'All',
  q:'Question {a}/{b}',hint:'Hint',replay:'Play again',peek:'Show text',hiddenS:'Listen to the sentence',
  lrnote:'Left/right as seen on the map screen',
- ph_go:'Tap the map and walk to the spot',ph_pos:'Pick the position',ph_item:'Pick the item',
+ ph_go:'Carry it: tap the map and walk to the spot',ph_pos:'Pick the position',ph_item:'Pick the item to put away',
  here:"That's",nothing:'Stop next to a piece of furniture',
  win:'Level cleared!',lose:'Out of hearts',score:'Score',acc:'Accuracy',review:'Words to review',again:'Play again',menu:'Level menu',next:'Next level',
  board:'Leaderboard',loading:'Loading…',yourname:'Your name',save:'Save score',saved:'Saved',nobody:'No scores yet',localnote:'(local board)',
- howto:['Listen to (or read) the sentence','Tap the map and walk to the spot','Pick the right item'],quit:'Quit',combo:'Streak',best:'Best'}
+ howto:['Listen to (or read) the sentence','Pick the item to put away','Carry it: tap the map and walk to the spot'],quit:'Quit',combo:'Streak',best:'Best'}
 };
 
 // ============ 設定與存檔 ============
@@ -796,30 +797,25 @@ function genQuestions(lv){
   return groups.map(gp=>({stops:gp.map(s=>({...s,ch:distract(s.i,lv)})),...freshQ()}));
 }
 const freshQ=()=>({si:0,hadMiss:false,usedHint:false,peeked:false,pts:0,t0:Date.now()});
-function stopSegs(st,lv,first){
-  const s=[];
-  if(!first)s.push(PS.comma,PS.again); else s.push(lv===1?PS.go:PS.goto);
-  s.push(ROOM[st.r]);
+function stopSegs(st,lv){
+  const s=[PS.ba,ITEM[st.i],PS.fang,ROOM[st.r]];
   if(lv>=2)s.push(PS.de,FURN[st.f]);
   if(lv>=3)s.push(POS[st.p]);
-  s.push(PS.get,ITEM[st.i]);
   return s;
 }
-function sentenceSegs(q){let o=[];q.stops.forEach((st,i)=>{o=o.concat(stopSegs(st,G.level,i===0));});return o;}
+function sentenceSegs(q){return stopSegs(q.stops[0],G.level);}
 const sentenceText=q=>sentenceSegs(q).map(s=>s.tw).join('');
-function esClause(st,lv){
-  let s=`a ${ROOM[st.r].es} a buscar ${ITEM[st.i].es}`;
-  if(lv===2)s+=` en ${FURN[st.f].es}`; if(lv>=3)s+=` ${POS[st.p].es} ${FURN[st.f].es}`; return s;
-}
-function enClause(st,lv){
-  let s=`to the ${ROOM[st.r].en} to get the ${ITEM[st.i].en}`;
-  if(lv===2)s+=` from the ${FURN[st.f].en}`; if(lv>=3)s+=` ${POS[st.p].en} the ${FURN[st.f].en}`; return s;
-}
+const ES_DEF={leche:'la leche',agua:'el agua',jugo:'el jugo',jabón:'el jabón',pan:'el pan','papel higiénico':'el papel higiénico','champú':'el champú'};
+function esItem(it){ const e=it.es; if(ES_DEF[e])return ES_DEF[e]; return e.replace(/^una bebida/,'la bebida').replace(/^una /,'la ').replace(/^unos /,'los ').replace(/^unas /,'las ').replace(/^un /,'el '); }
 function transText(q){
   if(!trKey())return '';
-  const lv=G.level, c=q.stops;
-  if(S.lang==='es') return ('Voy '+esClause(c[0],lv)+(c[1]?', y luego '+esClause(c[1],lv):'')+'.').replace(/\ba el\b/g,'al').replace(/\bde el\b/g,'del');
-  return "I'm going "+enClause(c[0],lv)+(c[1]?', then '+enClause(c[1],lv):'')+'.';
+  const st=q.stops[0], lv=G.level, it=ITEM[st.i], R0=ROOM[st.r], F=FURN[st.f], P=POS[st.p];
+  if(S.lang==='es'){
+    let w= lv===1?'en '+R0.es : lv===2?'en '+F.es+' de '+R0.es : P.es+' '+F.es+' de '+R0.es;
+    return ('Voy a poner '+esItem(it)+' '+w+'.').replace(/\bde el\b/g,'del').replace(/\ba el\b/g,'al');
+  }
+  let w= lv===1?'in the '+R0.en : lv===2?'at the '+F.en+' in the '+R0.en : P.en+' the '+F.en+' in the '+R0.en;
+  return "I'm going to put the "+it.en+' '+w+'.';
 }
 
 // ============ 遊戲狀態 ============
@@ -832,14 +828,14 @@ function startLevel(n){
   let H=null; const forced=QS.get('seed');
   for(let i=0;i<8&&!H;i++) H=genHouse(forced&&i===0?+forced:(Math.random()*4294967296)>>>0);
   G={level:n,listen:!!S.listen,house:H,qs:genQuestions(n),qi:0,hearts:3,score:0,combo:0,hints:3,
-     stat:{first:0,done:0},review:new Map(),phase:'go',stepWrong:false,stepHint:false,dead:new Set(),flash:null,saved:false,res:null,neutral:0};
+     stat:{first:0,done:0},review:new Map(),carry:null,phase:'item',stepWrong:false,stepHint:false,dead:new Set(),flash:null,saved:false,res:null,neutral:0};
   PL={x:H.start.x,y:H.start.y,dir:'right',moving:null,path:[],judge:false,goal:null,step:0};
   screen='game'; mountGame(); bakeHouse(); beginQuestion(true);
   try{ window.HGPlays && HGPlays.start('L'+n, NAME); }catch(e){}
 }
 function beginQuestion(first){
   const q=curQ(); Object.assign(q,freshQ());
-  G.phase='go'; G.stepWrong=false; G.stepHint=false; G.dead=new Set(); G.flash=null;
+  G.phase='item'; G.carry=null; G.stepWrong=false; G.stepHint=false; G.dead=new Set(); G.flash=null;
   updateAll();
   setTimeout(()=>{ if(G&&curQ()===q)speak(sentenceText(q)); },first?400:200);
 }
@@ -856,7 +852,7 @@ function arrive(){
   const adj=H.spotIndex[PL.x+','+PL.y]||[];
   if(lv===1){
     if(!cell.room)return neutral();
-    if(cell.room===st.r) return okArrive(10,'item');
+    if(cell.room===st.r) return okArrive(10,'done');
     return badArrive(ROOM[cell.room].tw,ROOM[cell.room].es,ROOM[cell.room].en,{type:'room',id:st.r});
   }
   if(!adj.length)return neutral();
@@ -864,8 +860,8 @@ function arrive(){
   const strict=lv>=3&&walk;
   const match=adj.some(a=>a.f===st.f&&(!strict||a.pos===st.p));
   if(match){
-    if(lv===2) return okArrive(20,'item');
-    return strict?okArrive(30,'item'):okArrive(20,'pos');
+    if(lv===2) return okArrive(20,'done');
+    return strict?okArrive(30,'done'):okArrive(20,'pos');
   }
   const a=adj.find(x=>x.f===st.f)||adj[0], F=FURN[a.f], p=POS[a.pos];
   if(lv===2) return badArrive(F.tw,F.es,F.en,{type:'furn',id:st.f});
@@ -880,7 +876,7 @@ function revealPlace(){
 function okArrive(pts,next){
   const q=curQ(); q.pts+=stepPts(pts); countStep(!G.stepWrong); revealPlace();
   toast('✓'); sfx('ok');
-  G.busy=true; setTimeout(()=>{ if(!G)return; G.busy=false; setPhase(next); },350);
+  G.busy=true; setTimeout(()=>{ if(!G)return; G.busy=false; if(next==='done')nextStop(); else setPhase(next); },350);
 }
 function badArrive(zh,es,en,rev){
   const q=curQ(); loseHeart(rev);
@@ -896,7 +892,7 @@ function loseHeart(rev){
 function choosePos(id){
   if(!G||G.phase!=='pos'||G.busy||G.dead.has(id))return;
   const st=curStop(), q=curQ();
-  if(id===st.p){ sfx('ok'); q.pts+=stepPts(10); countStep(!G.stepWrong); G.flash=id; updateSheet(); G.busy=true; setTimeout(()=>{if(!G)return;G.busy=false;setPhase('item');},350); }
+  if(id===st.p){ sfx('ok'); q.pts+=stepPts(10); countStep(!G.stepWrong); G.flash=id; updateSheet(); G.busy=true;setTimeout(()=>{if(!G)return;G.busy=false;nextStop();},350); }
   else{ G.dead.add(id); loseHeart({type:'pos',id:st.p}); updateSheet(); }
 }
 function chooseItem(id){
@@ -904,9 +900,10 @@ function chooseItem(id){
   const st=curStop(), q=curQ();
   if(id===st.i){
     sfx('ok'); q.pts+=stepPts(10); countStep(!G.stepWrong); G.flash=id; updateSheet(); G.busy=true;
-    setTimeout(()=>{ if(!G)return; G.busy=false; q.si++; if(q.si>=q.stops.length)finishQuestion(); else {setPhase('go');speak(sentenceText(q));} },420);
+    setTimeout(()=>{ if(!G)return; G.busy=false; G.carry=id; setPhase('go'); },420);
   }else{ G.dead.add(id); loseHeart({type:'item',id:st.i}); updateSheet(); }
 }
+function nextStop(){ const q=curQ(); q.si++; G.carry=null; if(q.si>=q.stops.length)finishQuestion(); else setPhase('item'); }
 function finishQuestion(){
   const q=curQ(), n=q.stops.length, lv=G.level;
   const limit=n*(lv===1?16:lv===2?20:26), secs=(Date.now()-q.t0)/1000;
@@ -1013,18 +1010,18 @@ function updateTools(){
   el.innerHTML=`<button data-a="replay">🔊 ${esc(t('replay'))}</button>
    <button data-a="hint" ${(G.hints<=0||G.stepHint||G.busy)?'disabled':''}>💡 ${esc(t('hint'))} ${G.hints}</button>
    ${G.listen&&!q.peeked?`<button data-a="peek">👁 ${esc(t('peek'))}</button>`:''}`;
-  const sn=document.getElementById('stepname'); if(sn)sn.textContent=G.phase==='go'?t('ph_go')+((G.level>=3&&['left','right'].includes(curStop().p))?'　('+t('lrnote')+')':''):G.phase==='pos'?t('ph_pos'):G.phase==='item'?t('ph_item'):'';
+  const sn=document.getElementById('stepname'); if(sn)sn.textContent=G.phase==='go'?(G.carry?ITEM[G.carry].ic+' '+(isSimp()?ITEM[G.carry].cn:ITEM[G.carry].tw)+'　':'')+t('ph_go')+((G.level>=3&&['left','right'].includes(curStop().p))?'　('+t('lrnote')+')':''):G.phase==='pos'?t('ph_pos'):G.phase==='item'?t('ph_item'):'';
   const comboTxt=G.combo>=2?'🔥 '+t('combo')+' '+G.combo:''; if(sn&&comboTxt)sn.textContent+='　'+comboTxt;
 }
 function updateSheet(){
   const el=document.getElementById('sheet'); if(!el)return;
   if(G.qi>=G.qs.length||(G.phase!=='pos'&&G.phase!=='item')){el.innerHTML='';el.className='';return;}
   const st=curStop(), F=FURN[st.f], cls=(id,tg)=>(G.dead.has(id)?' ng':'')+(G.flash===id?' ok':'')+((G.stepHint&&id===tg&&!G.flash)?' hint':'');
-  const head=`<div class="sh-h">${F.ic} ${R(F)}</div>`;
+  const head=G.phase==='pos'?`<div class="sh-h">${F.ic} ${R(F)}</div>`:'';
   if(G.phase==='pos'){
     el.innerHTML=head+`<div class="posg">${POSS.filter(p=>CHOOSE_POS.includes(p.id)).map(p=>`<button class="pb${cls(p.id,st.p)}" data-a="pos" data-v="${p.id}" ${G.dead.has(p.id)?'disabled':''}><span class="pic">${p.ic}</span><span class="lab">${R(p)}</span>${tr(p)}</button>`).join('')}</div>`;
   }else{
-    el.innerHTML=head+`<div class="itg">${st.ch.map(id=>{const it=ITEM[id];return `<button class="item${cls(id,st.i)}" data-a="item" data-v="${id}" ${G.dead.has(id)?'disabled':''}><span class="iic">${it.ic}</span><span class="lab">${R(it)}</span>${tr(it)}</button>`;}).join('')}</div>`;
+    el.innerHTML=head+`<div class="itg">${st.ch.map(id=>{const it=ITEM[id];return `<button class="item${cls(id,st.i)}" data-a="item" data-v="${id}" ${G.dead.has(id)?'disabled':''}><span class="iic">${it.ic}</span>${(G.stepHint||G.dead.has(id)||G.flash===id)?`<span class="lab">${R(it)}</span>${tr(it)}`:''}</button>`;}).join('')}</div>`;
   }
   el.className='show';
 }
@@ -1243,6 +1240,7 @@ function drawPlayer(now){
   g.fillStyle='#f1c9a0'; g.fillRect(px+6,py+15,3,6); g.fillRect(px+23,py+15,3,6);
   g.fillRect(px+9,py+3,14,11);
   g.fillStyle='#2b2118'; g.fillRect(px+8,py+1,16,5); g.fillRect(px+8,py+4,2,6); g.fillRect(px+22,py+4,2,6);
+  if(G&&G.carry&&ITEM[G.carry]){ g.font='20px sans-serif'; g.textAlign='center'; g.textBaseline='bottom'; g.fillText(ITEM[G.carry].ic,px+16,py+2); g.textAlign='start'; g.textBaseline='alphabetic'; }
   if(PL.dir==='up'){g.fillRect(px+9,py+4,14,8);} else { g.fillStyle='#1b1a22'; const ox=PL.dir==='left'?-2:PL.dir==='right'?2:0; g.fillRect(px+12+ox,py+8,2,3); g.fillRect(px+18+ox,py+8,2,3); }
 }
 
