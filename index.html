@@ -81,6 +81,7 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .seg button .tr{display:block;font-size:.68rem;color:inherit;opacity:.75;font-weight:400;line-height:1.2}
 .setrow .k .tr{display:block;font-size:.72rem;opacity:.8;line-height:1.2}
 .setx{padding:2px 10px;font-size:1rem}
+.tr{display:block;font-size:.72em;opacity:.8;font-weight:400;line-height:1.25;letter-spacing:0}
 #modal h1 .tr,#modal .big .tr{display:block;font-size:.72rem;opacity:.8;font-weight:400;line-height:1.2}
 #modal{display:none;position:fixed;inset:0;background:rgba(40,38,34,.35);z-index:10;overflow:auto;padding:20px 14px}
 #modal.show{display:block}
@@ -737,8 +738,16 @@ const LEVEL_Q={1:10,2:10,3:10};
 const WALK_POS=['side','front','back','left','right'];
 const CHOOSE_POS=['up','down','in','side','front','back'];
 
-const t=(k,r)=>{const c=uiCol();let s=(UI[c]&&UI[c][k]!==undefined)?UI[c][k]:UI.tw[k]; if(r&&typeof s==='string')for(const x in r)s=s.replace('{'+x+'}',r[x]); return s;};
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SEP='\u2063';
+const plain=x=>String(x).split(SEP).join(' · ');
+function tcol(c,k,r){let s=(UI[c]&&UI[c][k]!==undefined)?UI[c][k]:UI.tw[k]; if(r&&typeof s==='string')for(const x in r)s=s.replace('{'+x+'}',r[x]); return s;}
+const tzh=(k,r)=>tcol(isSimp()?'cn':'tw',k,r);
+// 介面文字：中文在上、學生的語言在下（選「Solo chino」只有中文）；跟「練習時間」同樣做法
+const t=(k,r)=>{const z=tzh(k,r); if(S.lang==='zh')return z; const o=tcol(S.lang,k,r);
+  if(Array.isArray(z))return z.map((x,i)=>(o&&o[i]&&o[i]!==x)?x+SEP+o[i]:x);
+  return (typeof z==='string'&&typeof o==='string'&&o!==z)?z+SEP+o:z;};
+const esc0=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc=s=>{s=String(s);const k=s.indexOf(SEP);return k<0?esc0(s):esc0(s.slice(0,k))+'<span class="tr">'+esc0(s.slice(k+1))+'</span>';};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 
 // 漢字 + 逐字讀音
@@ -871,7 +880,7 @@ function arrive(){
   if(lv===2) return badArrive(F.tw,F.es,F.en,{type:'furn',id:st.f});
   return badArrive(F.tw+p.tw, p.es+' '+F.es, p.en+' the '+F.en, {type:'furn',id:st.f});
 }
-function neutral(){ if(G.neutral++<3&&G.level>=2) toast(t('nothing')); }
+function neutral(){ if(G.neutral++<3&&G.level>=2) toast(plain(t('nothing'))); }
 function revealPlace(){
   const st=curStop();
   if(G.level===1){ G.revealRoom=st.r; buildLabels(); setTimeout(()=>{ if(G){G.revealRoom=null;buildLabels();} },2400); }
@@ -885,7 +894,7 @@ function okArrive(pts,next){
 function badArrive(zh,es,en,rev){
   const q=curQ(); loseHeart(rev);
   const lang=S.lang==='en'?en:es;
-  toast('✗ '+t('here')+' '+zh+(S.lang==='zh'?'':' · '+lang.replace(/\bde el\b/g,'del')),true);
+  toast('✗ '+tzh('here')+' '+zh+(S.lang==='zh'?'':' · '+lang.replace(/\bde el\b/g,'del')),true);
 }
 function loseHeart(rev){
   const q=curQ(); G.stepWrong=true; q.hadMiss=true; G.hearts--; G.combo=0; sfx('bad');
@@ -917,7 +926,7 @@ function finishQuestion(){
   const mult=G.combo>=5?2:G.combo>=3?1.5:1, lm=(G.listen&&!q.peeked)?1.5:1;
   const gain=Math.round(sub*mult*lm);
   G.score+=gain; G.busy=true; G.phase='busy';
-  let msg='+'+gain; if(mult>1)msg+='  ×'+mult+' '+t('combo'); if(bonus)msg+='  ⚡';
+  let msg='+'+gain; if(mult>1)msg+='  ×'+mult+' '+tzh('combo'); if(bonus)msg+='  ⚡';
   toast(msg); sfx('done'); G.qi++; updateAll();
   if(G.qi>=G.qs.length)setTimeout(()=>endGame(true),900); else setTimeout(()=>{G.busy=false;beginQuestion(false);},900);
 }
@@ -1012,10 +1021,11 @@ function updateSent(){
 function updateTools(){
   const el=document.getElementById('tools'); if(!el||G.qi>=G.qs.length)return; const q=curQ();
   el.innerHTML=`<button data-a="replay">🔊 ${esc(t('replay'))}</button>
-   <button data-a="hint" ${(G.hints<=0||G.stepHint||G.busy)?'disabled':''}>💡 ${esc(t('hint'))} ${G.hints}</button>
+   <button data-a="hint" ${(G.hints<=0||G.stepHint||G.busy)?'disabled':''}>💡 ${(()=>{const [z,o]=t('hint').split(SEP);return esc(z)+' '+G.hints+(o?'<span class="tr">'+esc0(o)+'</span>':'');})()}</button>
    ${G.listen&&!q.peeked?`<button data-a="peek">👁 ${esc(t('peek'))}</button>`:''}`;
   const sn=document.getElementById('stepname'); if(sn)sn.textContent=G.phase==='go'?(G.carry?ITEM[G.carry].ic+' '+(isSimp()?ITEM[G.carry].cn:ITEM[G.carry].tw)+'　':'')+t('ph_go')+((G.level>=3&&['left','right'].includes(curStop().p))?'　('+t('lrnote')+')':''):G.phase==='pos'?t('ph_pos'):G.phase==='item'?t('ph_item'):'';
-  const comboTxt=G.combo>=2?'🔥 '+t('combo')+' '+G.combo:''; if(sn&&comboTxt)sn.textContent+='　'+comboTxt;
+  const comboTxt=G.combo>=2?'🔥 '+tzh('combo')+' '+G.combo:''; if(sn&&comboTxt)sn.textContent+='　'+comboTxt;
+  if(sn)sn.textContent=plain(sn.textContent);
 }
 function updateSheet(){
   const el=document.getElementById('sheet'); if(!el)return;
@@ -1062,7 +1072,7 @@ function renderEnd(){
    ${rev?`<div class="h2">${esc(t('review'))}</div><div class="rev">${rev}</div>`:''}
    <div class="h2">${esc(t('board'))} · ${G.level}</div>
    <div class="card board"><div id="board"></div>
-   ${G.saved?`<div class="small" style="margin-top:8px">✓ ${esc(t('saved'))}</div>`:`<div class="row" style="margin-top:10px"><input type="text" id="nm" maxlength="12" placeholder="${esc(t('yourname'))}" value="${esc(NAME)}"><button data-a="saveScore">${esc(t('save'))}</button></div>`}</div>
+   ${G.saved?`<div class="small" style="margin-top:8px">✓ ${esc(t('saved'))}</div>`:`<div class="row" style="margin-top:10px"><input type="text" id="nm" maxlength="12" placeholder="${esc0(plain(t('yourname')))}" value="${esc(NAME)}"><button data-a="saveScore">${esc(t('save'))}</button></div>`}</div>
    <div style="display:grid;gap:8px;margin-top:16px">${canNext?`<button class="big" data-a="lv" data-v="${G.level+1}">${esc(t('next'))} ›</button>`:''}
    <button class="${canNext?'':'big'}" data-a="lv" data-v="${G.level}">${esc(t('again'))}</button><button class="ghost" data-a="levels">${esc(t('menu'))}</button></div>`;
 }
@@ -1291,10 +1301,10 @@ const Board={
 };
 async function loadBoard(){
   const el=document.getElementById('board'); if(!el||!G)return;
-  el.innerHTML=`<div class="small">${t('loading')}</div>`;
+  el.innerHTML=`<div class="small">${esc(t('loading'))}</div>`;
   const {remote,rows}=await Board.top(G.level), el2=document.getElementById('board'); if(!el2)return;
-  el2.innerHTML=rows.length?`<ol>${rows.map(r=>`<li><span>${esc(r.name||'?')}${r.listen?' 🎧':''}</span><span>${r.score}</span></li>`).join('')}</ol>`:`<div class="small">${t('nobody')}</div>`;
-  if(!remote&&!FIREBASE_CONFIG)el2.insertAdjacentHTML('beforeend',`<div class="small" style="margin-top:6px">${t('localnote')}</div>`);
+  el2.innerHTML=rows.length?`<ol>${rows.map(r=>`<li><span>${esc(r.name||'?')}${r.listen?' 🎧':''}</span><span>${r.score}</span></li>`).join('')}</ol>`:`<div class="small">${esc(t('nobody'))}</div>`;
+  if(!remote&&!FIREBASE_CONFIG)el2.insertAdjacentHTML('beforeend',`<div class="small" style="margin-top:6px">${esc(t('localnote'))}</div>`);
 }
 
 // ============ 事件 ============
@@ -1343,7 +1353,7 @@ addEventListener('storage',e=>{
 let voiceMissing=false, voiceDismissed=false;
 function updateVoiceHint(){
   const el=document.getElementById('voice-hint'); if(!el)return;
-  document.getElementById('voice-hint-txt').textContent=t('voiceHint');
+  document.getElementById('voice-hint-txt').textContent=plain(t('voiceHint'));
   el.className=(voiceMissing&&!voiceDismissed)?'show':'';
 }
 document.getElementById('voice-hint-close').addEventListener('click',()=>{voiceDismissed=true;updateVoiceHint();});
