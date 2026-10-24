@@ -78,6 +78,10 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .seg button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
 .setrow{margin-bottom:14px}
 .setrow .k{font-size:.85rem;color:var(--sub);margin-bottom:6px}
+.seg button .tr{display:block;font-size:.68rem;color:inherit;opacity:.75;font-weight:400;line-height:1.2}
+.setrow .k .tr{display:block;font-size:.72rem;opacity:.8;line-height:1.2}
+.setx{padding:2px 10px;font-size:1rem}
+#modal h1 .tr,#modal .big .tr{display:block;font-size:.72rem;opacity:.8;font-weight:400;line-height:1.2}
 #modal{display:none;position:fixed;inset:0;background:rgba(40,38,34,.35);z-index:10;overflow:auto;padding:20px 14px}
 #modal.show{display:block}
 #modal .card{max-width:440px;margin:0 auto}
@@ -1063,17 +1067,25 @@ function renderEnd(){
    <button class="${canNext?'':'big'}" data-a="lv" data-v="${G.level}">${esc(t('again'))}</button><button class="ghost" data-a="levels">${esc(t('menu'))}</button></div>`;
 }
 function settingsHTML(){
-  const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${String(S[k])===String(v)?'on':''}" data-a="set" data-k="${k}" data-v="${v}">${esc(l)}</button>`).join('')}</div>`;
-  return `<div class="card"><h1 style="font-size:1.3rem">⚙︎ ${esc(t('settings'))}</h1>
-  <div class="setrow"><div class="k">${esc(t('uiLang'))}</div>${seg('lang',[['zh','中文'],['es','Español'],['en','English']])}</div>
-  <div class="setrow"><div class="k">${esc(t('scriptL'))}</div>${seg('script',[['trad','繁體'],['simp','简体']])}</div>
-  <div class="setrow"><div class="k">${esc(t('reading'))}</div>${seg('phon',[['pinyin',t('py')],['zhuyin',t('zy')],['both',t('both')],['off',t('none')]])}</div>
-  <div class="setrow"><div class="k">${esc(t('rate'))}</div>${seg('rate',[['slow',t('slow')],['normal',t('normal')],['fast',t('fast')]])}</div>
-  <div class="setrow"><div class="k">${esc(t('sound'))}</div>${seg('sound',[['on',t('on')],['off',t('off')]])}</div>
-  <button class="big" data-a="closeSet">${esc(t('close'))}</button></div>`;
+  // 跟「練習時間」同樣做法：中文在上，下面小字是學生的語言（只有選「Solo chino」時不顯示）
+  const lh=(tw,cn,es,en)=>{ const tt=S.lang==='es'?es:S.lang==='en'?en:''; return esc(isSimp()?cn:tw)+(tt?`<span class="tr">${esc(tt)}</span>`:''); };
+  const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${String(S[k])===String(v)?'on':''}" data-a="set" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</div>`;
+  const row=(l,body)=>`<div class="setrow"><div class="k">${l}</div>${body}</div>`;
+  return `<div class="card"><h1 style="font-size:1.3rem;display:flex;align-items:center;justify-content:space-between"><span>⚙︎ ${lh('設定','设置','Ajustes','Settings')}</span><button class="setx" data-a="closeSet" aria-label="close">✕</button></h1>
+  ${row(lh('字形','字形','Escritura','Script'),seg('script',[['trad','繁體'],['simp','简体']]))}
+  ${row(lh('介面語言','界面语言','Idioma','Language'),seg('lang',[['es','Chino + Español'],['en','Chino + English'],['zh','Solo chino']]))}
+  ${row(lh('拼音／注音','拼音／注音','Pinyin / Zhuyin','Pinyin / Zhuyin'),seg('phon',[['pinyin','Pinyin'],['zhuyin','Zhuyin<span class="tr">ㄅㄆㄇ</span>'],['both',lh('兩者','两者','Ambos','Both')],['off',lh('關','关','Apagado','Off')]]))}
+  ${row(lh('語速','语速','Voz','Voice'),seg('rate',[['slow',lh('慢','慢','Lento','Slow')],['normal',lh('一般','一般','Normal','Normal')],['fast',lh('快','快','Rápido','Fast')]]))}
+  ${row(lh('音效','音效','Sonido','Sound'),seg('sound',[['on',lh('開','开','Sí','On')],['off',lh('關','关','No','Off')]]))}
+  <button class="big" data-a="closeSet">${lh('關閉','关闭','Cerrar','Close')}</button></div>`;
 }
-function openSettings(){const m=document.getElementById('modal');m.innerHTML=settingsHTML();m.className='show';}
-function closeSettings(){const m=document.getElementById('modal');m.className='';m.innerHTML='';render();}
+let setHist=false;
+function openSettings(){const m=document.getElementById('modal');m.innerHTML=settingsHTML();m.className='show';
+  try{ if(!setHist){history.pushState({set:1},'');setHist=true;} }catch(e){} }
+function closeSettings(fromPop){const m=document.getElementById('modal');m.className='';m.innerHTML='';
+  if(setHist&&!fromPop){ setHist=false; try{history.back();}catch(e){} } else setHist=false;
+  render();}
+window.addEventListener('popstate',()=>{ if(setHist){ setHist=false; closeSettings(true); } });
 
 // ============ 地圖文字（HTML 疊在畫布上） ============
 let scale=1, camY=0, camSnap=true, lastCam=null;
