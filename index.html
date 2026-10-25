@@ -849,19 +849,24 @@ function itemImg(id){
   return _imgCache[id]=im;
 }
 // 位置示意圖：灰色方塊是家具，紅點是東西
-function posIcon(id){
-  const box=`<rect x="9" y="12" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`;
-  const dot=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.2" fill="#d8402c"/>`;
-  let b='';
-  if(id==='up')b=box+dot(16,7);
-  else if(id==='down')b=`<rect x="9" y="6" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(16,24);
-  else if(id==='in')b=box+dot(16,17);
-  else if(id==='side')b=`<rect x="5" y="12" width="12" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(24,17);
-  else if(id==='front')b=`<rect x="9" y="6" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(16,23)+`<path d="M16 17v3" stroke="#d8402c" stroke-width="1.4"/>`;
-  else if(id==='back')b=`<rect x="9" y="14" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(16,7)+`<path d="M16 11v2" stroke="#d8402c" stroke-width="1.4"/>`;
-  else if(id==='left')b=`<rect x="14" y="12" width="12" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(7,17);
-  else b=`<rect x="6" y="12" width="12" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(25,17);
-  return `<svg class="psv" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true">${b}</svg>`;
+function posIcon(id,sz){
+  // 側面圖：灰色是家具，紅球是東西；用位置、大小、遮擋表示方位
+  const F='#d9d4c8', K='#6b665c', B='#d8402c', sw=`stroke="${K}" stroke-width="1.6" stroke-linejoin="round"`;
+  const ball=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${B}" stroke="#8f2a1c" stroke-width="1"/>`;
+  const ground=`<path d="M3 41h42" stroke="#b9b3a5" stroke-width="1.4" stroke-linecap="round"/>`;
+  const table=`<rect x="10" y="22" width="28" height="5" rx="1" fill="${F}" ${sw}/><path d="M13 27v14M35 27v14" ${sw} stroke-linecap="round"/>`;
+  const box=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${F}" ${sw}/>`;
+  let b=ground;
+  if(id==='up') b+=table+ball(24,15.5,5.5);
+  else if(id==='down') b+=table+ball(24,35,5.5);
+  else if(id==='in') b+=`<path d="M10 20h28v21H10z" fill="${F}" ${sw}/>`+ball(24,24,6.5)+`<path d="M10 28h28v13H10z" fill="${F}" ${sw}/><path d="M7 20h34" ${sw} stroke-linecap="round"/>`;
+  else if(id==='side') b+=box(7,16,20,25)+ball(37,35.5,5.5);
+  else if(id==='left') b+=box(21,16,20,25)+ball(11,35.5,5.5);
+  else if(id==='right') b+=box(7,16,20,25)+ball(37,35.5,5.5);
+  else if(id==='front') b+=box(10,12,28,24)+ball(24,35,7.5)+`<ellipse cx="24" cy="42.5" rx="8" ry="1.8" fill="#b9b3a5"/>`;
+  else b+=ball(34,34,6.5)+box(8,14,26,27);   // back：球被家具擋住一半
+  sz=sz||34;
+  return `<svg class="psv" viewBox="0 0 48 48" width="${sz}" height="${sz}" aria-hidden="true">${b}</svg>`;
 }
 
 // 漢字 + 逐字讀音
