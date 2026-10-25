@@ -668,7 +668,7 @@ tw:{title:'我要放哪裡？',sub:'聽句子，把東西放到家裡對的地�
  ph_go:'帶著它，點地圖走到目的地',ph_pos:'選出位置',ph_item:'選出要放的東西',
  here:'這裡是',nothing:'走到家具旁邊再停下來',
  win:'過關了！',lose:'愛心用完了',score:'分數',acc:'正確率',review:'需要複習的詞',again:'再玩一次',menu:'關卡選單',next:'下一級',
- board:'排行榜',loading:'載入中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'還沒有紀錄',localnote:'（本機排行榜）',
+ board:'排行榜',loading:'載入中…',yourname:'你的名字',needname:'請先輸入名字',save:'存入排行榜',saved:'已存入',nobody:'還沒有紀錄',localnote:'（本機排行榜）',
  howto:['聽（或看）句子','先選出要放的東西','帶著它，點地圖走到目的地'],quit:'離開',combo:'連擊',best:'最高'},
 cn:{title:'我要放哪里？',sub:'听句子，把东西放到家里对的地方',newhouse:'每次的家都不一样',play:'开始游戏',settings:'设置',levels:'选择关卡',back:'返回',
  lvn:['放到房间','放到家具旁边','放到准确位置'],
@@ -682,7 +682,7 @@ cn:{title:'我要放哪里？',sub:'听句子，把东西放到家里对的地�
  ph_go:'带着它，点地图走到目的地',ph_pos:'选出位置',ph_item:'选出要放的东西',
  here:'这里是',nothing:'走到家具旁边再停下来',
  win:'过关了！',lose:'爱心用完了',score:'分数',acc:'正确率',review:'需要复习的词',again:'再玩一次',menu:'关卡菜单',next:'下一级',
- board:'排行榜',loading:'加载中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'还没有记录',localnote:'（本机排行榜）',
+ board:'排行榜',loading:'加载中…',yourname:'你的名字',needname:'请先输入名字',save:'存入排行榜',saved:'已存入',nobody:'还没有记录',localnote:'（本机排行榜）',
  howto:['听（或看）句子','先选出要放的东西','带着它，点地图走到目的地'],quit:'离开',combo:'连击',best:'最高'},
 es:{title:'¿Dónde lo pongo?',sub:'Escucha la frase y pon el objeto en su lugar',newhouse:'Cada vez la casa es diferente',play:'Jugar',settings:'Ajustes',levels:'Elige un nivel',back:'Volver',
  lvn:['Poner en la habitación','Poner junto al mueble','Poner en el lugar exacto'],
@@ -696,7 +696,7 @@ es:{title:'¿Dónde lo pongo?',sub:'Escucha la frase y pon el objeto en su lugar
  ph_go:'Llévalo: toca el mapa y camina al destino',ph_pos:'Elige la posición',ph_item:'Elige el objeto que vas a poner',
  here:'Aquí está',nothing:'Párate junto a un mueble',
  win:'¡Nivel superado!',lose:'Te quedaste sin corazones',score:'Puntos',acc:'Aciertos',review:'Para repasar',again:'Jugar otra vez',menu:'Menú de niveles',next:'Siguiente nivel',
- board:'Clasificación',loading:'Cargando…',yourname:'Tu nombre',save:'Guardar',saved:'Guardado',nobody:'Aún no hay registros',localnote:'(clasificación local)',
+ board:'Clasificación',loading:'Cargando…',yourname:'Tu nombre',needname:'Escribe tu nombre primero',save:'Guardar',saved:'Guardado',nobody:'Aún no hay registros',localnote:'(clasificación local)',
  howto:['Escucha (o lee) la frase','Elige el objeto que vas a poner','Llévalo: toca el mapa y camina al destino'],quit:'Salir',combo:'Racha',best:'Récord'},
 en:{title:'Where Do I Put It?',sub:'Listen to the sentence and put the item in the right place',newhouse:'A different home every time',play:'Play',settings:'Settings',levels:'Choose a level',back:'Back',
  lvn:['Put it in the room','Put it next to furniture','Put it in the exact spot'],
@@ -710,7 +710,7 @@ en:{title:'Where Do I Put It?',sub:'Listen to the sentence and put the item in t
  ph_go:'Carry it: tap the map and walk to the spot',ph_pos:'Pick the position',ph_item:'Pick the item to put away',
  here:"That's",nothing:'Stop next to a piece of furniture',
  win:'Level cleared!',lose:'Out of hearts',score:'Score',acc:'Accuracy',review:'Words to review',again:'Play again',menu:'Level menu',next:'Next level',
- board:'Leaderboard',loading:'Loading…',yourname:'Your name',save:'Save score',saved:'Saved',nobody:'No scores yet',localnote:'(local board)',
+ board:'Leaderboard',loading:'Loading…',yourname:'Your name',needname:'Enter your name first',save:'Save score',saved:'Saved',nobody:'No scores yet',localnote:'(local board)',
  howto:['Listen to (or read) the sentence','Pick the item to put away','Carry it: tap the map and walk to the spot'],quit:'Quit',combo:'Streak',best:'Best'}
 };
 
@@ -1476,7 +1476,8 @@ document.addEventListener('click',e=>{
     case 'hint':useHint();break;
     case 'peek':{curQ().peeked=true;updateSent();updateTools();break;}
     case 'saveScore':{
-      const inp=document.getElementById('nm');const nm=((inp&&inp.value)||'').trim()||'Player';
+      const inp=document.getElementById('nm');const nm=((inp&&inp.value)||'').trim();
+      if(!nm){ toast(plain(t('needname')),true); if(inp)inp.focus(); break; }
       NAME=nm;save();G.saved=true;
       Board.submit(G.level,nm,G.res.score,G.listen).then(()=>{if(screen==='end'){render();loadBoard();}});
       break;
