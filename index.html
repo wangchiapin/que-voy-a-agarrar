@@ -133,7 +133,10 @@ input[type=text]{font:inherit;padding:9px 10px;border:1.5px solid var(--line);bo
  #sheetSlot #sheet{position:static;transform:none;display:none;border:1.5px solid var(--line);border-radius:12px;background:var(--card);padding:12px}
  #sheetSlot #sheet.show{display:block}
 }
-.homeic{color:var(--ink)}
+.homeic{color:var(--ink);line-height:0;flex:none}
+.ttl{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px}
+.ttl h1{margin:0;text-align:left;line-height:1.2}
+.ttl h1 .tr{font-size:.5em;opacity:.7;letter-spacing:.02em;margin-top:2px}
 .small{font-size:.8rem;color:var(--sub)}
 </style>
 </head>
@@ -1176,7 +1179,7 @@ function renderHome(){
       <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?IC('lock',14)+' '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
   }).join('');
   return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
-  <div class="hero center"><div class="homeic">${IC('house',54)}</div><h1>${esc(t('title'))}</h1><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
+  <div class="hero center"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
   <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>
   <div class="h2">${esc(t('levels'))}</div>${cards}
   <ul class="howto">${t('howto').map((x,i)=>`<li data-n="${i+1}">${esc(x)}</li>`).join('')}</ul>`;
