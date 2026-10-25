@@ -87,6 +87,7 @@ button .ic{margin-right:4px}
 .posg,.itg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .pb,.item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px}
 .pb .pic{line-height:0}
+.pb:has(.pic:only-child){padding:16px 4px}
 .item .iic{line-height:0;padding:4px 0}
 .lab2,.pb .lab,.item .lab{font-size:1rem;line-height:1.9;text-align:center}
 .pb .tr,.item .tr{font-size:.74rem;color:var(--sub)}
@@ -739,7 +740,7 @@ function writeShared(o){   // 合併寫入：保留其他遊戲寫的未知欄�
   }catch(e){}
 }
 // 本遊戲專屬設定
-const DEF={listen:false,labels:'room',sound:'on'};
+const DEF={listen:false,labels:'room',sound:'on',posTxt:'off'};
 let S={...SHARED_DEF,...DEF}, P0={unlocked:1,best:{}}, NAME='';
 try{
   const d=JSON.parse(localStorage.getItem(LSK)||'{}')||{};
@@ -758,7 +759,7 @@ try{
   }
 }catch(e){}
 Object.assign(S,readShared());
-function save(){try{localStorage.setItem(LSK,JSON.stringify({S:{listen:S.listen,labels:S.labels,sound:S.sound},P:P0,name:NAME}))}catch(e){}}
+function save(){try{localStorage.setItem(LSK,JSON.stringify({S:{listen:S.listen,labels:S.labels,sound:S.sound,posTxt:S.posTxt},P:P0,name:NAME}))}catch(e){}}
 // 由共用設定推出：中文字型欄（tw/cn）、介面欄、翻譯語言
 const isSimp=()=>S.script==='simp';
 const uiCol=()=>S.lang==='zh'?(isSimp()?'cn':'tw'):S.lang;
@@ -1171,7 +1172,7 @@ function updateSheet(){
   const st=curStop(), F=FURN[st.f], cls=(id,tg)=>(G.dead.has(id)?' ng':'')+(G.flash===id?' ok':'')+((G.stepHint&&id===tg&&!G.flash)?' hint':'');
   const head=G.phase==='pos'?`<div class="sh-h">${R(F)}</div>`:'';
   if(G.phase==='pos'){
-    el.innerHTML=head+`<div class="posg">${POSS.filter(p=>CHOOSE_POS.includes(p.id)).map(p=>`<button class="pb${cls(p.id,st.p)}" data-a="pos" data-v="${p.id}" ${G.dead.has(p.id)?'disabled':''}><span class="pic">${posIcon(p.id)}</span><span class="lab">${R(p)}</span>${tr(p)}</button>`).join('')}</div>`;
+    el.innerHTML=head+`<div class="posg">${POSS.filter(p=>CHOOSE_POS.includes(p.id)).map(p=>`<button class="pb${cls(p.id,st.p)}" data-a="pos" data-v="${p.id}" ${G.dead.has(p.id)?'disabled':''}><span class="pic">${posIcon(p.id,S.posTxt==='on'?36:84)}</span>${S.posTxt==='on'?`<span class="lab">${R(p)}</span>${tr(p)}`:''}</button>`).join('')}</div>`;
   }else{
     el.innerHTML=head+`<div class="itg">${st.ch.map(id=>{const it=ITEM[id];return `<button class="item${cls(id,st.i)}" data-a="item" data-v="${id}" ${G.dead.has(id)?'disabled':''}><span class="iic">${itemSvg(id,G.wide?72:56)}</span>${(G.stepHint||G.dead.has(id)||G.flash===id)?`<span class="lab">${R(it)}</span>${tr(it)}`:''}</button>`;}).join('')}</div>`;
   }
@@ -1234,6 +1235,7 @@ function settingsHTML(){
   ${row(lh('拼音／注音','拼音／注音','Pinyin / Zhuyin','Pinyin / Zhuyin'),seg('phon',[['pinyin','Pinyin'],['zhuyin','Zhuyin<span class="tr">ㄅㄆㄇ</span>'],['both',lh('兩者','两者','Ambos','Both')],['off',lh('關','关','Apagado','Off')]]))}
   ${row(lh('語速','语速','Voz','Voice'),seg('rate',[['slow',lh('慢','慢','Lento','Slow')],['normal',lh('一般','一般','Normal','Normal')],['fast',lh('快','快','Rápido','Fast')]]))}
   ${row(IC('head',15)+' '+lh('聽力模式（不顯示句子，分數 ×1.5）','听力模式（不显示句子，分数 ×1.5）','Modo escucha (sin texto, puntos ×1.5)','Listening mode (no text, score ×1.5)'),`<div class="seg"><button class="${S.listen?'on':''}" data-a="setListen" data-v="1">${lh('開','开','Sí','On')}</button><button class="${S.listen?'':'on'}" data-a="setListen" data-v="0">${lh('關','关','No','Off')}</button></div>`)}
+  ${row(lh('方位選項顯示文字','方位选项显示文字','Texto en las opciones de posición','Text on position options'),seg('posTxt',[['off',lh('只有圖','只有图','Solo imagen','Image only')],['on',lh('圖＋字','图＋字','Imagen + texto','Image + text')]]))}
   ${row(lh('音效','音效','Sonido','Sound'),seg('sound',[['on',lh('開','开','Sí','On')],['off',lh('關','关','No','Off')]]))}
   <button class="big" data-a="closeSet">${lh('關閉','关闭','Cerrar','Close')}</button></div>`;
 }
