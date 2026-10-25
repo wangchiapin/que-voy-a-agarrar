@@ -40,7 +40,10 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .lvcard{display:block;width:100%;text-align:left;margin-bottom:10px;padding:14px}
 .lvcard .n{font-weight:600}
 .lvcard .d{color:var(--sub);font-size:.9rem;margin-top:2px}
-.lvcard .meta{display:flex;justify-content:space-between;margin-top:8px;font-size:.85rem;color:var(--sub)}
+.lvcard .meta{margin-top:6px;font-size:.8rem;color:var(--sub)}
+.lvcard .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.lvcard .rt{display:flex;align-items:center;gap:8px;flex:none;color:var(--sub);line-height:1.5}
+.lvcard .sc{font-size:.95rem;font-weight:600;color:var(--ink)}
 .stars{letter-spacing:.1em;color:var(--hi)}
 .switch{display:flex;justify-content:space-between;align-items:center;width:100%;margin:6px 0 16px;text-align:left}
 .switch .tg{width:42px;height:24px;border-radius:12px;background:var(--line);position:relative;flex:none}
@@ -654,8 +657,8 @@ function genHouse(seed){
 // ============ 介面文字 ============
 const UI={
 tw:{title:'我要放哪裡？',sub:'聽句子，把東西放到家裡對的地方',newhouse:'每次的家都不一樣',play:'開始遊戲',settings:'設定',levels:'選擇關卡',back:'返回',
- lvn:['認識房間','走到家具','加上方位詞'],
- lvd:['選對東西，放到對的房間','選對東西，放到對的家具','走到家具的旁邊、前面、後面、左邊、右邊，或選上面、下面、裡面'],
+ lvn:['放到房間','放到家具旁邊','放到準確位置'],
+ lvd:['選對東西，放到對的房間','選對東西，放到對的家具旁邊','選對東西，放到家具的準確位置'],
  locked:'上一級拿到 2 顆星才能解鎖',listen:'聽力模式',listenD:'不顯示句子，分數 ×1.5',
  uiLang:'語言',scriptL:'字體',reading:'讀音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不顯示',rate:'語速',slow:'慢',normal:'正常',fast:'快',voiceHint:'這個裝置沒有中文語音，聽不到句子。請改用有中文語音的瀏覽器或裝置。',close:'完成',
  sound:'音效',on:'開',off:'關',
@@ -668,8 +671,8 @@ tw:{title:'我要放哪裡？',sub:'聽句子，把東西放到家裡對的地�
  board:'排行榜',loading:'載入中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'還沒有紀錄',localnote:'（本機排行榜）',
  howto:['聽（或看）句子','先選出要放的東西','帶著它，點地圖走到目的地'],quit:'離開',combo:'連擊',best:'最高'},
 cn:{title:'我要放哪里？',sub:'听句子，把东西放到家里对的地方',newhouse:'每次的家都不一样',play:'开始游戏',settings:'设置',levels:'选择关卡',back:'返回',
- lvn:['认识房间','走到家具','加上方位词'],
- lvd:['选对东西，放到对的房间','选对东西，放到对的家具','走到家具的旁边、前面、后面、左边、右边，或选上面、下面、里面'],
+ lvn:['放到房间','放到家具旁边','放到准确位置'],
+ lvd:['选对东西，放到对的房间','选对东西，放到对的家具旁边','选对东西，放到家具的准确位置'],
  locked:'上一级拿到 2 颗星才能解锁',listen:'听力模式',listenD:'不显示句子，分数 ×1.5',
  uiLang:'语言',scriptL:'字体',reading:'读音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不显示',rate:'语速',slow:'慢',normal:'正常',fast:'快',voiceHint:'这个设备没有中文语音，听不到句子。请改用有中文语音的浏览器或设备。',close:'完成',
  sound:'音效',on:'开',off:'关',
@@ -682,8 +685,8 @@ cn:{title:'我要放哪里？',sub:'听句子，把东西放到家里对的地�
  board:'排行榜',loading:'加载中…',yourname:'你的名字',save:'存入排行榜',saved:'已存入',nobody:'还没有记录',localnote:'（本机排行榜）',
  howto:['听（或看）句子','先选出要放的东西','带着它，点地图走到目的地'],quit:'离开',combo:'连击',best:'最高'},
 es:{title:'¿Dónde lo pongo?',sub:'Escucha la frase y pon el objeto en su lugar',newhouse:'Cada vez la casa es diferente',play:'Jugar',settings:'Ajustes',levels:'Elige un nivel',back:'Volver',
- lvn:['Las habitaciones','Ir al mueble','Palabras de lugar'],
- lvd:['Elige el objeto y ponlo en la habitación correcta','Elige el objeto y ponlo en el mueble correcto','Camina al lado, delante, detrás, a la izquierda o a la derecha; o elige encima, debajo, dentro'],
+ lvn:['Poner en la habitación','Poner junto al mueble','Poner en el lugar exacto'],
+ lvd:['Elige el objeto y ponlo en la habitación correcta','Elige el objeto y ponlo junto al mueble correcto','Elige el objeto y ponlo en el lugar exacto del mueble'],
  locked:'Consigue 2 estrellas en el nivel anterior',listen:'Modo escucha',listenD:'Sin texto de la frase, puntos ×1.5',
  uiLang:'Idioma',scriptL:'Escritura',reading:'Pronunciación',py:'Pinyin',zy:'Zhuyin',both:'Pinyin + Zhuyin',none:'Ninguna',rate:'Velocidad de voz',slow:'Lenta',normal:'Normal',fast:'Rápida',voiceHint:'Este dispositivo no tiene voz en chino, así que no oirás las frases. Prueba con otro navegador o dispositivo.',close:'Listo',
  sound:'Sonido',on:'Sí',off:'No',
@@ -696,8 +699,8 @@ es:{title:'¿Dónde lo pongo?',sub:'Escucha la frase y pon el objeto en su lugar
  board:'Clasificación',loading:'Cargando…',yourname:'Tu nombre',save:'Guardar',saved:'Guardado',nobody:'Aún no hay registros',localnote:'(clasificación local)',
  howto:['Escucha (o lee) la frase','Elige el objeto que vas a poner','Llévalo: toca el mapa y camina al destino'],quit:'Salir',combo:'Racha',best:'Récord'},
 en:{title:'Where Do I Put It?',sub:'Listen to the sentence and put the item in the right place',newhouse:'A different home every time',play:'Play',settings:'Settings',levels:'Choose a level',back:'Back',
- lvn:['Rooms','Go to furniture','Position words'],
- lvd:['Pick the item and put it in the right room','Pick the item and put it at the right furniture','Stand beside, in front, behind, left or right; or pick on top, under, inside'],
+ lvn:['Put it in the room','Put it next to furniture','Put it in the exact spot'],
+ lvd:['Pick the item and put it in the right room','Pick the item and put it next to the right furniture','Pick the item and put it in the exact spot on the furniture'],
  locked:'Get 2 stars on the previous level',listen:'Listening mode',listenD:'No sentence text, score ×1.5',
  uiLang:'Language',scriptL:'Script',reading:'Reading aid',py:'Pinyin',zy:'Zhuyin',both:'Pinyin + Zhuyin',none:'None',rate:'Voice speed',slow:'Slow',normal:'Normal',fast:'Fast',voiceHint:'This device has no Chinese voice, so you will not hear the sentences. Try another browser or device.',close:'Done',
  sound:'Sound',on:'On',off:'Off',
@@ -1204,8 +1207,7 @@ function renderHome(){
   const cards=[1,2,3].map(n=>{
     const locked=!QS.get("unlock")&&P0.unlocked<n, b=P0.best[n];
     return `<button class="lvcard" data-a="lv" data-v="${n}" ${locked?'disabled':''}>
-      <div class="n">${n}. ${esc(t('lvn')[n-1])}</div><div class="d">${esc(t('lvd')[n-1])}</div>
-      <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?IC('lock',14)+' '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
+      <div class="top"><div class="n">${n}. ${esc(t('lvn')[n-1])}</div><div class="rt">${locked?IC('lock',16):`<span class="stars">${stars(b?b.stars:0)}</span>${b?`<span class="sc">${b.score}</span>`:''}`}</div></div><div class="d">${esc(t('lvd')[n-1])}</div>${locked?`<div class="meta">${esc(t('locked'))}</div>`:''}</button>`;
   }).join('');
   return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
   <div class="hero center"><div class="plq"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p></div></div>
