@@ -65,6 +65,12 @@ button .ic{margin-right:4px}
 .mlab.furn{font-size:10px;padding:0 4px;line-height:1.5;background:rgba(255,253,246,.8)}
 #tag{position:absolute;left:0;top:0;pointer-events:none;background:#fffdf6;border:2px solid var(--ink);border-radius:10px;padding:2px 10px;white-space:nowrap;line-height:2;font-size:14px;opacity:0;transition:opacity .15s;z-index:3}
 #tag.show{opacity:1}
+#roombar{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(.96);background:rgba(43,42,39,.92);color:#fffdf6;border-radius:16px;padding:10px 22px;text-align:center;line-height:1.6;opacity:0;pointer-events:none;z-index:5;max-width:90%}
+#roombar.show{animation:rbs 1.9s forwards}
+#roombar .rb-zh{font-size:1.35rem;white-space:nowrap}
+#roombar rt{color:#d8d2c2}
+#roombar .rb-tr{font-size:.9rem;opacity:.85;line-height:1.3;margin-top:2px}
+@keyframes rbs{0%{opacity:0;transform:translate(-50%,-50%) scale(.9)}12%,78%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 #tag .tr{display:block;font-size:10px;color:var(--sub);line-height:1.2;margin-bottom:2px}
 #sheet{position:absolute;left:0;right:0;bottom:0;background:rgba(251,250,247,.98);border-top:2px solid var(--ink);padding:8px 10px 10px;transform:translateY(105%);transition:transform .2s;z-index:4;line-height:1.3}
 #sheet.show{transform:translateY(0)}
@@ -940,6 +946,7 @@ function startLevel(n){
      stat:{first:0,done:0},review:new Map(),carry:null,phase:'item',stepWrong:false,stepHint:false,dead:new Set(),flash:null,saved:false,res:null,neutral:0};
   PL={x:H.start.x,y:H.start.y,dir:'right',moving:null,path:[],judge:false,goal:null,step:0};
   screen='game'; mountGame(); bakeHouse(); beginQuestion(true);
+  G.curRoom=H.grid[PL.y][PL.x].room; showRoom(G.curRoom,'now');
   try{ window.HGPlays && HGPlays.start('L'+n, NAME); }catch(e){}
 }
 function beginQuestion(first){
@@ -1083,7 +1090,7 @@ function stepPlayer(now){
     const n=PL.path[0]; PL.dir=n.x>PL.x?'right':n.x<PL.x?'left':n.y>PL.y?'down':'up';
     PL.moving={from:{x:PL.x,y:PL.y},to:{x:n.x,y:n.y},t0:now}; PL.path.shift();
   }
-  if(PL.moving&&now-PL.moving.t0>=STEP_MS){ PL.x=PL.moving.to.x; PL.y=PL.moving.to.y; PL.moving=null; PL.step++; }
+  if(PL.moving&&now-PL.moving.t0>=STEP_MS){ PL.x=PL.moving.to.x; PL.y=PL.moving.to.y; PL.moving=null; PL.step++; checkRoom(); }
   if(!PL.moving&&!PL.path.length&&PL.judge){ PL.judge=false; PL.goal=null; arrive(); }
 }
 
@@ -1091,7 +1098,7 @@ function stepPlayer(now){
 const app=document.getElementById('app');
 function mountGame(){
   app.className='gw';
-  app.innerHTML=`<div id="gl"><div id="gm"><div id="wrap"><canvas id="cv" width="${COLS*T}" height="${ROWS*T}"></canvas><div id="labels"></div><div id="tag"></div><div id="sheet"></div></div></div>
+  app.innerHTML=`<div id="gl"><div id="gm"><div id="wrap"><canvas id="cv" width="${COLS*T}" height="${ROWS*T}"></canvas><div id="labels"></div><div id="tag"></div><div id="roombar"></div><div id="sheet"></div></div></div>
   <div id="gside"><div class="top" id="top"></div><div class="card sent" id="sent"></div><div class="tools" id="tools"></div><div class="stepname" id="stepname"></div><div id="sheetSlot"></div></div></div>`;
   placeSheet();
   cv=document.getElementById('cv'); g=cv.getContext('2d'); g.imageSmoothingEnabled=false;
@@ -1106,6 +1113,16 @@ function mountGame(){
 }
 const wideMQ=window.matchMedia('(min-width:900px)');
 function placeSheet(){ const sh=document.getElementById('sheet'); if(!sh)return; if(G)G.wide=wideMQ.matches; const to=document.getElementById(wideMQ.matches?'sheetSlot':'wrap'); if(to&&sh.parentNode!==to)to.appendChild(sh); }
+let rbT=null;
+const RB={ enter:{tw:'你已進入',cn:'你已进入',py:'nǐ yǐ jìn rù',zy:'ㄋㄧˇ ㄧˇ ㄐㄧㄣˋ ㄖㄨˋ',es:r=>'Has entrado en '+r,en:r=>'You entered the '+r},
+           now:{tw:'你現在在',cn:'你现在在',py:'nǐ xiàn zài zài',zy:'ㄋㄧˇ ㄒㄧㄢˋ ㄗㄞˋ ㄗㄞˋ',es:r=>'Ahora estás en '+r,en:r=>'You are now in the '+r} };
+function showRoom(id,kind){
+  const el=document.getElementById('roombar'); if(!el||!ROOM[id])return;
+  const m=RB[kind], rm=ROOM[id], trs=S.lang==='es'?m.es(rm.es):S.lang==='en'?m.en(rm.en):'';
+  el.innerHTML=`<div class="rb-zh">${R(m)}${R(rm)}</div>${trs?`<div class="rb-tr">${esc0(trs)}</div>`:''}`;
+  el.className=''; void el.offsetWidth; el.className='show'; clearTimeout(rbT); rbT=setTimeout(()=>{el.className='';},kind==='now'?2600:1900);
+}
+function checkRoom(){ if(!G)return; const c=G.house.grid[PL.y][PL.x]; if(c&&c.room&&c.room!==G.curRoom){ G.curRoom=c.room; showRoom(c.room,'enter'); } }
 function updateAll(){ if(screen!=='game'||!G)return; updateTop(); updateSent(); updateTools(); updateSheet(); buildLabels(); fitView(); }
 function updateTop(){
   const el=document.getElementById('top'); if(!el)return;
