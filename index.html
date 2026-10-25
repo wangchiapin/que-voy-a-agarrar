@@ -1228,7 +1228,7 @@ function settingsHTML(){
   ${row(lh('介面語言','界面语言','Idioma','Language'),seg('lang',[['es','Chino + Español'],['en','Chino + English'],['zh','Solo chino']]))}
   ${row(lh('拼音／注音','拼音／注音','Pinyin / Zhuyin','Pinyin / Zhuyin'),seg('phon',[['pinyin','Pinyin'],['zhuyin','Zhuyin<span class="tr">ㄅㄆㄇ</span>'],['both',lh('兩者','两者','Ambos','Both')],['off',lh('關','关','Apagado','Off')]]))}
   ${row(lh('語速','语速','Voz','Voice'),seg('rate',[['slow',lh('慢','慢','Lento','Slow')],['normal',lh('一般','一般','Normal','Normal')],['fast',lh('快','快','Rápido','Fast')]]))}
-  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${lh('聽力模式','听力模式','Modo escucha','Listening mode')}</b><br><span class="small">${lh('不顯示句子，分數 ×1.5','不显示句子，分数 ×1.5','Sin texto de la frase, puntos ×1.5','No sentence text, score ×1.5')}</span></span><span class="tg"></span></button>
+  ${row(IC('head',15)+' '+lh('聽力模式（不顯示句子，分數 ×1.5）','听力模式（不显示句子，分数 ×1.5）','Modo escucha (sin texto, puntos ×1.5)','Listening mode (no text, score ×1.5)'),`<div class="seg"><button class="${S.listen?'on':''}" data-a="setListen" data-v="1">${lh('開','开','Sí','On')}</button><button class="${S.listen?'':'on'}" data-a="setListen" data-v="0">${lh('關','关','No','Off')}</button></div>`)}
   ${row(lh('音效','音效','Sonido','Sound'),seg('sound',[['on',lh('開','开','Sí','On')],['off',lh('關','关','No','Off')]]))}
   <button class="big" data-a="closeSet">${lh('關閉','关闭','Cerrar','Close')}</button></div>`;
 }
@@ -1457,6 +1457,7 @@ document.addEventListener('click',e=>{
     case 'settings':openSettings();break;
     case 'closeSet':closeSettings();break;
     case 'set':{S[b.dataset.k]=v;if(SET_OPTS[b.dataset.k])writeShared(S);else save();document.getElementById('modal').innerHTML=settingsHTML();if(screen!=='game')render();else{updateSent();updateTools();updateSheet();buildLabels();}break;}
+    case 'setListen':S.listen=b.dataset.v==='1';save();document.getElementById('modal').innerHTML=settingsHTML();render();break;
     case 'toggleListen':S.listen=!S.listen;save();if(document.getElementById('modal').className==='show')document.getElementById('modal').innerHTML=settingsHTML();render();break;
     case 'lv':if(QS.get('unlock')||P0.unlocked>=+v)startLevel(+v);break;
     case 'quit':screen='home';G=null;try{speechSynthesis.cancel()}catch(x){}render();break;
