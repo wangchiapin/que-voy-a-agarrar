@@ -11,7 +11,16 @@ html{color-scheme:light}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang TC","Noto Sans TC","Hiragino Sans","Microsoft JhengHei",system-ui,sans-serif}
 html[lang="zh-Hans"] body{font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif}
-#app{max-width:480px;margin:0 auto;min-height:100vh;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
+#homebg{display:none;position:fixed;inset:0;z-index:0;background-size:cover;background-position:center top;background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none}
+#homebg.on{display:block}
+#homebg::after{content:'';position:absolute;inset:0}
+#homebg.a::after{background:rgba(245,243,238,.62)}
+#homebg.c{position:absolute;left:0;right:0;top:0;bottom:auto;height:330px;background-size:cover;background-position:center 30%;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent);mask-image:linear-gradient(to bottom,#000 55%,transparent)}
+#homebg.c::after{background:rgba(245,243,238,.18)}
+.hbc .plq{background:rgba(251,250,247,.94);border:1.5px solid var(--line);border-radius:18px;padding:14px 20px 10px;width:fit-content;max-width:100%;margin:96px auto 0;box-shadow:0 2px 0 rgba(0,0,0,.05)}
+.hbc .hero{margin:0 0 14px}
+.hbc .plq .sub{margin-bottom:6px}
+#app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100vh;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
 button{font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
 button:active{transform:scale(.98)}
 button:disabled{opacity:.5;cursor:default}
@@ -1169,6 +1178,20 @@ function render(){
   document.documentElement.lang=S.lang==='zh'?(isSimp()?'zh-Hans':'zh-Hant'):S.lang; updateVoiceHint();
   if(screen==='game'){updateAll();return;}
   app.className=''; app.innerHTML=screen==='end'?renderEnd():renderHome();
+  homeBackdrop(screen==='home');
+}
+// 首頁背景：用遊戲裡的房屋地圖（每次打開都是不同的家），淡淡地鋪在後面
+let _hbUrl=null;
+function homeBackdrop(on){
+  let el=document.getElementById('homebg');
+  if(!el){ el=document.createElement('div'); el.id='homebg'; document.body.insertBefore(el,document.body.firstChild); }
+  el.className=(QS.get('hbg')||'c')+(on?' on':'');
+  document.body.classList.toggle('hbc',on&&el.classList.contains('c'));
+  if(on&&!_hbUrl){
+    try{ let H=null; const sd=QS.get('seed'); for(let i=0;i<8&&!H;i++)H=genHouse(sd&&i===0?+sd:(Math.random()*4294967296)>>>0);
+      if(H){ bakeHouse(H); _hbUrl=bg.toDataURL('image/png'); } }catch(e){}
+  }
+  if(_hbUrl)el.style.backgroundImage=`url(${_hbUrl})`;
 }
 function renderHome(){
   // 首頁和選關合併：標題、聽力模式、三個關卡、玩法說明都在同一頁，點關卡就開始
@@ -1179,7 +1202,7 @@ function renderHome(){
       <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?IC('lock',14)+' '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
   }).join('');
   return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
-  <div class="hero center"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
+  <div class="hero center"><div class="plq"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div></div>
   <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>
   <div class="h2">${esc(t('levels'))}</div>${cards}
   <ul class="howto">${t('howto').map((x,i)=>`<li data-n="${i+1}">${esc(x)}</li>`).join('')}</ul>`;
@@ -1273,8 +1296,8 @@ function doorTile(k,H,x,y){
   k.fillStyle='#6b4a2a'; if(vert){k.fillRect(px,py,T,4);k.fillRect(px,py+T-4,T,4);}else{k.fillRect(px,py,4,T);k.fillRect(px+T-4,py,4,T);}
   if(c.ent){ k.fillStyle='#8a5a34'; k.fillRect(px+(x===0?T-8:x===COLS-1?0:2),py+(y===0?T-8:y===ROWS-1?0:2),(x===0||x===COLS-1)?8:T-4,(y===0||y===ROWS-1)?8:T-4); }
 }
-function bakeHouse(){
-  const k=bg.getContext('2d'), H=G.house; k.imageSmoothingEnabled=false;
+function bakeHouse(H0){
+  const k=bg.getContext('2d'), H=H0||G.house; k.imageSmoothingEnabled=false;
   k.fillStyle='#2b2a27'; k.fillRect(0,0,bg.width,bg.height);
   for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){ const c=H.grid[y][x];
     if(c.k==='floor')floorTile(k,c.room,x,y); }
