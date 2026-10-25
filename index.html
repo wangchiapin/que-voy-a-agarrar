@@ -15,10 +15,10 @@ html[lang="zh-Hans"] body{font-family:"PingFang SC","Noto Sans SC","Microsoft Ya
 #homebg.on{display:block}
 #homebg::after{content:'';position:absolute;inset:0}
 #homebg.a::after{background:rgba(245,243,238,.62)}
-#homebg.c{position:absolute;left:0;right:0;top:0;bottom:auto;height:330px;background-size:cover;background-position:center 30%;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent);mask-image:linear-gradient(to bottom,#000 55%,transparent)}
+#homebg.c{position:absolute;left:0;right:0;top:0;bottom:auto;height:240px;background-size:cover;background-position:center 30%;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent);mask-image:linear-gradient(to bottom,#000 55%,transparent)}
 #homebg.c::after{background:rgba(245,243,238,.18)}
-.hbc .plq{background:rgba(251,250,247,.94);border:1.5px solid var(--line);border-radius:18px;padding:14px 20px 10px;width:100%;margin:96px 0 0;box-shadow:0 2px 0 rgba(0,0,0,.05)}
-.hbc .hero{margin:0 0 14px}
+.hbc .plq{background:rgba(251,250,247,.94);border:1.5px solid var(--line);border-radius:18px;padding:12px 20px 8px;width:100%;margin:64px 0 0;box-shadow:0 2px 0 rgba(0,0,0,.05)}
+.hbc .hero{margin:0 0 20px}
 .hbc .plq .sub{margin-bottom:6px}
 #app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100vh;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
 button{font:inherit;color:inherit;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
@@ -1202,7 +1202,7 @@ function renderHome(){
       <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?IC('lock',14)+' '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
   }).join('');
   return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
-  <div class="hero center"><div class="plq"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div></div>
+  <div class="hero center"><div class="plq"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p></div></div>
   <div class="h2">${esc(t('levels'))}</div>${cards}`;
 }
 function renderEnd(){
