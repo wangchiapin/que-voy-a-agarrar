@@ -17,7 +17,7 @@ html[lang="zh-Hans"] body{font-family:"PingFang SC","Noto Sans SC","Microsoft Ya
 #homebg.a::after{background:rgba(245,243,238,.62)}
 #homebg.c{position:absolute;left:0;right:0;top:0;bottom:auto;height:240px;background-size:cover;background-position:center 30%;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent);mask-image:linear-gradient(to bottom,#000 55%,transparent)}
 #homebg.c::after{background:rgba(245,243,238,.18)}
-.hbc .plq{background:rgba(251,250,247,.94);border:1.5px solid var(--line);border-radius:18px;padding:12px 20px 8px;width:100%;margin:64px 0 0;box-shadow:0 2px 0 rgba(0,0,0,.05)}
+.hbc .plq{background:rgba(251,250,247,.94);border-radius:18px;padding:12px 20px 8px;width:100%;margin:64px 0 0;box-shadow:0 2px 0 rgba(0,0,0,.05)}
 .hbc .hero{margin:0 0 20px}
 .hbc .plq .sub{margin-bottom:6px}
 #app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100vh;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
@@ -44,6 +44,10 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .lvcard .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .lvcard .rt{display:flex;align-items:center;gap:8px;flex:none;color:var(--sub);line-height:1.5}
 .lvcard .sc{font-size:.95rem;font-weight:600;color:var(--ink)}
+/* 卡片框線：加深外框＋下緣厚邊，像疊在桌上的紙卡；鎖住的關卡用淡框 */
+.hbc .plq,.lvcard{border:2px solid #9a9082;box-shadow:0 4px 0 #cfc8bb,0 8px 14px rgba(60,50,40,.10)}
+.lvcard:not(:disabled):active{transform:translateY(2px);box-shadow:0 2px 0 #cfc8bb}
+.lvcard:disabled{border-color:#c9c2b6;box-shadow:0 3px 0 #e2ddd3}
 .stars{letter-spacing:.1em;color:var(--hi)}
 .switch{display:flex;justify-content:space-between;align-items:center;width:100%;margin:6px 0 16px;text-align:left}
 .switch .tg{width:42px;height:24px;border-radius:12px;background:var(--line);position:relative;flex:none}
