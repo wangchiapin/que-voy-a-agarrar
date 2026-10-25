@@ -1,26 +1,30 @@
-# ¿Qué voy a agarrar? · 我要拿什麼？
+# ¿Dónde lo pongo? · 我要放哪裡？
 
-Juego de chino: escucha la frase, camina por la casa y elige el objeto correcto.
+(Antes «¿Qué voy a agarrar? · 我要拿什麼？». El repositorio y la URL conservan el nombre `que-voy-a-agarrar`.)
+
+Juego de chino: escucha la frase «我要把XX放到XX», elige el objeto correcto y llévalo por la casa hasta su lugar.
 Un solo archivo (`index.html`), sin dependencias; se abre directamente o en GitHub Pages.
 
 ## Qué es
 
-Cada partida genera una casa distinta (cocina, dormitorio, baño, estudio, sala...). El juego dice una frase en chino, por ejemplo "我要到廚房的碗櫃拿筷子" ("voy al armario de la cocina a tomar los palillos"). El jugador toca el mapa para caminar hasta el lugar indicado y después elige el objeto correcto entre tres. La voz usa siempre `speechSynthesis` con `zh-TW`.
+Cada partida genera una casa distinta (cocina, dormitorio, baño, estudio, sala, balcón). El juego dice una frase en chino, por ejemplo "我要把筷子放到廚房的碗櫃" ("voy a poner los palillos en el armario de la cocina"). Primero aparecen tres objetos y el jugador elige el que dice la frase; después toca el mapa para caminar con él hasta el lugar indicado. La voz usa siempre `speechSynthesis` con `zh-TW`. El mapa no lleva textos: el nombre del lugar aparece al llegar o con la pista. Al entrar en otra habitación sale un aviso «你已進入…» y al empezar «你現在在…».
+
+La pantalla de inicio es única: el título (con un fondo de la casa del propio juego) y tres tarjetas de nivel con estrellas y mejor puntuación a la derecha; tocar una tarjeta empieza la partida. El engranaje (también dentro de la partida) abre los ajustes. En ordenador, la partida usa dos columnas: mapa a la izquierda (2/3) y frase y opciones a la derecha.
 
 ## Niveles
 
-1. **Las habitaciones (認識房間)**: ir a la habitación correcta y tomar el objeto.
-2. **Ir al mueble (走到家具)**: ir junto al mueble correcto (nevera, escritorio, sofá...) y tomar el objeto.
-3. **Palabras de lugar (加上方位詞)**: al lado, delante, detrás, izquierda y derecha se caminan en el mapa; encima, debajo y dentro se eligen en una lista. Algunas preguntas tienen dos paradas.
+1. **Poner en la habitación (放到房間)**: llevar el objeto a la habitación correcta.
+2. **Poner junto al mueble (放到家具旁邊)**: llevarlo junto al mueble correcto (nevera, escritorio, sofá...).
+3. **Poner en el lugar exacto (放到準確位置)**: al lado, delante, detrás, izquierda y derecha se caminan en el mapa; encima, debajo y dentro se eligen entre seis imágenes (por defecto sin texto; en Ajustes se puede activar «Imagen + texto»). Algunas preguntas tienen dos paradas.
 
-Cada nivel tiene 10 preguntas. El nivel siguiente se desbloquea con 2 estrellas en el anterior.
+Cada nivel tiene 10 preguntas. El nivel siguiente se desbloquea con 2 estrellas en el anterior. Contenido: 6 habitaciones, 24 muebles y 34 objetos.
 
 ## Puntuación
 
 - 3 corazones; cada error quita uno. Sin corazones se pierde el nivel.
 - Estrellas según la precisión a la primera: 90 % o más = 3, 70 % o más = 2, menos = 1.
 - Combo: x1.5 con 3 preguntas seguidas sin error, x2 con 5.
-- Modo escucha (聽力模式, sin mostrar la frase): puntos x1.5.
+- Modo escucha (聽力模式, en Ajustes; sin mostrar la frase): puntos x1.5.
 - Pista: 3 por partida; un paso con pista da la mitad de puntos. Bonus de 5 puntos por pregunta rápida sin errores ni pistas.
 
 ## Ajustes
@@ -34,7 +38,7 @@ Compartidos con los demás juegos (clave `localStorage` `hanziGames.settings`, f
 | `phon` | pinyin / zhuyin / both / off | Lectura sobre cada carácter |
 | `rate` | slow / normal / fast | Velocidad de voz 0.45 / 0.65 / 0.85 |
 
-Solo de este juego (clave `homefetch_map_v1`, junto con el progreso y el nombre): modo escucha, textos del mapa (solo habitaciones / todo) y sonido.
+Solo de este juego (clave `homefetch_map_v1`, junto con el progreso y el nombre): modo escucha (`listen`), texto en las opciones de posición (`posTxt`: `off` = solo imagen, por defecto; `on` = imagen + texto) y sonido.
 
 Si la clave compartida no existe, la primera vez se migran los ajustes antiguos de `homefetch_map_v1`. Los cambios hechos en otro juego o pestaña se aplican aquí al instante (evento `storage`). Si el dispositivo no tiene voz en chino, aparece un aviso.
 
