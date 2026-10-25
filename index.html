@@ -25,7 +25,7 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .card{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
 .big{width:100%;padding:14px;font-size:1.1rem;background:var(--ink);color:var(--card);border-color:var(--ink)}
 .ghost{background:transparent}
-.hero{margin:42px 0 24px}
+.hero{margin:14px 0 16px}
 .howto{margin:18px 0;padding:0;list-style:none;color:var(--sub);line-height:1.9}
 .howto li::before{content:attr(data-n);display:inline-block;width:1.5em;height:1.5em;line-height:1.5em;text-align:center;border:1px solid var(--line);border-radius:50%;margin-right:8px;font-size:.8em}
 .lvcard{display:block;width:100%;text-align:left;margin-bottom:10px;padding:14px}
@@ -1165,24 +1165,21 @@ function shakeMap(){const el=document.getElementById('wrap');if(el){el.classList
 function render(){
   document.documentElement.lang=S.lang==='zh'?(isSimp()?'zh-Hans':'zh-Hant'):S.lang; updateVoiceHint();
   if(screen==='game'){updateAll();return;}
-  app.className=''; app.innerHTML=screen==='home'?renderHome():screen==='levels'?renderLevels():renderEnd();
+  app.className=''; app.innerHTML=screen==='end'?renderEnd():renderHome();
 }
 function renderHome(){
-  return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
-  <div class="hero center"><div class="homeic">${IC('house',54)}</div><h1>${esc(t('title'))}</h1><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
-  <button class="big" data-a="levels">${esc(t('play'))}</button>
-  <ul class="howto">${t('howto').map((x,i)=>`<li data-n="${i+1}">${esc(x)}</li>`).join('')}</ul>`;
-}
-function renderLevels(){
+  // 首頁和選關合併：標題、聽力模式、三個關卡、玩法說明都在同一頁，點關卡就開始
   const cards=[1,2,3].map(n=>{
     const locked=!QS.get("unlock")&&P0.unlocked<n, b=P0.best[n];
     return `<button class="lvcard" data-a="lv" data-v="${n}" ${locked?'disabled':''}>
       <div class="n">${n}. ${esc(t('lvn')[n-1])}</div><div class="d">${esc(t('lvd')[n-1])}</div>
       <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?IC('lock',14)+' '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
   }).join('');
-  return `<div class="top"><button data-a="home">‹ ${esc(t('back'))}</button><div class="grow"></div><button data-a="settings" aria-label="settings">${IC('gear',20)}</button></div>
-  <h1 style="font-size:1.4rem">${esc(t('levels'))}</h1>
-  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>${cards}`;
+  return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
+  <div class="hero center"><div class="homeic">${IC('house',54)}</div><h1>${esc(t('title'))}</h1><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
+  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>
+  <div class="h2">${esc(t('levels'))}</div>${cards}
+  <ul class="howto">${t('howto').map((x,i)=>`<li data-n="${i+1}">${esc(x)}</li>`).join('')}</ul>`;
 }
 function renderEnd(){
   const r=G.res, ok=r.done;
@@ -1430,14 +1427,14 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]'); if(!b||b.disabled)return;
   const a=b.dataset.a,v=b.dataset.v;
   switch(a){
-    case 'levels':screen='levels';G=null;render();break;
+    case 'levels':screen='home';G=null;render();break;
     case 'home':screen='home';render();break;
     case 'settings':openSettings();break;
     case 'closeSet':closeSettings();break;
     case 'set':{S[b.dataset.k]=v;if(SET_OPTS[b.dataset.k])writeShared(S);else save();document.getElementById('modal').innerHTML=settingsHTML();if(screen!=='game')render();else{updateSent();updateTools();updateSheet();buildLabels();}break;}
     case 'toggleListen':S.listen=!S.listen;save();render();break;
     case 'lv':if(QS.get('unlock')||P0.unlocked>=+v)startLevel(+v);break;
-    case 'quit':screen='levels';G=null;try{speechSynthesis.cancel()}catch(x){}render();break;
+    case 'quit':screen='home';G=null;try{speechSynthesis.cancel()}catch(x){}render();break;
     case 'pos':choosePos(v);break;
     case 'item':chooseItem(v);break;
     case 'replay':if(G&&screen==='game')speak(sentenceText(curQ()));break;
