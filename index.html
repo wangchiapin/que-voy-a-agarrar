@@ -963,7 +963,7 @@ const isWalkable=(H,x,y)=>inB(x,y)&&H.grid[y][x].k!=='wall'&&!H.occ[y][x];
 function startLevel(n){
   let H=null; const forced=QS.get('seed');
   for(let i=0;i<8&&!H;i++) H=genHouse(forced&&i===0?+forced:(Math.random()*4294967296)>>>0);
-  G={level:n,listen:!!S.listen,house:H,qs:genQuestions(n),qi:0,hearts:3,score:0,combo:0,hints:3,
+  G={level:n,t0:Date.now(),listen:!!S.listen,house:H,qs:genQuestions(n),qi:0,hearts:3,score:0,combo:0,hints:3,
      stat:{first:0,done:0},review:new Map(),carry:null,phase:'item',stepWrong:false,stepHint:false,dead:new Set(),flash:null,saved:false,res:null,neutral:0};
   PL={x:H.start.x,y:H.start.y,dir:'right',moving:null,path:[],judge:false,goal:null,step:0};
   screen='game'; mountGame(); bakeHouse(); beginQuestion(true);
@@ -1058,7 +1058,7 @@ function endGame(done){
   if(!G)return;
   const acc=G.stat.done?G.stat.first/G.stat.done:0;
   let st=0; if(done)st=acc>=.9?3:acc>=.7?2:1;
-  G.res={done,acc,stars:st,score:G.score};
+  G.res={done,acc,stars:st,score:G.score,secs:Math.max(0,Math.min(86400,Math.round((Date.now()-G.t0)/1000)))};
   try{ window.HGPlays && HGPlays.end({score:G.score, name:NAME}); }catch(e){}
   const b=P0.best[G.level]||{stars:0,score:0};
   if(st>b.stars)b.stars=st; if(G.score>b.score)b.score=G.score; P0.best[G.level]=b;
@@ -1428,24 +1428,31 @@ async function initFB(){
   return FB;
 }
 const Board={
+  /* 排序：分數高的在前；同分時，用的時間短的在前（沒記時間的舊紀錄排在同分最後） */
+  sort(a){ const sec=r=>typeof r.secs==='number'?r.secs:1e9; return a.slice().sort((x,y)=>(y.score||0)-(x.score||0)||sec(x)-sec(y)); },
   async top(lv){
     const fb=await initFB();
-    if(fb){try{const {collection,query,orderBy,limit,getDocs}=fb.f;const snap=await getDocs(query(collection(fb.db,'homefetchmap_L'+lv),orderBy('score','desc'),limit(10)));return {remote:true,rows:snap.docs.map(d=>d.data())};}catch(e){console.warn(e);}}
-    try{return {remote:false,rows:JSON.parse(localStorage.getItem('hfm_board_L'+lv)||'[]')};}catch(e){return {remote:false,rows:[]};}
+    if(fb){try{const {collection,query,orderBy,limit,getDocs}=fb.f;const snap=await getDocs(query(collection(fb.db,'homefetchmap_L'+lv),orderBy('score','desc'),limit(30)));return {remote:true,rows:Board.sort(snap.docs.map(d=>d.data())).slice(0,10)};}catch(e){console.warn(e);}}
+    try{return {remote:false,rows:Board.sort(JSON.parse(localStorage.getItem('hfm_board_L'+lv)||'[]'))};}catch(e){return {remote:false,rows:[]};}
   },
-  async submit(lv,name,score,listen){
-    const row={name,score,listen:!!listen,ts:Date.now()}, fb=await initFB();
-    /* 線上榜：每台裝置（匿名登入的 uid）每一關一筆，只留最高分 */
+  async submit(lv,name,score,listen,secs){
+    const sec=Math.max(0,Math.min(86400,Math.round(Number(secs)||0)));
+    const row={name,score,listen:!!listen,secs:sec,ts:Date.now()}, fb=await initFB();
+    /* 線上榜：每台裝置（匿名登入的 uid）每一關一筆，只留最好的成績（分數高；同分則時間短） */
     if(fb&&fb.uid){try{
       const {doc,getDoc,setDoc,serverTimestamp}=fb.f, ref=doc(fb.db,'homefetchmap_L'+lv,fb.uid), snap=await getDoc(ref);
-      const sc=Math.max(0,Math.min(20000,Math.round(score)));
-      if(!snap.exists()||(snap.data().score||0)<sc||snap.data().name!==String(name).slice(0,14)){
-        const keep=snap.exists()&&(snap.data().score||0)>=sc;
-        await setDoc(ref,{name:String(name).slice(0,14),score:keep?snap.data().score:sc,listen:keep?!!snap.data().listen:!!listen,updatedAt:serverTimestamp()});
+      const sc=Math.max(0,Math.min(20000,Math.round(score))), nm14=String(name).slice(0,14);
+      const old=snap.exists()?snap.data():null;
+      const oldSc=old?(old.score||0):-1, oldSec=old&&typeof old.secs==='number'?old.secs:86400;
+      const better=!old||sc>oldSc||(sc===oldSc&&sec<oldSec);
+      if(better||old.name!==nm14){
+        const data={name:nm14,score:better?sc:oldSc,listen:better?!!listen:!!old.listen,secs:better?sec:oldSec,updatedAt:serverTimestamp()};
+        try{ await setDoc(ref,data); }
+        catch(e1){ delete data.secs; await setDoc(ref,data); }   /* 後台規則還沒更新時，先不帶時間也能存 */
       }
       return;
     }catch(e){console.warn(e);}}
-    try{const k='hfm_board_L'+lv;const a=JSON.parse(localStorage.getItem(k)||'[]');a.push(row);a.sort((x,y)=>y.score-x.score);localStorage.setItem(k,JSON.stringify(a.slice(0,10)));}catch(e){}
+    try{const k='hfm_board_L'+lv;const a=JSON.parse(localStorage.getItem(k)||'[]');a.push(row);localStorage.setItem(k,JSON.stringify(Board.sort(a).slice(0,10)));}catch(e){}
   }
 };
 async function loadBoard(){
@@ -1479,7 +1486,7 @@ document.addEventListener('click',e=>{
       const inp=document.getElementById('nm');const nm=((inp&&inp.value)||'').trim();
       if(!nm){ toast(plain(t('needname')),true); if(inp)inp.focus(); break; }
       NAME=nm;save();G.saved=true;
-      Board.submit(G.level,nm,G.res.score,G.listen).then(()=>{if(screen==='end'){render();loadBoard();}});
+      Board.submit(G.level,nm,G.res.score,G.listen,G.res.secs).then(()=>{if(screen==='end'){render();loadBoard();}});
       break;
     }
   }

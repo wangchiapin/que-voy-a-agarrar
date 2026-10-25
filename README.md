@@ -59,3 +59,10 @@ iPhone 版 Chrome 上，頁面可以捲動時，往下捲之後有時回不到�
 - `<html>` 加 `html{color-scheme:light}`。
 
 兩項一起改後，手機 Chrome 測試恢復正常；尚未分開測是哪一項有效。新增頁面請照這個寫。
+
+## Pruebas (carpeta `tests/`)
+- `sh tests/run_all.sh` (necesita python3, playwright y chromium). Usa Firebase falso; no toca la base real.
+- `test_play_all.py`: juega los 3 niveles (modo normal y modo escucha) sin errores.
+- `test_name_required.py`: sin nombre no se guarda en el ranking.
+- `test_tiebreak.py`: orden del ranking (más puntos primero; con los mismos puntos, menos tiempo primero), un solo registro por dispositivo, límites de los campos.
+- Ranking: los documentos `homefetchmap_L1..L3` llevan `name, score, listen, secs, updatedAt`. Las reglas de Firestore (en el repo Memorama) aceptan `secs`; si aún no se actualizaron, el juego guarda sin `secs`.
