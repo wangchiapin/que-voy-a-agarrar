@@ -1209,7 +1209,7 @@ function renderHome(){
   }).join('');
   return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
   <div class="hero center"><div class="plq"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p></div></div>
-  <div class="h2">${esc(t('levels'))}</div>${cards}`;
+  ${cards}`;
 }
 function renderEnd(){
   const r=G.res, ok=r.done;
