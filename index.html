@@ -17,7 +17,7 @@ html[lang="zh-Hans"] body{font-family:"PingFang SC","Noto Sans SC","Microsoft Ya
 #homebg.a::after{background:rgba(245,243,238,.62)}
 #homebg.c{position:absolute;left:0;right:0;top:0;bottom:auto;height:330px;background-size:cover;background-position:center 30%;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent);mask-image:linear-gradient(to bottom,#000 55%,transparent)}
 #homebg.c::after{background:rgba(245,243,238,.18)}
-.hbc .plq{background:rgba(251,250,247,.94);border:1.5px solid var(--line);border-radius:18px;padding:14px 20px 10px;width:fit-content;max-width:100%;margin:96px auto 0;box-shadow:0 2px 0 rgba(0,0,0,.05)}
+.hbc .plq{background:rgba(251,250,247,.94);border:1.5px solid var(--line);border-radius:18px;padding:14px 20px 10px;width:100%;margin:96px 0 0;box-shadow:0 2px 0 rgba(0,0,0,.05)}
 .hbc .hero{margin:0 0 14px}
 .hbc .plq .sub{margin-bottom:6px}
 #app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100vh;padding:10px 12px calc(14px + env(safe-area-inset-bottom))}
@@ -1203,9 +1203,7 @@ function renderHome(){
   }).join('');
   return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
   <div class="hero center"><div class="plq"><div class="ttl"><div class="homeic">${IC('house',56)}</div><h1>${esc(t('title'))}</h1></div><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div></div>
-  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>
-  <div class="h2">${esc(t('levels'))}</div>${cards}
-  <ul class="howto">${t('howto').map((x,i)=>`<li data-n="${i+1}">${esc(x)}</li>`).join('')}</ul>`;
+  <div class="h2">${esc(t('levels'))}</div>${cards}`;
 }
 function renderEnd(){
   const r=G.res, ok=r.done;
@@ -1230,6 +1228,7 @@ function settingsHTML(){
   ${row(lh('介面語言','界面语言','Idioma','Language'),seg('lang',[['es','Chino + Español'],['en','Chino + English'],['zh','Solo chino']]))}
   ${row(lh('拼音／注音','拼音／注音','Pinyin / Zhuyin','Pinyin / Zhuyin'),seg('phon',[['pinyin','Pinyin'],['zhuyin','Zhuyin<span class="tr">ㄅㄆㄇ</span>'],['both',lh('兩者','两者','Ambos','Both')],['off',lh('關','关','Apagado','Off')]]))}
   ${row(lh('語速','语速','Voz','Voice'),seg('rate',[['slow',lh('慢','慢','Lento','Slow')],['normal',lh('一般','一般','Normal','Normal')],['fast',lh('快','快','Rápido','Fast')]]))}
+  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${lh('聽力模式','听力模式','Modo escucha','Listening mode')}</b><br><span class="small">${lh('不顯示句子，分數 ×1.5','不显示句子，分数 ×1.5','Sin texto de la frase, puntos ×1.5','No sentence text, score ×1.5')}</span></span><span class="tg"></span></button>
   ${row(lh('音效','音效','Sonido','Sound'),seg('sound',[['on',lh('開','开','Sí','On')],['off',lh('關','关','No','Off')]]))}
   <button class="big" data-a="closeSet">${lh('關閉','关闭','Cerrar','Close')}</button></div>`;
 }
@@ -1458,7 +1457,7 @@ document.addEventListener('click',e=>{
     case 'settings':openSettings();break;
     case 'closeSet':closeSettings();break;
     case 'set':{S[b.dataset.k]=v;if(SET_OPTS[b.dataset.k])writeShared(S);else save();document.getElementById('modal').innerHTML=settingsHTML();if(screen!=='game')render();else{updateSent();updateTools();updateSheet();buildLabels();}break;}
-    case 'toggleListen':S.listen=!S.listen;save();render();break;
+    case 'toggleListen':S.listen=!S.listen;save();if(document.getElementById('modal').className==='show')document.getElementById('modal').innerHTML=settingsHTML();render();break;
     case 'lv':if(QS.get('unlock')||P0.unlocked>=+v)startLevel(+v);break;
     case 'quit':screen='home';G=null;try{speechSynthesis.cancel()}catch(x){}render();break;
     case 'pos':choosePos(v);break;
