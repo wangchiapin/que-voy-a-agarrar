@@ -1127,7 +1127,7 @@ function updateAll(){ if(screen!=='game'||!G)return; updateTop(); updateSent(); 
 function updateTop(){
   const el=document.getElementById('top'); if(!el)return;
   el.innerHTML=`<button data-a="quit" aria-label="quit">${IC('x',16)}</button><div class="prog">${esc(t('q',{a:Math.min(G.qi+1,G.qs.length),b:G.qs.length}))}</div>
-   <div class="hearts">${[0,1,2].map(i=>IC('heart',20,i<G.hearts)).join('')}</div><div class="score">${G.score}</div>`;
+   <div class="hearts">${[0,1,2].map(i=>IC('heart',20,i<G.hearts)).join('')}</div><div class="score">${G.score}</div><button data-a="settings" aria-label="settings">${IC('gear',18)}</button>`;
 }
 function updateSent(){
   const el=document.getElementById('sent'); if(!el||G.qi>=G.qs.length)return;
