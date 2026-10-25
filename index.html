@@ -41,7 +41,10 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .top{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.95rem}
 .top button{padding:6px 12px}
 .top .prog{flex:1;color:var(--sub)}
-.hearts{color:var(--ng);letter-spacing:.1em}
+.hearts{color:var(--ng);display:flex;gap:3px}
+.ic{vertical-align:-3px;flex:none}
+button .ic{margin-right:4px}
+.isvg,.psv{display:block}
 .score{font-weight:600;min-width:3.2em;text-align:right}
 .sent{padding:8px 14px;margin-bottom:6px}
 .sent .zh{font-size:1.25rem;line-height:2.3;letter-spacing:.02em}
@@ -50,6 +53,8 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .tools{display:flex;gap:8px;margin-bottom:4px}
 .tools button{flex:1;padding:7px;font-size:.9rem}
 .stepname{font-size:.85rem;color:var(--sub);margin:2px 2px 6px;min-height:1.3em}
+.stepname .carry{display:inline-flex;align-items:center;gap:4px;margin-right:8px;color:var(--ink);vertical-align:middle}
+.stepname .carry b{font-weight:600}
 #wrap{position:relative;overflow:hidden;border:3px solid #7d7569;border-radius:8px;background:#2b2a27;line-height:0}
 #wrap canvas{width:100%;display:block;image-rendering:pixelated;touch-action:manipulation}
 #labels{position:absolute;inset:0;pointer-events:none;line-height:1}
@@ -66,8 +71,8 @@ h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;letter-spacing:.04em}
 .sh-h{text-align:center;font-size:1rem;margin-bottom:6px;line-height:2}
 .posg,.itg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .pb,.item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px}
-.pb .pic{font-size:1.2rem;color:var(--hi)}
-.item .iic{font-size:2.2rem;line-height:1.2}
+.pb .pic{line-height:0}
+.item .iic{line-height:0;padding:4px 0}
 .lab2,.pb .lab,.item .lab{font-size:1rem;line-height:1.9;text-align:center}
 .pb .tr,.item .tr{font-size:.74rem;color:var(--sub)}
 .ok{background:var(--okbg)!important;border-color:var(--ok)!important}
@@ -109,6 +114,20 @@ rt .rp{display:block}
 input[type=text]{font:inherit;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);width:100%}
 .h2{font-size:1.05rem;font-weight:600;margin:16px 0 6px}
 .gear{float:right}
+#gl{display:flex;flex-direction:column}
+#gside{order:-1}
+#gm{min-width:0}
+@media (min-width:900px){
+ #app.gw{max-width:none;padding:14px 24px 20px}
+ #app.gw #gl{display:grid;grid-template-columns:2fr 1fr;gap:22px;align-items:start}
+ #app.gw #gside{order:0;position:sticky;top:14px}
+ #app.gw .sent .zh{font-size:1.5rem}
+ #app.gw .tools button{padding:10px}
+ #app.gw .stepname{font-size:.95rem;margin:6px 2px 10px}
+ #sheetSlot #sheet{position:static;transform:none;display:none;border:1.5px solid var(--line);border-radius:12px;background:var(--card);padding:12px}
+ #sheetSlot #sheet.show{display:block}
+}
+.homeic{color:var(--ink)}
 .small{font-size:.8rem;color:var(--sub)}
 </style>
 </head>
@@ -116,7 +135,7 @@ input[type=text]{font:inherit;padding:9px 10px;border:1.5px solid var(--line);bo
 <div id="app"></div>
 <div id="modal"></div>
 <div id="toast"></div>
-<div id="voice-hint"><span id="voice-hint-txt"></span><button id="voice-hint-close" aria-label="close">✕</button></div>
+<div id="voice-hint"><span id="voice-hint-txt"></span><button id="voice-hint-close" aria-label="close">&times;</button></div>
 <script>
 
 /* ===== 一鍵靜音（只關音樂和音效，不影響念字的語音）— 每天一分鐘遊戲統一做法 ===== */
@@ -150,7 +169,7 @@ input[type=text]{font:inherit;padding:9px 10px;border:1.5px solid var(--line);bo
     st.textContent='#hgMute{position:fixed;left:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:2147483000;width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,0,0,.28);background:rgba(255,255,255,.88);color:#222;font-size:19px;line-height:1;padding:0;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.25);touch-action:manipulation;-webkit-tap-highlight-color:transparent}#hgMute:active{transform:scale(.94)}#hgMute.st{position:static;flex:0 0 40px;margin:0 0 0 8px}';
     document.head.appendChild(st);
     var b=document.createElement('button'); b.type='button'; b.id='hgMute';
-    function paint(){ b.textContent = muted?'🔇':'🔊'; b.setAttribute('aria-pressed', muted?'true':'false');
+    function paint(){ b.innerHTML = muted?'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h4l5-4v14l-5-4H3z"/><path d="M16 9l6 6M22 9l-6 6"/></svg>':'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h4l5-4v14l-5-4H3z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>'; b.setAttribute('aria-pressed', muted?'true':'false');
       b.title = b.ariaLabel = muted ? '開啟音樂和音效 · Activar música y efectos' : '靜音（音樂和音效）· Silenciar música y efectos'; apply(); }
     b.addEventListener('click',function(e){ e.stopPropagation(); muted=!muted; try{ localStorage.setItem(KEY, muted?'1':'0'); }catch(err){} paint(); });
     b.addEventListener('pointerdown',function(e){ e.stopPropagation(); });
@@ -751,6 +770,82 @@ const esc0=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const esc=s=>{s=String(s);const k=s.indexOf(SEP);return k<0?esc0(s):esc0(s.slice(0,k))+'<span class="tr">'+esc0(s.slice(k+1))+'</span>';};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 
+// ============ 圖示（全部用程式畫，不用 emoji） ============
+const GEARP='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z';
+const UIC={
+ gear:`<circle cx="12" cy="12" r="3"/><path d="${GEARP}"/>`,
+ x:`<path d="M6 6L18 18M18 6L6 18"/>`,
+ speaker:`<path d="M3 9h4l5-4v14l-5-4H3z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>`,
+ mute:`<path d="M3 9h4l5-4v14l-5-4H3z"/><path d="M16 9l6 6M22 9l-6 6"/>`,
+ bulb:`<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/>`,
+ head:`<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/>`,
+ eye:`<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>`,
+ lock:`<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>`,
+ heart:`<path d="M12 21s-8-5.3-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.7-8 11-8 11z"/>`,
+ house:`<path d="M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6"/>`,
+ check:`<path d="M5 12.5l4.5 4.5L19 7.5"/>`
+};
+const IC=(n,sz=18,fill)=>`<svg class="ic" viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true" fill="${fill?'currentColor':'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${UIC[n]}</svg>`;
+// 物品圖（32×32）
+const ISV={
+ drink:`<path d="M9 10h14l-2 18H11z" fill="#e8553d"/><rect x="8" y="8" width="16" height="3" rx="1" fill="#fff"/><path d="M17 8l3-5" fill="none"/>`,
+ milk:`<rect x="9" y="11" width="14" height="17" fill="#fff"/><path d="M9 11l3-6h8l3 6z" fill="#cfe3f5"/><rect x="11" y="16" width="10" height="6" fill="#6aa1d9" stroke="none"/>`,
+ juice:`<rect x="8" y="9" width="16" height="19" rx="2" fill="#f2a23a"/><circle cx="16" cy="19" r="4.5" fill="#fff3c0"/><path d="M19 9l3-6" fill="none"/>`,
+ water:`<path d="M16 3C16 3 8 13 8 19a8 8 0 0 0 16 0C24 13 16 3 16 3z" fill="#6fb8e8"/><path d="M12 19a4 4 0 0 0 3 3.8" fill="none" stroke="#fff"/>`,
+ remote:`<rect x="10.5" y="3" width="11" height="26" rx="3" fill="#4a4d55"/><circle cx="16" cy="9" r="2.4" fill="#e8553d" stroke="none"/><g fill="#c4c8ce" stroke="none"><rect x="12.5" y="14" width="3" height="3"/><rect x="16.5" y="14" width="3" height="3"/><rect x="12.5" y="19" width="3" height="3"/><rect x="16.5" y="19" width="3" height="3"/><rect x="12.5" y="24" width="7" height="2.5"/></g>`,
+ phone:`<rect x="9" y="3" width="14" height="26" rx="3" fill="#33363d"/><rect x="11" y="6" width="10" height="17" fill="#8fc1e8" stroke="none"/><circle cx="16" cy="26" r="1.3" fill="#fff" stroke="none"/>`,
+ laptop:`<rect x="6" y="7" width="20" height="14" rx="1.5" fill="#33363d"/><rect x="8.5" y="9.5" width="15" height="9" fill="#8fc1e8" stroke="none"/><path d="M3 21h26l-3 4.5H6z" fill="#b9bcc2"/>`,
+ earph:`<path d="M7 19v-4a9 9 0 0 1 18 0v4" fill="none" stroke-width="2.6"/><rect x="4.5" y="17" width="6" height="10" rx="2.5" fill="#e8553d"/><rect x="21.5" y="17" width="6" height="10" rx="2.5" fill="#e8553d"/>`,
+ coat:`<path d="M12 5L7 9 3 18l5 2 2-5v13h12V15l2 5 5-2-4-9-5-4-4 4z" fill="#3d6fb5"/><path d="M16 9v19" fill="none" stroke="#c9d8ee"/>`,
+ socks:`<path d="M11 4h9v13l7 5c1 5-4 5-6 5h-5c-4 0-5-3-5-6z" fill="#f2c94c"/><rect x="11" y="6" width="9" height="3" fill="#e8553d" stroke="none"/>`,
+ hat:`<path d="M7 20Q7 8 17 8t9 12z" fill="#3d6fb5"/><path d="M5 20h25q0 4-9 3.5H5z" fill="#2c4f85"/><circle cx="17" cy="8" r="1.5" fill="#fff" stroke="none"/>`,
+ scarf:`<rect x="4" y="8" width="24" height="13" rx="2" fill="#d8402c"/><path d="M10 8v13M16 8v13M22 8v13" fill="none" stroke="#fff" stroke-width="2"/><path d="M7 21v6M12 21v6M17 21v6M22 21v6M26 21v6" fill="none" stroke="#d8402c" stroke-width="2"/>`,
+ tbrush:`<g transform="rotate(-45 16 16)"><rect x="3" y="13.5" width="19" height="5" rx="2.5" fill="#6aa1d9"/><rect x="22" y="11.5" width="7" height="9" rx="1" fill="#fff"/><path d="M24 11.5v-2M26 11.5v-2M28 11.5v-2" fill="none" stroke-width="1.2"/></g>`,
+ soap:`<rect x="4" y="12" width="22" height="14" rx="6" fill="#f1a8c4"/><circle cx="23" cy="7" r="3" fill="#fff"/><circle cx="28" cy="4" r="2" fill="#fff"/>`,
+ tissue:`<path d="M7 9v17c0 2 18 2 18 0V9z" fill="#fff"/><ellipse cx="16" cy="9" rx="9" ry="3.2" fill="#e9e6df"/><ellipse cx="16" cy="9" rx="3" ry="1.2" fill="#bbb" stroke="none"/>`,
+ shampoo:`<rect x="10" y="11" width="12" height="17" rx="3" fill="#7ab6d9"/><rect x="13" y="5" width="6" height="6" fill="#33363d"/><path d="M16 5h6" fill="none"/><rect x="12" y="16" width="8" height="7" fill="#fff" stroke="none"/>`,
+ book:`<rect x="6" y="5" width="20" height="23" rx="2" fill="#4f7ea6"/><rect x="6" y="5" width="4" height="23" fill="#3a5f80"/><rect x="13" y="10" width="9" height="5" fill="#fff" stroke="none"/>`,
+ pen:`<g transform="rotate(-45 16 16)"><rect x="3" y="13" width="20" height="6" fill="#4f7ea6"/><path d="M23 13l6 3-6 3z" fill="#f2c9a0"/><rect x="3" y="13" width="4" height="6" fill="#33363d"/></g>`,
+ notebook:`<rect x="7" y="4" width="18" height="24" rx="2" fill="#5e9b6e"/><rect x="12" y="10" width="10" height="7" fill="#fff" stroke="none"/><g fill="#fff" stroke="none"><circle cx="7" cy="9" r="1.6"/><circle cx="7" cy="14" r="1.6"/><circle cx="7" cy="19" r="1.6"/><circle cx="7" cy="24" r="1.6"/></g>`,
+ scissors:`<path d="M10 4l11 17M22 4L11 21" fill="none" stroke="#8d939a" stroke-width="3"/><circle cx="9" cy="25" r="4" fill="none" stroke="#e8553d" stroke-width="3"/><circle cx="23" cy="25" r="4" fill="none" stroke="#e8553d" stroke-width="3"/>`,
+ cup:`<rect x="6" y="10" width="17" height="17" rx="3" fill="#fff"/><path d="M23 13h2.5a4 4 0 0 1 0 8H23" fill="none" stroke-width="2.4"/><ellipse cx="14.5" cy="10" rx="8.5" ry="2" fill="#7a4b2a"/>`,
+ plate:`<circle cx="16" cy="16" r="12.5" fill="#fff"/><circle cx="16" cy="16" r="7.5" fill="none" stroke="#b9bec5"/>`,
+ chop:`<path d="M7 28L24 3M13 29L28 6" fill="none" stroke="#b4793f" stroke-width="2.8"/>`,
+ spoon:`<ellipse cx="16" cy="9" rx="6" ry="7" fill="#c9ced3"/><rect x="14.3" y="15" width="3.4" height="14" rx="1.7" fill="#c9ced3"/>`,
+ apple:`<path d="M16 9C10 5 4 10 6 18c2 7 7 10 10 8 3 2 8-1 10-8 2-8-4-13-10-9z" fill="#d8402c"/><path d="M16 9V4" fill="none"/><ellipse cx="21" cy="6" rx="4.2" ry="2.3" transform="rotate(-25 21 6)" fill="#5e9b6e"/>`,
+ banana:`<path d="M5 9Q6 26 25 25Q29 24 27 21Q14 22 11 7z" fill="#f2d03c"/>`,
+ bread:`<path d="M4 17Q4 8 16 8t12 9v9H4z" fill="#d9a15e"/><path d="M11 13l2 4M16 12l2 4M21 13l2 4" fill="none" stroke="#a8733a"/>`,
+ egg:`<path d="M16 4C10 4 7 12 7 18a9 9 0 0 0 18 0C25 12 22 4 16 4z" fill="#fff4dc"/>`,
+ key:`<circle cx="9.5" cy="13" r="5.5" fill="none" stroke="#e0b33a" stroke-width="3.2"/><rect x="14" y="11.5" width="15" height="3.4" rx="1" fill="#e0b33a"/><rect x="23" y="14.5" width="2.6" height="5" fill="#e0b33a"/><rect x="27" y="14.5" width="2.6" height="4" fill="#e0b33a"/>`,
+ umb:`<path d="M3 16Q16-3 29 16Q25 13 22 16 19 13 16 16 13 13 10 16 7 13 3 16z" fill="#d8402c"/><path d="M16 16v10q0 3-3.5 2.5" fill="none" stroke-width="2.4"/>`,
+ bag:`<path d="M11 12V9q0-4 5-4t5 4v3" fill="none" stroke-width="2.2"/><rect x="5" y="12" width="22" height="16" rx="3" fill="#b4793f"/><path d="M5 17h22" fill="none"/><rect x="14" y="15" width="4" height="4" rx="1" fill="#e0b33a"/>`,
+ glasses:`<circle cx="9" cy="18" r="6" fill="#d6ecf7"/><circle cx="23" cy="18" r="6" fill="#d6ecf7"/><path d="M15 17h2M3 16l-1-5M29 16l1-5" fill="none"/>`,
+ pillow:`<path d="M4 12Q4 8 9 9Q16 11 23 9Q28 8 28 12V20Q28 24 23 23Q16 21 9 23Q4 24 4 20z" fill="#cfe3f5"/><path d="M8 13l-1 5M24 13l1 5" fill="none" stroke="#a9c3de" stroke-width="1.2"/>`,
+ flower:`<path d="M16 15v14" fill="none" stroke="#4f8f4f" stroke-width="2.4"/><ellipse cx="21" cy="24" rx="4" ry="2" transform="rotate(-30 21 24)" fill="#6ab56a"/><g fill="#f08fb0"><circle cx="16" cy="6" r="3.8"/><circle cx="21.5" cy="10" r="3.8"/><circle cx="19.5" cy="16" r="3.8"/><circle cx="12.5" cy="16" r="3.8"/><circle cx="10.5" cy="10" r="3.8"/></g><circle cx="16" cy="11.5" r="3" fill="#f2c94c"/>`
+};
+const itemSvg=(id,sz=40)=>`<svg class="isvg" viewBox="0 0 32 32" width="${sz}" height="${sz}" aria-hidden="true" stroke="#33363d" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" fill="none">${ISV[id]||''}</svg>`;
+const _imgCache={};
+function itemImg(id){
+  if(_imgCache[id])return _imgCache[id];
+  const im=new Image(); im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(itemSvg(id,64).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" '));
+  return _imgCache[id]=im;
+}
+// 位置示意圖：灰色方塊是家具，紅點是東西
+function posIcon(id){
+  const box=`<rect x="9" y="12" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`;
+  const dot=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.2" fill="#d8402c"/>`;
+  let b='';
+  if(id==='up')b=box+dot(16,7);
+  else if(id==='down')b=`<rect x="9" y="6" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(16,24);
+  else if(id==='in')b=box+dot(16,17);
+  else if(id==='side')b=`<rect x="5" y="12" width="12" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(24,17);
+  else if(id==='front')b=`<rect x="9" y="6" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(16,23)+`<path d="M16 17v3" stroke="#d8402c" stroke-width="1.4"/>`;
+  else if(id==='back')b=`<rect x="9" y="14" width="14" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(16,7)+`<path d="M16 11v2" stroke="#d8402c" stroke-width="1.4"/>`;
+  else if(id==='left')b=`<rect x="14" y="12" width="12" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(7,17);
+  else b=`<rect x="6" y="12" width="12" height="10" rx="1.5" fill="#d9d4c8" stroke="#6b665c" stroke-width="1.4"/>`+dot(25,17);
+  return `<svg class="psv" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true">${b}</svg>`;
+}
+
 // 漢字 + 逐字讀音
 function R(seg){
   const txt=isSimp()?seg.cn:seg.tw, lang=isSimp()?'zh-Hans':'zh-Hant';
@@ -927,7 +1022,7 @@ function finishQuestion(){
   const mult=G.combo>=5?2:G.combo>=3?1.5:1, lm=(G.listen&&!q.peeked)?1.5:1;
   const gain=Math.round(sub*mult*lm);
   G.score+=gain; G.busy=true; G.phase='busy';
-  let msg='+'+gain; if(mult>1)msg+='  ×'+mult+' '+tzh('combo'); if(bonus)msg+='  ⚡';
+  let msg='+'+gain; if(mult>1)msg+='  ×'+mult+' '+tzh('combo'); if(bonus)msg+='  ＋5';
   toast(msg); sfx('done'); G.qi++; updateAll();
   if(G.qi>=G.qs.length)setTimeout(()=>endGame(true),900); else setTimeout(()=>{G.busy=false;beginQuestion(false);},900);
 }
@@ -995,8 +1090,10 @@ function stepPlayer(now){
 // ============ 畫面（遊戲殼） ============
 const app=document.getElementById('app');
 function mountGame(){
-  app.innerHTML=`<div class="top" id="top"></div><div class="card sent" id="sent"></div><div class="tools" id="tools"></div><div class="stepname" id="stepname"></div>
-  <div id="wrap"><canvas id="cv" width="${COLS*T}" height="${ROWS*T}"></canvas><div id="labels"></div><div id="tag"></div><div id="sheet"></div></div>`;
+  app.className='gw';
+  app.innerHTML=`<div id="gl"><div id="gm"><div id="wrap"><canvas id="cv" width="${COLS*T}" height="${ROWS*T}"></canvas><div id="labels"></div><div id="tag"></div><div id="sheet"></div></div></div>
+  <div id="gside"><div class="top" id="top"></div><div class="card sent" id="sent"></div><div class="tools" id="tools"></div><div class="stepname" id="stepname"></div><div id="sheetSlot"></div></div></div>`;
+  placeSheet();
   cv=document.getElementById('cv'); g=cv.getContext('2d'); g.imageSmoothingEnabled=false;
   cv.addEventListener('pointerdown',e=>{
     const r=cv.getBoundingClientRect();
@@ -1007,36 +1104,42 @@ function mountGame(){
   });
   camY=0; camSnap=true;
 }
+const wideMQ=window.matchMedia('(min-width:900px)');
+function placeSheet(){ const sh=document.getElementById('sheet'); if(!sh)return; if(G)G.wide=wideMQ.matches; const to=document.getElementById(wideMQ.matches?'sheetSlot':'wrap'); if(to&&sh.parentNode!==to)to.appendChild(sh); }
 function updateAll(){ if(screen!=='game'||!G)return; updateTop(); updateSent(); updateTools(); updateSheet(); buildLabels(); fitView(); }
 function updateTop(){
   const el=document.getElementById('top'); if(!el)return;
-  el.innerHTML=`<button data-a="quit">✕</button><div class="prog">${esc(t('q',{a:Math.min(G.qi+1,G.qs.length),b:G.qs.length}))}</div>
-   <div class="hearts">${'♥'.repeat(Math.max(G.hearts,0))+'♡'.repeat(Math.max(3-G.hearts,0))}</div><div class="score">${G.score}</div>`;
+  el.innerHTML=`<button data-a="quit" aria-label="quit">${IC('x',16)}</button><div class="prog">${esc(t('q',{a:Math.min(G.qi+1,G.qs.length),b:G.qs.length}))}</div>
+   <div class="hearts">${[0,1,2].map(i=>IC('heart',20,i<G.hearts)).join('')}</div><div class="score">${G.score}</div>`;
 }
 function updateSent(){
   const el=document.getElementById('sent'); if(!el||G.qi>=G.qs.length)return;
   const q=curQ(), hidden=G.listen&&!q.peeked, segs=sentenceSegs(q), tt=hidden?'':transText(q);
   el.style.minHeight=112+'px';
-  el.innerHTML=hidden?`<div class="hid">🎧 ${esc(t('hiddenS'))}</div>`:`<div class="zh">${segs.map(R).join('')}</div>${tt?`<div class="trl">${esc(tt)}</div>`:''}`;
+  el.innerHTML=hidden?`<div class="hid">${IC('head',22)} ${esc(t('hiddenS'))}</div>`:`<div class="zh">${segs.map(R).join('')}</div>${tt?`<div class="trl">${esc(tt)}</div>`:''}`;
 }
 function updateTools(){
   const el=document.getElementById('tools'); if(!el||G.qi>=G.qs.length)return; const q=curQ();
-  el.innerHTML=`<button data-a="replay">🔊 ${esc(t('replay'))}</button>
-   <button data-a="hint" ${(G.hints<=0||G.stepHint||G.busy)?'disabled':''}>💡 ${(()=>{const [z,o]=t('hint').split(SEP);return esc(z)+' '+G.hints+(o?'<span class="tr">'+esc0(o)+'</span>':'');})()}</button>
-   ${G.listen&&!q.peeked?`<button data-a="peek">👁 ${esc(t('peek'))}</button>`:''}`;
-  const sn=document.getElementById('stepname'); if(sn)sn.textContent=G.phase==='go'?(G.carry?ITEM[G.carry].ic+' '+(isSimp()?ITEM[G.carry].cn:ITEM[G.carry].tw)+'　':'')+t('ph_go')+((G.level>=3&&['left','right'].includes(curStop().p))?'　('+t('lrnote')+')':''):G.phase==='pos'?t('ph_pos'):G.phase==='item'?t('ph_item'):'';
-  const comboTxt=G.combo>=2?'🔥 '+tzh('combo')+' '+G.combo:''; if(sn&&comboTxt)sn.textContent+='　'+comboTxt;
-  if(sn)sn.textContent=plain(sn.textContent);
+  el.innerHTML=`<button data-a="replay">${IC('speaker',18)} ${esc(t('replay'))}</button>
+   <button data-a="hint" ${(G.hints<=0||G.stepHint||G.busy)?'disabled':''}>${IC('bulb',18)} ${(()=>{const [z,o]=t('hint').split(SEP);return esc(z)+' '+G.hints+(o?'<span class="tr">'+esc0(o)+'</span>':'');})()}</button>
+   ${G.listen&&!q.peeked?`<button data-a="peek">${IC('eye',18)} ${esc(t('peek'))}</button>`:''}`;
+  const sn=document.getElementById('stepname');
+  if(sn){
+    let txt=G.phase==='go'?t('ph_go')+((G.level>=3&&['left','right'].includes(curStop().p))?'　('+t('lrnote')+')':''):G.phase==='pos'?t('ph_pos'):G.phase==='item'?t('ph_item'):'';
+    let pre=(G.phase==='go'&&G.carry)?`<span class="carry">${itemSvg(G.carry,26)}<b>${esc(isSimp()?ITEM[G.carry].cn:ITEM[G.carry].tw)}</b></span>`:'';
+    if(G.combo>=2)txt+='　'+tzh('combo')+' ×'+G.combo;
+    sn.innerHTML=pre+esc0(plain(txt));
+  }
 }
 function updateSheet(){
   const el=document.getElementById('sheet'); if(!el)return;
   if(G.qi>=G.qs.length||(G.phase!=='pos'&&G.phase!=='item')){el.innerHTML='';el.className='';return;}
   const st=curStop(), F=FURN[st.f], cls=(id,tg)=>(G.dead.has(id)?' ng':'')+(G.flash===id?' ok':'')+((G.stepHint&&id===tg&&!G.flash)?' hint':'');
-  const head=G.phase==='pos'?`<div class="sh-h">${F.ic} ${R(F)}</div>`:'';
+  const head=G.phase==='pos'?`<div class="sh-h">${R(F)}</div>`:'';
   if(G.phase==='pos'){
-    el.innerHTML=head+`<div class="posg">${POSS.filter(p=>CHOOSE_POS.includes(p.id)).map(p=>`<button class="pb${cls(p.id,st.p)}" data-a="pos" data-v="${p.id}" ${G.dead.has(p.id)?'disabled':''}><span class="pic">${p.ic}</span><span class="lab">${R(p)}</span>${tr(p)}</button>`).join('')}</div>`;
+    el.innerHTML=head+`<div class="posg">${POSS.filter(p=>CHOOSE_POS.includes(p.id)).map(p=>`<button class="pb${cls(p.id,st.p)}" data-a="pos" data-v="${p.id}" ${G.dead.has(p.id)?'disabled':''}><span class="pic">${posIcon(p.id)}</span><span class="lab">${R(p)}</span>${tr(p)}</button>`).join('')}</div>`;
   }else{
-    el.innerHTML=head+`<div class="itg">${st.ch.map(id=>{const it=ITEM[id];return `<button class="item${cls(id,st.i)}" data-a="item" data-v="${id}" ${G.dead.has(id)?'disabled':''}><span class="iic">${it.ic}</span>${(G.stepHint||G.dead.has(id)||G.flash===id)?`<span class="lab">${R(it)}</span>${tr(it)}`:''}</button>`;}).join('')}</div>`;
+    el.innerHTML=head+`<div class="itg">${st.ch.map(id=>{const it=ITEM[id];return `<button class="item${cls(id,st.i)}" data-a="item" data-v="${id}" ${G.dead.has(id)?'disabled':''}><span class="iic">${itemSvg(id,G.wide?72:56)}</span>${(G.stepHint||G.dead.has(id)||G.flash===id)?`<span class="lab">${R(it)}</span>${tr(it)}`:''}</button>`;}).join('')}</div>`;
   }
   el.className='show';
 }
@@ -1045,11 +1148,11 @@ function shakeMap(){const el=document.getElementById('wrap');if(el){el.classList
 function render(){
   document.documentElement.lang=S.lang==='zh'?(isSimp()?'zh-Hans':'zh-Hant'):S.lang; updateVoiceHint();
   if(screen==='game'){updateAll();return;}
-  app.innerHTML=screen==='home'?renderHome():screen==='levels'?renderLevels():renderEnd();
+  app.className=''; app.innerHTML=screen==='home'?renderHome():screen==='levels'?renderLevels():renderEnd();
 }
 function renderHome(){
-  return `<button class="gear" data-a="settings" aria-label="settings">⚙︎</button>
-  <div class="hero center"><div style="font-size:3rem">🏠</div><h1>${esc(t('title'))}</h1><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
+  return `<button class="gear" data-a="settings" aria-label="settings">${IC('gear',20)}</button>
+  <div class="hero center"><div class="homeic">${IC('house',54)}</div><h1>${esc(t('title'))}</h1><p class="sub">${esc(t('sub'))}</p><p class="small">✦ ${esc(t('newhouse'))}</p></div>
   <button class="big" data-a="levels">${esc(t('play'))}</button>
   <ul class="howto">${t('howto').map((x,i)=>`<li data-n="${i+1}">${esc(x)}</li>`).join('')}</ul>`;
 }
@@ -1058,15 +1161,15 @@ function renderLevels(){
     const locked=!QS.get("unlock")&&P0.unlocked<n, b=P0.best[n];
     return `<button class="lvcard" data-a="lv" data-v="${n}" ${locked?'disabled':''}>
       <div class="n">${n}. ${esc(t('lvn')[n-1])}</div><div class="d">${esc(t('lvd')[n-1])}</div>
-      <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?'🔒 '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
+      <div class="meta"><span class="stars">${stars(b?b.stars:0)}</span><span>${locked?IC('lock',14)+' '+esc(t('locked')):(b?esc(t('best'))+' '+b.score:'')}</span></div></button>`;
   }).join('');
-  return `<div class="top"><button data-a="home">‹ ${esc(t('back'))}</button><div class="grow"></div><button data-a="settings">⚙︎</button></div>
+  return `<div class="top"><button data-a="home">‹ ${esc(t('back'))}</button><div class="grow"></div><button data-a="settings" aria-label="settings">${IC('gear',20)}</button></div>
   <h1 style="font-size:1.4rem">${esc(t('levels'))}</h1>
-  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>🎧 ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>${cards}`;
+  <button class="switch ${S.listen?'on':''}" data-a="toggleListen"><span><b>${IC('head',18)} ${esc(t('listen'))}</b><br><span class="small">${esc(t('listenD'))}</span></span><span class="tg"></span></button>${cards}`;
 }
 function renderEnd(){
   const r=G.res, ok=r.done;
-  const rev=[...G.review.values()].map(v=>{const e=MAPS[v.type][v.id];return `<span class="w">${e.ic?e.ic+' ':''}${R(e)} ${trKey()?`<small>${esc(e[trKey()])}</small>`:''}</span>`;}).join('');
+  const rev=[...G.review.values()].map(v=>{const e=MAPS[v.type][v.id];return `<span class="w" style="display:inline-flex;align-items:center;gap:6px">${v.type==='item'?itemSvg(e.id,24):''}${R(e)} ${trKey()?`<small>${esc(e[trKey()])}</small>`:''}</span>`;}).join('');
   const canNext=ok&&(r.stars>=2||QS.get("unlock"))&&G.level<3;
   return `<div class="center" style="margin-top:14px"><h1 style="font-size:1.5rem">${esc(ok?t('win'):t('lose'))}</h1><div class="bigstars">${stars(r.stars)}</div></div>
    <div class="card"><div class="stats"><div><div class="v">${r.score}</div><div class="l">${esc(t('score'))}</div></div><div><div class="v">${Math.round(r.acc*100)}%</div><div class="l">${esc(t('acc'))}</div></div></div></div>
@@ -1082,7 +1185,7 @@ function settingsHTML(){
   const lh=(tw,cn,es,en)=>{ const tt=S.lang==='es'?es:S.lang==='en'?en:''; return esc(isSimp()?cn:tw)+(tt?`<span class="tr">${esc(tt)}</span>`:''); };
   const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${String(S[k])===String(v)?'on':''}" data-a="set" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</div>`;
   const row=(l,body)=>`<div class="setrow"><div class="k">${l}</div>${body}</div>`;
-  return `<div class="card"><h1 style="font-size:1.3rem;display:flex;align-items:center;justify-content:space-between"><span>⚙︎ ${lh('設定','设置','Ajustes','Settings')}</span><button class="setx" data-a="closeSet" aria-label="close">✕</button></h1>
+  return `<div class="card"><h1 style="font-size:1.3rem;display:flex;align-items:center;justify-content:space-between"><span>${IC('gear',20)} ${lh('設定','设置','Ajustes','Settings')}</span><button class="setx" data-a="closeSet" aria-label="close">${IC('x',16)}</button></h1>
   ${row(lh('字形','字形','Escritura','Script'),seg('script',[['trad','繁體'],['simp','简体']]))}
   ${row(lh('介面語言','界面语言','Idioma','Language'),seg('lang',[['es','Chino + Español'],['en','Chino + English'],['zh','Solo chino']]))}
   ${row(lh('拼音／注音','拼音／注音','Pinyin / Zhuyin','Pinyin / Zhuyin'),seg('phon',[['pinyin','Pinyin'],['zhuyin','Zhuyin<span class="tr">ㄅㄆㄇ</span>'],['both',lh('兩者','两者','Ambos','Both')],['off',lh('關','关','Apagado','Off')]]))}
@@ -1117,7 +1220,7 @@ function positionLabels(){
 let tagT=null;
 function showTag(fid,ms){
   const el=document.getElementById('tag'),F=G.house.furn[fid],d=FURN[fid]; if(!el)return;
-  el.innerHTML=`${d.ic} ${R(d)}${tr(d)}`;
+  el.innerHTML=`${R(d)}${tr(d)}`;
   el.dataset.x=(F.x+F.w/2)*T; el.dataset.y=F.y*T-4; el.className='show';
   positionTag(); clearTimeout(tagT); tagT=setTimeout(()=>{el.className='';},ms||1800);
 }
@@ -1169,37 +1272,34 @@ const ANG={S:0,E:-Math.PI/2,W:Math.PI/2,N:Math.PI};
 function drawFurn(k,F){
   const sp=FSPEC[F.id], W=sp.w*T, Hh=sp.h*T, cx=(F.x+F.w/2)*T, cy=(F.y+F.h/2)*T;
   k.save(); k.translate(cx,cy); k.rotate(ANG[F.dir]); sprite(k,F.id,W,Hh); k.restore();
-  const sz=Math.max(16,Math.min(26,Math.min(F.w,F.h)*T*0.72));
-  k.font=`${sz}px "Segoe UI Emoji","Noto Color Emoji","Apple Color Emoji",sans-serif`; k.textAlign='center'; k.textBaseline='middle'; k.fillStyle='#000';
-  k.fillText(FURN[F.id].ic,cx,cy+1);
 }
 function sprite(k,id,W,H){
-  const x0=-W/2,y0=-H/2, o=(c,x,y,w,h)=>{k.fillStyle=c;k.fillRect(x0+x,y0+y,w,h);};
+  const x0=-W/2,y0=-H/2, o=(c,x,y,w,h)=>{k.fillStyle=c;k.fillRect(x0+x,y0+y,w,h);}, ci=(c,x,y,r)=>{k.fillStyle=c;k.beginPath();k.arc(x0+x,y0+y,r,0,7);k.fill();};
   const WOOD='#b48a5c',WOODD='#8f6a42',WOODL='#cfa877',WHITE='#f4f1ea',GRAY='#c4bfb5',DARK='#33363d';
   o('rgba(0,0,0,.18)',3,4,W-2,H-2);
   switch(id){
     case 'tv': o(DARK,2,2,W-4,H-6); o('#6f8fb0',5,H-18,W-10,11); o('rgba(255,255,255,.35)',7,H-16,10,3); break;
     case 'sofa': o('#c9907a',1,2,W-2,H-4); o('#a9705c',1,2,W-2,9); o('#a9705c',1,2,7,H-4); o('#a9705c',W-8,2,7,H-4); o('#dba68f',9,13,W-18,H-19); break;
-    case 'tea': o(WOOD,2,3,W-4,H-6); o(WOODL,4,5,W-8,H-12); break;
-    case 'cab': o(WOODD,2,2,W-4,H-4); o(WOOD,4,4,W/2-5,H-8); o(WOOD,W/2+1,4,W/2-5,H-8); break;
+    case 'tea': o(WOOD,2,3,W-4,H-6); o(WOODL,4,5,W-8,H-12); o('#fff',8,8,9,8); o('#e8553d',10,10,5,3); o('#fff',W-18,10,6,6); o('#7a4b2a',W-17,11,4,2); break;
+    case 'cab': o(WOODD,2,2,W-4,H-4); for(let y=4;y<H-6;y+=9){o(WOOD,4,y,W-8,7); o('#e8d9a8',W/2-3,y+3,6,2);} break;
     case 'fridge': o('#dfe3e6',3,2,W-6,H-4); o('#aeb4ba',3,H/2-1,W-6,2); o('#8e949a',W-9,6,2,6); o('#8e949a',W-9,H/2+4,2,6); break;
     case 'counter': o(GRAY,1,2,W-2,H-4); o('#e9e6df',3,4,W-6,H-9); o('#8fa3ad',W/2-11,7,22,H-15); o('#6e8591',W/2-4,H/2-3,8,6); o(DARK,W-24,8,5,5); o(DARK,W-14,8,5,5); break;
-    case 'dishcab': o(WOODD,2,2,W-4,H-4); o('#e8d9b8',4,5,W/2-5,H-12); o('#e8d9b8',W/2+1,5,W/2-5,H-12); break;
-    case 'micro': o('#3a3d44',3,5,W-6,H-9); o('#8fa6b8',6,8,W-18,H-15); o('#c4bfb5',W-10,9,4,H-17); break;
+    case 'dishcab': o(WOODD,2,2,W-4,H-4); o('#cfe3ee',4,5,W/2-5,H-12); o('#cfe3ee',W/2+1,5,W/2-5,H-12); for(let q=0;q<2;q++){o('#fff',6+q*(W/2-3),9,W/2-9,3); o('#fff',6+q*(W/2-3),16,W/2-9,3);} o(WOODD,W/2-1,5,2,H-12); break;
+    case 'micro': o('#3a3d44',3,5,W-6,H-9); o('#8fa6b8',6,8,W-18,H-15); o('#5f7486',8,10,W-22,H-19); o('#c4bfb5',W-10,9,4,H-17); o('#6fd08c',W-9,10,2,2); o('#e8553d',W-9,H-11,2,2); break;
     case 'bedf': o(WOOD,1,1,W-2,H-2); o('#f4f1ea',3,10,W-6,H-13); o('#9fb7cf',3,24,W-6,H-27); o('#fff',5,3,W/2-7,12); o('#fff',W/2+2,3,W/2-7,12); break;
-    case 'nstand': o(WOOD,3,3,W-6,H-6); o(WOODL,5,5,W-10,H-12); o('#f2d27a',W/2-4,H/2-4,8,8); break;
-    case 'wardrobe': o(WOODD,2,2,W-4,H-4); o(WOOD,4,5,W/2-5,H-9); o(WOOD,W/2+1,5,W/2-5,H-9); o('#d8c28e',W/2-3,H/2-2,2,5); o('#d8c28e',W/2+2,H/2-2,2,5); break;
+    case 'nstand': o(WOOD,3,3,W-6,H-6); o(WOODL,5,5,W-10,H-12); ci('#f2d27a',W/2,H/2-2,6); ci('#fff3c0',W/2,H/2-2,3); o(WOODD,W/2-5,H-9,10,2); break;
+    case 'wardrobe': o(WOODD,2,2,W-4,H-4); o('#6b4f30',2,2,W-4,4); o(WOOD,4,7,W/2-5,H-11); o(WOOD,W/2+1,7,W/2-5,H-11); o('#e8d9a8',W/2-4,H/2,2,5); o('#e8d9a8',W/2+2,H/2,2,5); break;
     case 'chairB': case 'chairS': case 'chairA': o(WOODD,5,3,W-10,H-8); o(WOOD,7,4,W-14,H-12); o(WOODD,5,3,W-10,5); break;
     case 'sink': o(WHITE,2,2,W-4,H-4); o('#9ec3d6',W/2-9,6,18,H-14); o('#8c9399',W/2-1,3,2,6); break;
     case 'toilet': o(WHITE,6,2,W-12,9); o(WHITE,8,10,W-16,H-14); o('#d7dadc',11,14,W-22,H-23); break;
     case 'tub': o(WHITE,2,2,W-4,H-4); o('#a9d3e6',6,6,W-12,H-12); o('#8c9399',W/2-1,3,2,6); break;
-    case 'shelf': o('#8f959c',3,3,W-6,H-6); o('#c3c8cc',5,5,W-10,H-10); o('#e6b9a8',7,7,8,6); break;
+    case 'shelf': o('#8f959c',3,3,W-6,H-6); o('#c3c8cc',5,5,W-10,H-10); o('#8f959c',5,H/2-1,W-10,2); o('#e6b9a8',7,7,W-14,H/2-10); o('#7ab6d9',8,H/2+3,5,H/2-9); o('#f2c94c',W-14,H/2+5,5,H/2-11); break;
     case 'desk': o(WOOD,1,2,W-2,H-4); o(WOODL,3,4,W-6,H-9); o('#dcdfe3',W/2-12,6,24,11); o(DARK,W/2-10,8,20,7); break;
-    case 'bshelf': o(WOODD,2,2,W-4,H-4); for(let i=0;i<W-10;i+=6){o(['#c0564b','#4f7ea6','#d4a437','#5e9b6e'][(i/6)%4|0],5+i,5,4,H-10);} break;
-    case 'trash': o('#6c7077',6,6,W-12,H-12); o('#4d5157',9,9,W-18,H-18); break;
-    case 'washer': o(WHITE,3,2,W-6,H-4); o('#9bb3c4',8,8,W-16,W-16); o(WHITE,11,11,W-22,W-22); break;
+    case 'bshelf': o(WOODD,2,2,W-4,H-4); o('#6b4f30',4,H/2-1,W-8,2); for(let i=0;i<W-10;i+=5){const cl=['#c0564b','#4f7ea6','#d4a437','#5e9b6e'][(i/5)%4|0]; o(cl,5+i,4,4,H/2-6); o(cl,5+i,H/2+2,4,H/2-6);} break;
+    case 'trash': ci('#6c7077',W/2,H/2,W/2-4); ci('#4d5157',W/2,H/2,W/2-7); ci('#6c7077',W/2,H/2,3); break;
+    case 'washer': o(WHITE,3,2,W-6,H-4); o('#9bb3c4',5,4,7,3); ci('#9bb3c4',W/2,H/2+3,W/2-6); ci(WHITE,W/2,H/2+3,W/2-9); ci('#c6dbe8',W/2,H/2+3,W/2-12); break;
     case 'rack': o('#a9a49a',3,H/2-1,W-6,2); o('#a9a49a',3,6,2,H-12); o('#a9a49a',W-5,6,2,H-12); o('#d96a5a',10,H/2,10,10); o('#6aa1d9',W/2-5,H/2,10,10); o('#e6c35a',W-21,H/2,10,10); break;
-    case 'plant': o('#a5683f',8,12,W-16,H-18); o('#4f8f4f',4,2,W-8,14); o('#6ab56a',8,5,W-16,8); break;
+    case 'plant': o('#a5683f',9,H-12,W-18,10); ci('#4f8f4f',W/2,10,W/2-4); ci('#6ab56a',W/2-4,9,W/4-1); ci('#6ab56a',W/2+4,13,W/4-1); break;
     default: o(WOOD,2,2,W-4,H-4);
   }
 }
@@ -1211,7 +1311,7 @@ function fitView(){
   const rows=Math.max(12,Math.min(ROWS,Math.floor(avail/(T*sc))));
   scale=sc; if(cv.height!==rows*T){cv.height=rows*T;g.imageSmoothingEnabled=false;camSnap=true;lastCam=null;}
 }
-addEventListener('resize',()=>{ if(screen==='game')fitView(); });
+addEventListener('resize',()=>{ if(screen==='game'){placeSheet();updateSheet();fitView();} });
 
 let _last=0;
 function tick(now){
@@ -1221,7 +1321,7 @@ function tick(now){
   stepPlayer(now);
   // 鏡頭
   const VH=cv.height, py=(PL.moving?PL.moving.from.y+(PL.moving.to.y-PL.moving.from.y)*Math.min(1,(now-PL.moving.t0)/STEP_MS):PL.y)*T;
-  const shEl=document.getElementById('sheet'), shPx=(shEl&&shEl.className==='show')?shEl.offsetHeight/scale:0;   // 選單蓋住下方時，鏡頭往上讓小人看得到
+  const shEl=document.getElementById('sheet'), shPx=(shEl&&shEl.className==='show'&&shEl.parentNode===document.getElementById('wrap'))?shEl.offsetHeight/scale:0;   // 選單蓋住下方時，鏡頭往上讓小人看得到
   let c=py+T/2, view=VH-shPx;
   if(G&&screen==='game'&&G.phase==='go'&&G.stepHint&&G.qi<G.qs.length){
     const ht=hintTiles(); if(ht.length){ const ys=ht.map(p=>p.y*T+T/2), hc=(Math.min(...ys)+Math.max(...ys))/2; c=(Math.abs(hc-c)+T*3<view)?(hc+c)/2:hc; }
@@ -1263,7 +1363,7 @@ function drawPlayer(now){
   g.fillStyle='#f1c9a0'; g.fillRect(px+6,py+15,3,6); g.fillRect(px+23,py+15,3,6);
   g.fillRect(px+9,py+3,14,11);
   g.fillStyle='#2b2118'; g.fillRect(px+8,py+1,16,5); g.fillRect(px+8,py+4,2,6); g.fillRect(px+22,py+4,2,6);
-  if(G&&G.carry&&ITEM[G.carry]){ g.font='20px sans-serif'; g.textAlign='center'; g.textBaseline='bottom'; g.fillText(ITEM[G.carry].ic,px+16,py+2); g.textAlign='start'; g.textBaseline='alphabetic'; }
+  if(G&&G.carry&&ITEM[G.carry]){ const im=itemImg(G.carry); if(im.complete&&im.naturalWidth){ g.imageSmoothingEnabled=true; g.drawImage(im,px+4,py-22,24,24); g.imageSmoothingEnabled=false; } }
   if(PL.dir==='up'){g.fillRect(px+9,py+4,14,8);} else { g.fillStyle='#1b1a22'; const ox=PL.dir==='left'?-2:PL.dir==='right'?2:0; g.fillRect(px+12+ox,py+8,2,3); g.fillRect(px+18+ox,py+8,2,3); }
 }
 
@@ -1304,7 +1404,7 @@ async function loadBoard(){
   const el=document.getElementById('board'); if(!el||!G)return;
   el.innerHTML=`<div class="small">${esc(t('loading'))}</div>`;
   const {remote,rows}=await Board.top(G.level), el2=document.getElementById('board'); if(!el2)return;
-  el2.innerHTML=rows.length?`<ol>${rows.map(r=>`<li><span>${esc(r.name||'?')}${r.listen?' 🎧':''}</span><span>${r.score}</span></li>`).join('')}</ol>`:`<div class="small">${esc(t('nobody'))}</div>`;
+  el2.innerHTML=rows.length?`<ol>${rows.map(r=>`<li><span>${esc(r.name||'?')}${r.listen?' '+IC('head',14):''}</span><span>${r.score}</span></li>`).join('')}</ol>`:`<div class="small">${esc(t('nobody'))}</div>`;
   if(!remote&&!FIREBASE_CONFIG)el2.insertAdjacentHTML('beforeend',`<div class="small" style="margin-top:6px">${esc(t('localnote'))}</div>`);
 }
 
@@ -1364,7 +1464,7 @@ document.getElementById('voice-hint-close').addEventListener('click',()=>{voiceD
   speechSynthesis.onvoiceschanged=()=>{pickVoice();if(VOICE){voiceMissing=false;updateVoiceHint();}};
 })();
 
-window.__hf={get G(){return G},get S(){return S},get P0(){return P0},get PL(){return PL},tapTile,arrive,choosePos,chooseItem,startLevel,curStop,curQ,get STEP(){return STEP_MS},setStep:v=>{STEP_MS=v;},WALK_POS,standTile,bfs};
+window.__hf={get G(){return G},get S(){return S},get P0(){return P0},get PL(){return PL},tapTile,arrive,choosePos,chooseItem,startLevel,curStop,curQ,get STEP(){return STEP_MS},setStep:v=>{STEP_MS=v;},WALK_POS,standTile,bfs,ITEMS,itemSvg,posIcon};
 render();
 
 </script>
