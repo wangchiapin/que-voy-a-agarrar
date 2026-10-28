@@ -66,3 +66,8 @@ iPhone 版 Chrome 上，頁面可以捲動時，往下捲之後有時回不到�
 - `test_name_required.py`: sin nombre no se guarda en el ranking.
 - `test_tiebreak.py`: orden del ranking (más puntos primero; con los mismos puntos, menos tiempo primero), un solo registro por dispositivo, límites de los campos.
 - Ranking: los documentos `homefetchmap_L1..L3` llevan `name, score, listen, secs, updatedAt`. Las reglas de Firestore (en el repo Memorama) aceptan `secs`; si aún no se actualizaron, el juego guarda sin `secs`.
+
+## Pronunciación y palabras compartidas (2026-10-25 a 27)
+- La pronunciación (pinyin y zhuyin) sigue la tabla de reglas de **GoodTeacher** (lectura de Taiwán). Cambios recientes: 鑰匙 se lee **yào shi** (ㄧㄠˋ ˙ㄕ); 枕頭 se lee **tóu**; 洗髮精 lleva **fǎ** (3.er tono). Al agregar objetos con caracteres de varias lecturas, revisa la tabla de GoodTeacher en game-kit.
+- Seis palabras se comparten con el juego 墨龍飛天: 手機 (phone), 垃圾桶 (basurero), 浴缸 (bañera), 洗髮精 (champú), 臥室 (dormitorio) y 杯子 (taza). Este juego es la referencia: si cambias una, cambia también la otra.
+- En `tests/` ya no se guardan los archivos `__pycache__`; el `.gitignore` los excluye.
