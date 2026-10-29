@@ -48,6 +48,10 @@ Ranking en línea conectado al proyecto de Firebase `memorma-24dab` (compartido 
 
 Desde 2026-10-21 también se registran visitas, inicios y partidas terminadas (colecciones `visits` y `plays` del mismo proyecto; GA no cambia).
 
+## Vista previa al compartir el enlace (2026-10-28)
+
+Al pegar la URL en LINE o WhatsApp se muestra el nombre «我要放哪裡？ · ¿Dónde lo pongo?» y una miniatura. La miniatura es `og.jpg` (1200x630, en la raíz); el nombre y la descripción están en `og:title` y `og:description` dentro del `<head>` de `index.html`.
+
 ## Prueba rápida
 
 `index.html?seed=123` fija la casa; `&fast=1` acelera la caminata (útil para pruebas).
