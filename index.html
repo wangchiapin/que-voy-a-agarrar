@@ -685,19 +685,19 @@ tw:{title:'我要放哪裡？',sub:'聽句子，把東西放到家裡對的地�
  win:'過關了！',lose:'愛心用完了',score:'分數',acc:'正確率',review:'需要複習的詞',again:'再玩一次',menu:'關卡選單',next:'下一級',
  board:'排行榜',loading:'載入中…',yourname:'你的名字',needname:'請先輸入名字',save:'存入排行榜',saved:'已存入',nobody:'還沒有紀錄',localnote:'（本機排行榜）',
  howto:['聽（或看）句子','先選出要放的東西','帶著它，點地圖走到目的地'],quit:'離開',combo:'連擊',best:'最高'},
-cn:{title:'我要放哪里？',sub:'听句子，把东西放到家里对的地方',newhouse:'每次的家都不一样',play:'开始游戏',settings:'设置',levels:'选择关卡',back:'返回',
+cn:{title:'我要放哪里？',sub:'听句子，把东西放到家里对的地方',newhouse:'每次的家都不一样',play:'开始游戏',settings:'设定',levels:'选择关卡',back:'返回',
  lvn:['放到房间','放到家具旁边','放到准确位置'],
  lvd:['选对东西，放到对的房间','选对东西，放到对的家具旁边','选对东西，放到家具的准确位置'],
  locked:'上一级拿到 2 颗星才能解锁',listen:'听力模式',listenD:'不显示句子，分数 ×1.5',
- uiLang:'语言',scriptL:'字体',reading:'读音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不显示',rate:'语速',slow:'慢',normal:'正常',fast:'快',voiceHint:'这个设备没有中文语音，听不到句子。请改用有中文语音的浏览器或设备。',close:'完成',
+ uiLang:'语言',scriptL:'字体',reading:'读音',py:'拼音',zy:'注音',both:'拼音＋注音',none:'不显示',rate:'语速',slow:'慢',normal:'正常',fast:'快',voiceHint:'这个装置没有中文语音，听不到句子。请改用有中文语音的浏览器或装置。',close:'完成',
  sound:'音效',on:'开',off:'关',
  labels:'地图文字',labRoom:'只标房间',labAll:'全部标示',
  q:'第 {a}／{b} 题',hint:'提示',replay:'再听一次',peek:'看文字',hiddenS:'请听句子',
  lrnote:'左右以地图画面为准',
  ph_go:'带着它，点地图走到目的地',ph_pos:'选出位置',ph_item:'选出要放的东西',
  here:'这里是',nothing:'走到家具旁边再停下来',
- win:'过关了！',lose:'爱心用完了',score:'分数',acc:'正确率',review:'需要复习的词',again:'再玩一次',menu:'关卡菜单',next:'下一级',
- board:'排行榜',loading:'加载中…',yourname:'你的名字',needname:'请先输入名字',save:'存入排行榜',saved:'已存入',nobody:'还没有记录',localnote:'（本机排行榜）',
+ win:'过关了！',lose:'爱心用完了',score:'分数',acc:'正确率',review:'需要复习的词',again:'再玩一次',menu:'关卡选单',next:'下一级',
+ board:'排行榜',loading:'载入中…',yourname:'你的名字',needname:'请先输入名字',save:'存入排行榜',saved:'已存入',nobody:'还没有记录',localnote:'（本机排行榜）',
  howto:['听（或看）句子','先选出要放的东西','带着它，点地图走到目的地'],quit:'离开',combo:'连击',best:'最高'},
 es:{title:'¿Dónde lo pongo?',sub:'Escucha la frase y pon el objeto en su lugar',newhouse:'Cada vez la casa es diferente',play:'Jugar',settings:'Ajustes',levels:'Elige un nivel',back:'Volver',
  lvn:['Poner en la habitación','Poner junto al mueble','Poner en el lugar exacto'],
@@ -1246,9 +1246,9 @@ function settingsHTML(){
   const lh=(tw,cn,es,en)=>{ const tt=S.lang==='es'?es:S.lang==='en'?en:''; return esc(isSimp()?cn:tw)+(tt?`<span class="tr">${esc(tt)}</span>`:''); };
   const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="${String(S[k])===String(v)?'on':''}" data-a="set" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</div>`;
   const row=(l,body)=>`<div class="setrow"><div class="k">${l}</div>${body}</div>`;
-  return `<div class="card"><h1 style="font-size:1.3rem;display:flex;align-items:center;justify-content:space-between"><span>${IC('gear',20)} ${lh('設定','设置','Ajustes','Settings')}</span><button class="setx" data-a="closeSet" aria-label="close">${IC('x',16)}</button></h1>
+  return `<div class="card"><h1 style="font-size:1.3rem;display:flex;align-items:center;justify-content:space-between"><span>${IC('gear',20)} ${lh('設定','设定','Ajustes','Settings')}</span><button class="setx" data-a="closeSet" aria-label="close">${IC('x',16)}</button></h1>
   ${row(lh('字形','字形','Escritura','Script'),seg('script',[['trad','繁體'],['simp','简体']]))}
-  ${row(lh('介面語言','界面语言','Idioma','Language'),seg('lang',[['es','Chino + Español'],['en','Chino + English'],['zh','Solo chino']]))}
+  ${row(lh('介面語言','介面语言','Idioma','Language'),seg('lang',[['es','Chino + Español'],['en','Chino + English'],['zh','Solo chino']]))}
   ${row(lh('拼音／注音','拼音／注音','Pinyin / Zhuyin','Pinyin / Zhuyin'),seg('phon',[['pinyin','Pinyin'],['zhuyin','Zhuyin<span class="tr">ㄅㄆㄇ</span>'],['both',lh('兩者','两者','Ambos','Both')],['off',lh('關','关','Apagado','Off')]]))}
   ${row(lh('語速','语速','Voz','Voice'),seg('rate',[['slow',lh('慢','慢','Lento','Slow')],['normal',lh('一般','一般','Normal','Normal')],['fast',lh('快','快','Rápido','Fast')]]))}
   ${row(IC('head',15)+' '+lh('聽力模式（不顯示句子，分數 ×1.5）','听力模式（不显示句子，分数 ×1.5）','Modo escucha (sin texto, puntos ×1.5)','Listening mode (no text, score ×1.5)'),`<div class="seg"><button class="${S.listen?'on':''}" data-a="setListen" data-v="1">${lh('開','开','Sí','On')}</button><button class="${S.listen?'':'on'}" data-a="setListen" data-v="0">${lh('關','关','No','Off')}</button></div>`)}
