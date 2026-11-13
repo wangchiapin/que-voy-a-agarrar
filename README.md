@@ -1,5 +1,7 @@
 # ¿Dónde lo pongo? · 我要放哪裡？
 
+URL / 網址: https://wangchiapin.github.io/que-voy-a-agarrar/
+
 (Antes «¿Qué voy a agarrar? · 我要拿什麼？». El repositorio y la URL conservan el nombre `que-voy-a-agarrar`.)
 
 Juego de chino: escucha la frase «我要把XX放到XX», elige el objeto correcto y llévalo por la casa hasta su lugar.
